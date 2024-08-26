@@ -1,0 +1,10 @@
+name: test-maker
+
+services:
+  test-maker:
+    container_name: test-maker
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    volumes:
+      - .:/usr/src/app

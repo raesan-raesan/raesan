@@ -1,7 +1,7 @@
 FROM ubuntu:24.10
 
 RUN apt-get update && apt-get install -y \
-    curl git gnupg unzip build-essential \
+    curl git gnupg unzip build-essential tmux \
     libssl-dev libreadline-dev zlib1g-dev libsqlite3-dev libbz2-dev libffi-dev liblzma-dev
 
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
@@ -17,5 +17,8 @@ RUN bash -c 'source ~/.asdf/asdf.sh && \
 WORKDIR /usr/src/app
 
 COPY . .
+
+RUN /root/.asdf/shims/cargo build
+RUN /root/.asdf/shims/bun install --yarn
 
 CMD ["tail", "-f", "/dev/null"]

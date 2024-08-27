@@ -2,11 +2,14 @@
   "name": "test-maker",
   "module": "index.js",
   "type": "module",
+  "scripts": {
+    "dev": "tailwindcss -i ./tailwind.css -i ./static/style.css --watch"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tailwindcss": "^3.4.10"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   }
 }
-

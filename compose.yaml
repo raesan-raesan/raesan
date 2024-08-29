@@ -1,8 +1,8 @@
-name: test-maker
+name: raetest
 
 services:
-  test-maker:
-    container_name: test-maker
+  raetest:
+    container_name: raetest
     build:
       context: .
       dockerfile: dev.dockerfile

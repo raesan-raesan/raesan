@@ -1,3 +1,3 @@
-# test-maker
+# raetest
 
-I havn't decided on the name yet
+helps in testing yourself

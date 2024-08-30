@@ -1,5 +1,6 @@
+// modules
 pub mod app;
-pub mod models;
 
+// constants
 pub const ADDRESS: &str = "0.0.0.0";
 pub const PORT: u16 = 8080;

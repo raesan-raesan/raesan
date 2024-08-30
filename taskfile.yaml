@@ -1,0 +1,18 @@
+version: "3"
+
+interval: 500ms
+
+tasks:
+  dev-app:
+    watch: true
+    sources:
+      - "**/*.rs"
+      - "**/*.html"
+    cmds:
+      - cargo run
+    status:
+      - "exit 1"
+    cleanup:
+      - rm -rf .task
+  dev-tw:
+    - bun tailwindcss -i ./tailwind.css -o ./static/style.css --minify --watch

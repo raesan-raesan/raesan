@@ -1,9 +1,9 @@
 // modules
 mod core;
 mod handlers;
+mod utils;
 
 // imports
-use actix_files;
 use actix_web;
 
 #[actix_web::main]
@@ -17,11 +17,13 @@ async fn main() -> std::io::Result<()> {
     // main actix_web server
     let server = actix_web::HttpServer::new(|| {
         return actix_web::App::new()
-            .service(actix_files::Files::new("/static", "./static")) // server static files
+            .service(handlers::static_route) // server static files
             .service(handlers::home_page)
             .service(handlers::test_page)
             .service(handlers::api::index_route);
     });
+
+    println!("Running on {}:{}", app.config.address, app.config.port);
 
     // running the server after binding it to the specific address and port
     return server

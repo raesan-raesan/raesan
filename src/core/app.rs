@@ -1,15 +1,14 @@
-// ----- `Config` object
-pub struct Config {
-    pub port: u16,
-    pub address: String,
-}
+//imports
+use crate::core::database;
 
 // ----- `Application` object
+#[derive(Debug, Clone)]
 pub struct Application {
-    pub config: Config,
+    pub database: database::Database,
 }
 impl Application {
-    pub fn new(config: Config) -> Application {
-        return Application { config };
+    pub fn new() -> Application {
+        let database = database::Database::new();
+        return Application { database };
     }
 }

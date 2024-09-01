@@ -1,0 +1,33 @@
+{
+  "classes": [
+    {
+      "id": 12,
+      "subjects": [
+        {
+          "name": "physics",
+          "chapters": [
+            { "id": 1, "name": "Electric Charges and Fields" },
+            { "id": 2, "name": "Electrostatic Potential and Capacitance" },
+            { "id": 3, "name": "Current Electricity" }
+          ]
+        },
+        {
+          "name": "chemistry",
+          "chapters": [
+            { "id": 1, "name": "Solutions" },
+            { "id": 2, "name": "Electrochemistry" },
+            { "id": 3, "name": "Chemical Kinetics" }
+          ]
+        },
+        {
+          "name": "maths",
+          "chapters": [
+            { "id": 1, "name": "Relations and Functions" },
+            { "id": 2, "name": "Inverse Trigonometry" },
+            { "id": 3, "name": "Matrices" }
+          ]
+        }
+      ]
+    }
+  ]
+}

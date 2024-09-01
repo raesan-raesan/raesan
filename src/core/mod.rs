@@ -1,6 +1,8 @@
 // modules
 pub mod app;
+pub mod database;
+pub mod models;
 
 // constants
-pub const ADDRESS: &str = "0.0.0.0";
+pub const ADDRESS: std::net::Ipv4Addr = std::net::Ipv4Addr::new(0, 0, 0, 0);
 pub const PORT: u16 = 8080;

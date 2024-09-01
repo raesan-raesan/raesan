@@ -1,18 +1,19 @@
-// modules
-pub mod api;
-
 // imports
-use crate::utils;
+use crate::{core, utils};
 use actix_web;
 use askama_actix::Template;
 use katex;
 use mime_guess;
 
-// ----- HomePage template object
+// ----- `HomePage` template object
 #[derive(Template)]
 #[template(path = "routes/index.html")]
 struct HomePage {}
-// ----- TestPage template object
+// ----- `CreateTestPage` template object
+#[derive(Template)]
+#[template(path = "routes/create-test.html")]
+struct CreateTestPage {}
+// ----- `TestPage` template object
 #[derive(Template)]
 #[template(path = "routes/test.html")]
 struct TestPage {
@@ -47,6 +48,17 @@ async fn home_page() -> actix_web::Result<actix_web::HttpResponse> {
     return Ok(actix_web::HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(HomePage {}.render().unwrap()));
+}
+
+// (/create-test) home page route handler
+#[actix_web::get("/create-test")]
+async fn create_test_page(
+    app: actix_web::web::Data<core::app::Application>,
+) -> actix_web::Result<actix_web::HttpResponse> {
+    println!("{:#?}", app.database.classes);
+    return Ok(actix_web::HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(CreateTestPage {}.render().unwrap()));
 }
 
 // (/test) route handler

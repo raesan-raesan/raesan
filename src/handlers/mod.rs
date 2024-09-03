@@ -1,5 +1,5 @@
 // imports
-use crate::{core, utils};
+use crate::{core::app, utils};
 use actix_web;
 use askama_actix::Template;
 use katex;
@@ -12,7 +12,10 @@ struct HomePage {}
 // ----- `CreateTestPage` template object
 #[derive(Template)]
 #[template(path = "routes/create-test.html")]
-struct CreateTestPage {}
+struct CreateTestPage {
+    class_list: Vec<String>,
+    subject_list: Vec<String>,
+}
 // ----- `TestPage` template object
 #[derive(Template)]
 #[template(path = "routes/test.html")]
@@ -36,7 +39,9 @@ async fn static_route(
         },
         None => return Ok(actix_web::HttpResponse::NotFound().body("404 Not Found")),
     };
+
     let file_type = mime_guess::from_path(filepath.to_string()).first_or_octet_stream();
+
     return Ok(actix_web::HttpResponse::Ok()
         .content_type(file_type)
         .body(file_contents));
@@ -45,33 +50,62 @@ async fn static_route(
 // (/) home page route handler
 #[actix_web::get("/")]
 async fn home_page() -> actix_web::Result<actix_web::HttpResponse> {
+    let html = match (HomePage {}.render()) {
+        Ok(safe_html) => safe_html,
+        Err(_) => {
+            return Ok(actix_web::HttpResponse::InternalServerError().body("Something went wrong!"));
+        }
+    };
+
     return Ok(actix_web::HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
-        .body(HomePage {}.render().unwrap()));
+        .body(html));
 }
 
 // (/create-test) home page route handler
 #[actix_web::get("/create-test")]
 async fn create_test_page(
-    app: actix_web::web::Data<core::app::Application>,
+    app: actix_web::web::Data<app::Application>,
 ) -> actix_web::Result<actix_web::HttpResponse> {
-    println!("{:#?}", app.database.classes);
+    let html = match (CreateTestPage {
+        class_list: app.database.get_class_list(),
+        subject_list: app.database.get_subject_list(),
+    }
+    .render())
+    {
+        Ok(safe_html) => safe_html,
+        Err(_) => {
+            return Ok(actix_web::HttpResponse::InternalServerError().body("Something went wrong!"));
+        }
+    };
+
     return Ok(actix_web::HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
-        .body(CreateTestPage {}.render().unwrap()));
+        .body(html));
 }
 
 // (/test) route handler
 #[actix_web::get("/test")]
 async fn test_page() -> actix_web::Result<actix_web::HttpResponse> {
+    let html = match (TestPage {
+        latex_content: katex::render_with_opts(
+            "\\frac{\\pi}{\\oint x^2 dx} \\oint \\frac{\\sin(\\phi)}{\\tan(\\phi - \\theta)} dx",
+            katex::Opts::builder()
+                .output_type(katex::OutputType::Mathml)
+                .build()
+                .unwrap(),
+        )
+        .unwrap(),
+    }
+    .render())
+    {
+        Ok(safe_html) => safe_html,
+        Err(_) => {
+            return Ok(actix_web::HttpResponse::InternalServerError().body("Something went wrong!"));
+        }
+    };
+
     return Ok(actix_web::HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
-        .body(TestPage{
-                latex_content: katex::render_with_opts("\\frac{\\pi}{\\oint x^2 dx} \\oint \\frac{\\sin(\\phi)}{\\tan(\\phi - \\theta)} dx",
-                    katex::Opts::builder()
-                        .output_type(katex::OutputType::Mathml)
-                        .build()
-                        .unwrap(),
-                ).unwrap()
-        }.render().unwrap()));
+        .body(html));
 }

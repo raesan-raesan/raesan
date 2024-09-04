@@ -14,6 +14,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(actix_web::web::Data::new(core::app::Application::new()))
             .service(handlers::static_route) // server static files
             .service(handlers::home_page)
+            .service(handlers::create_test_route)
             .service(handlers::create_test_page)
             .service(handlers::test_page);
     });

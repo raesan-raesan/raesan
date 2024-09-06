@@ -1,18 +1,14 @@
-{% extends "../../base.html" %} {% block page_content %} 
-
-<div class="flex flex-col items-center mt-[60px] gap-[60px] w-full px-3">
-	<ul class="steps max-w-[400px] w-full">
-		<li class="step step-primary">Class</li>
-		<li class="step step-primary">Subjects</li>
-		<li class="step">Chapters</li>
-		<li class="step">Finish</li>
-	</ul>
-	<form class="flex flex-col items-center w-full gap-[20px]">
-	</form>
-	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px]">
-		<a hx-boost="true" href="/create-test/1" class="btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</a>
-		<a hx-boost="true" href="/create-test/3" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</a>
-	</div>
-</div>
-
+{% extends "./base.html" %} 
+{% block stepper_content %} 
+	<li class="step step-primary">Class</li>
+	<li class="step step-primary">Subjects</li>
+	<li class="step">Chapters</li>
+	<li class="step">Format</li>
+	<li class="step">Finish</li>
+{% endblock %}
+{% block form_content %} 
+{% endblock %}
+{% block control_content %} 
+	<a hx-boost="true" href="/create-test/1" class="btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</a>
+	<a hx-boost="true" href="/create-test/3" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</a>
 {% endblock %}

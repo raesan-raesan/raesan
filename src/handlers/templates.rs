@@ -20,6 +20,9 @@ pub struct CreateTestPageStep3 {}
 #[derive(Template)]
 #[template(path = "routes/create-test/4.html")]
 pub struct CreateTestPageStep4 {}
+#[derive(Template)]
+#[template(path = "routes/create-test/5.html")]
+pub struct CreateTestPageStep5 {}
 
 // ----- `TestPage` template object
 #[derive(Template)]

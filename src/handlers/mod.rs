@@ -1,79 +1,111 @@
-// modules
+// models
 pub mod create_test;
 pub mod templates;
 
 // imports
 use crate::utils;
-use actix_web;
 use askama::Template;
-use katex;
+use axum::{self, response::IntoResponse};
 use mime_guess;
 
 // (/static) route handler
-#[actix_web::get("/static/{_:.*}")]
-async fn static_route(
-    filepath: actix_web::web::Path<String>,
-) -> actix_web::Result<actix_web::HttpResponse> {
+pub async fn static_route(
+    axum::extract::Path(filepath): axum::extract::Path<String>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // get static file content
     let file_contents = match utils::get_embedded_file(filepath.to_string()) {
         Some(some_file_contents) => match some_file_contents {
             Ok(safe_file_contents) => safe_file_contents,
             Err(_) => {
-                return Ok(
-                    actix_web::HttpResponse::InternalServerError().body("Internal Server Error!")
-                )
+                return Err((
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    String::from("Internal Server Error"),
+                ))
             }
         },
-        None => return Ok(actix_web::HttpResponse::NotFound().body("404 Not Found")),
+        None => {
+            return Err((
+                axum::http::StatusCode::NOT_FOUND,
+                String::from("404 Not Found!"),
+            ))
+        }
     };
 
     // get the file type
     let file_type = mime_guess::from_path(filepath.to_string()).first_or_octet_stream();
 
-    return Ok(actix_web::HttpResponse::Ok()
-        .content_type(file_type)
-        .body(file_contents));
+    return Ok((
+        [(axum::http::header::CONTENT_TYPE, file_type.to_string())],
+        file_contents,
+    )
+        .into_response());
 }
 
 // (/) home page route handler
-#[actix_web::get("/")]
-async fn home_page() -> actix_web::Result<actix_web::HttpResponse> {
+pub async fn home_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // render HTML struct
     let html = match (templates::HomePage {}.render()) {
         Ok(safe_html) => safe_html,
         Err(_) => {
-            return Ok(actix_web::HttpResponse::InternalServerError().body("Something went wrong!"));
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
         }
     };
 
-    return Ok(actix_web::HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(html));
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
 }
 
 // (/test) route handler
-#[actix_web::get("/test")]
-async fn test_page() -> actix_web::Result<actix_web::HttpResponse> {
-    // render HTML struct
+pub async fn test_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // render HTML struct (PS: this whole thing upto the return, is a single let statement)
     let html = match (templates::TestPage {
-        latex_content: katex::render_with_opts(
+        latex_content: match katex::render_with_opts(
             "\\frac{\\pi}{\\oint x^2 dx} \\oint \\frac{\\sin(\\phi)}{\\tan(\\phi - \\theta)} dx",
-            katex::Opts::builder()
+            match katex::Opts::builder()
                 .output_type(katex::OutputType::Mathml)
                 .build()
-                .unwrap(),
-        )
-        .unwrap(),
+            {
+                Ok(safe_builder_opts) => safe_builder_opts,
+                Err(_) => {
+                    return Err((
+                        axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                        String::from("Failed to build latex builder options"),
+                    ))
+                }
+            },
+        ) {
+            Ok(safe_latex) => safe_latex,
+            Err(_) => {
+                return Err((
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    String::from("Failed to render latex content"),
+                ))
+            }
+        },
     }
     .render())
     {
         Ok(safe_html) => safe_html,
         Err(_) => {
-            return Ok(actix_web::HttpResponse::InternalServerError().body("Something went wrong!"));
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
         }
     };
 
-    return Ok(actix_web::HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(html));
+    return Ok((
+        [(axum::http::header::CONTENT_TYPE, "text/html; charset=utf-8")],
+        html,
+    )
+        .into_response());
 }

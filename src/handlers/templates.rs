@@ -1,4 +1,4 @@
-use askama::Template;
+use askama_axum::Template;
 
 // ----- `HomePage` template object
 #[derive(Template)]

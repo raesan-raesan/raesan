@@ -4,9 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-actix-web = "4.9.0"
+tokio = { version = "1", features = ["full"] }
+axum = "0.7.5"
 askama = "0.12.1"
-askama_actix = "0.14.0"
+askama_axum = "0.4.0"
 katex = "0.4.6"
 rust-embed="8.5.0"
 mime_guess = "2.0.5"

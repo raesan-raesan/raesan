@@ -4,27 +4,63 @@ mod handlers;
 mod utils;
 
 // imports
-use actix_web;
+use axum;
+use std::sync::Arc;
+use tokio;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    // main actix_web server
-    let server = actix_web::HttpServer::new(|| {
-        return actix_web::App::new()
-            .wrap(actix_web::middleware::NormalizePath::default())
-            .app_data(actix_web::web::Data::new(core::app::Application::new()))
-            .service(handlers::static_route) // server static files
-            .service(handlers::home_page)
-            .service(
-                actix_web::web::scope("/create-test")
-                    .service(handlers::create_test::route)
-                    .service(handlers::create_test::page),
-            )
-            .service(handlers::test_page);
-    });
+#[tokio::main]
+async fn main() {
+    // main application router
+    let app_router: axum::Router = axum::Router::new()
+        .route(
+            // static files route
+            "/static/:filepath",
+            axum::routing::get(handlers::static_route),
+        )
+        .route("/", axum::routing::get(handlers::home_page))
+        .route(
+            "/create-test",
+            axum::routing::get(handlers::create_test::route),
+        )
+        .route(
+            "/create-test/:step_number",
+            axum::routing::get(handlers::create_test::page),
+        )
+        .route("/test", axum::routing::get(handlers::test_page))
+        .with_state(Arc::new(match core::app::Application::new() {
+            // supplying the main router with main application state
+            Ok(safe_app) => safe_app,
+            Err(e) => {
+                eprintln!("Failed to create application state object, Error: {:#?}", e);
+                std::process::exit(1);
+            }
+        }));
 
-    println!("Running on {}:{}", core::ADDRESS, core::PORT);
+    // bind a `TcpListener` to an address and port
+    let listener = match tokio::net::TcpListener::bind(
+        core::ADDRESS.to_string() + ":" + core::PORT.to_string().as_str(),
+    )
+    .await
+    {
+        Ok(safe_listener) => safe_listener,
+        Err(e) => {
+            eprintln!("Failed to bind TcpListener to address, Error: {:#?}", e);
+            std::process::exit(1);
+        }
+    };
 
-    // running the server after binding it to the specific address and port
-    return server.bind((core::ADDRESS, core::PORT))?.run().await;
+    // ----- announce the application startup -----
+    println!("running on {}:{}", core::ADDRESS, core::PORT);
+
+    // actually start the server listener
+    match axum::serve(listener, app_router).await {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!(
+                "Failed to start the server listener for the application, Error: {:#?}",
+                e
+            );
+            std::process::exit(1);
+        }
+    };
 }

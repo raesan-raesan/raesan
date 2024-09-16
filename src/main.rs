@@ -23,8 +23,8 @@ async fn main() {
             axum::routing::get(handlers::create_test::route),
         )
         .route(
-            "/create-test/:step_number",
-            axum::routing::get(handlers::create_test::page),
+            "/api/create-test",
+            axum::routing::post(handlers::api::create_test),
         )
         .route("/test", axum::routing::get(handlers::test_page))
         .with_state(Arc::new(match core::app::Application::new() {

@@ -8,6 +8,7 @@ tasks:
     sources:
       - "**/*.rs"
       - "**/*.html"
+      - "**/*.js"
     cmds:
       - cargo run
     status:

@@ -1,0 +1,49 @@
+{% extends "../base.html" %}
+
+{% block page_scripts %}
+<script src="/static/create_test.js"></script>
+{% endblock %}
+
+{% block page_content %} 
+
+<div class="flex flex-col items-center mt-[60px] gap-[60px] w-full px-3">
+	<ul id="step_list" class="steps max-w-[450px] w-full">
+		<li class="step step-accent">Class</li>
+		<li class="step">Subjects</li>
+		<li class="step">Chapters</li>
+		<li class="step">Format</li>
+		<li class="step">Finish</li>
+	</ul>
+	<div id="create_test_input_box" class="w-full">
+		<div class="w-full">
+			<form id="class_input_form"  class="flex flex-col items-center w-full gap-[20px]">
+				{% for class in class_list %}
+					<label class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
+						<span class="label-text">Class {{class}}</span>
+						<input name="{{class}}" type="checkbox" class="checkbox" />
+					</label>
+				{% endfor %}
+			</form>
+		</div>
+		<div class="w-full hidden">
+			<form id="subject_input_form" class="flex flex-col items-center w-full gap-[20px]">
+			</form>
+		</div>
+		<div class="w-full hidden">
+			<form id="chapter_input_form" class="flex flex-col items-center w-full gap-[20px]">
+			</form>
+		</div>
+		<div class="w-full hidden">
+			<form id="format_input_from" class="flex flex-col items-center w-full gap-[20px]">
+			</form>
+		</div>
+		<div class="w-full hidden">
+			<h2 class="text-2xl">Diplay The Whole CreateTestInput here</h2>
+		</div>
+	</div>
+	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px]">
+		<button id="prev_button" hx-on:click="dispatchUpdateStepEvent(false)" class="hidden btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</button>
+		<button id="next_button" hx-on:click="dispatchUpdateStepEvent(true)" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</button>
+	</div>
+</div>
+{% endblock %}

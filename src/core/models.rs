@@ -23,3 +23,19 @@ pub struct Chapter {
     pub id: u32,
     pub name: String,
 }
+
+// ----- `CreateTestInput` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CreateTestInput {
+    pub curr_step: u32,
+    pub classes: Vec<u32>,
+    pub subjects: Vec<String>,
+    pub chapters: Vec<String>,
+    pub format: TestFormatInput,
+}
+
+// ----- `TestFormatInput` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct TestFormatInput {
+    total_questions: u32,
+}

@@ -1,4 +1,5 @@
 // models
+pub mod api;
 pub mod create_test;
 pub mod templates;
 

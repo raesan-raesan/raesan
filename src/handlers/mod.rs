@@ -1,15 +1,15 @@
 // models
 pub mod api;
-pub mod create_test;
 pub mod templates;
 
 // imports
-use crate::utils;
+use crate::{core::app, utils};
 use askama::Template;
 use axum::{self, response::IntoResponse};
 use mime_guess;
+use std::sync::Arc;
 
-// (/static) route handler
+// GET (/static) route handler
 pub async fn static_route(
     axum::extract::Path(filepath): axum::extract::Path<String>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
@@ -17,11 +17,15 @@ pub async fn static_route(
     let file_contents = match utils::get_embedded_file(filepath.to_string()) {
         Some(some_file_contents) => match some_file_contents {
             Ok(safe_file_contents) => safe_file_contents,
-            Err(_) => {
+            Err(e) => {
+                println!(
+                    "Failed to convert file contents into readable string format, Error: {:#?}",
+                    e
+                );
                 return Err((
                     axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                    String::from("Internal Server Error"),
-                ))
+                    String::from("Failed to convert file contents into readable string format"),
+                ));
             }
         },
         None => {
@@ -42,12 +46,13 @@ pub async fn static_route(
         .into_response());
 }
 
-// (/) home page route handler
+// GET (/) home page route handler
 pub async fn home_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // render HTML struct
     let html = match (templates::HomePage {}.render()) {
         Ok(safe_html) => safe_html,
-        Err(_) => {
+        Err(e) => {
+            println!("Failed to render HTML, Error {:#?}", e);
             return Err((
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("Failed to render HTML"),
@@ -65,7 +70,35 @@ pub async fn home_page() -> Result<axum::response::Response, (axum::http::Status
         .into_response());
 }
 
-// (/test) route handler
+// GET (/create-test) route handlers
+pub async fn create_test_route(
+    axum::extract::State(app): axum::extract::State<Arc<app::Application>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    let html = match (templates::CreateTestPage {
+        class_list: app.dataset.get_class_list(),
+    }
+    .render())
+    {
+        Ok(safe_html) => safe_html,
+        Err(e) => {
+            println!("Failed to render HTML, Error: {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
+        }
+    };
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
+}
+
+// GET (/test) route handler
 pub async fn test_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // render HTML struct (PS: this whole thing upto the return, is a single let statement)
     let html = match (templates::TestPage {
@@ -76,27 +109,30 @@ pub async fn test_page() -> Result<axum::response::Response, (axum::http::Status
                 .build()
             {
                 Ok(safe_builder_opts) => safe_builder_opts,
-                Err(_) => {
+                Err(e) => {
+                    println!("Failed to build latex builder options, Error: {:#?}", e);
                     return Err((
                         axum::http::StatusCode::INTERNAL_SERVER_ERROR,
                         String::from("Failed to build latex builder options"),
-                    ))
+                    ));
                 }
             },
         ) {
             Ok(safe_latex) => safe_latex,
-            Err(_) => {
+            Err(e) => {
+                println!("Failed to render latex content, Error: {:#?}", e);
                 return Err((
                     axum::http::StatusCode::INTERNAL_SERVER_ERROR,
                     String::from("Failed to render latex content"),
-                ))
+                ));
             }
         },
     }
     .render())
     {
         Ok(safe_html) => safe_html,
-        Err(_) => {
+        Err(e) => {
+            println!("Failed to render HTML, Error: {:#?}", e);
             return Err((
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("Failed to render HTML"),

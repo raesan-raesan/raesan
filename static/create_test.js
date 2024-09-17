@@ -95,7 +95,7 @@ async function fetchCreateTestInputData() {
 document.addEventListener("updateStepEvent", function (event) {
   if (event.detail.next == true) {
     if (create_test_input.curr_step === 5) {
-      alert("No Can Do!");
+      window.location.href = "/test"; // ----- the `create_test_input` does not reset after this
       return;
     } else {
       create_test_input.curr_step += 1;

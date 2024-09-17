@@ -1,17 +1,17 @@
 //imports
-use crate::core::database;
+use crate::core::dataset;
 
 // ----- `Application` object
 #[derive(Debug, Clone)]
 pub struct Application {
-    pub database: database::Database,
+    pub dataset: dataset::Dataset,
 }
 impl Application {
     pub fn new() -> Result<Application, String> {
-        let database = match database::Database::new() {
+        let dataset = match dataset::Dataset::new() {
             Ok(safe_db) => safe_db,
             Err(e) => return Err(e.to_string()),
         };
-        return Ok(Application { database });
+        return Ok(Application { dataset });
     }
 }

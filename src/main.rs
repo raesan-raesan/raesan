@@ -20,7 +20,7 @@ async fn main() {
         .route("/", axum::routing::get(handlers::home_page))
         .route(
             "/create-test",
-            axum::routing::get(handlers::create_test::route),
+            axum::routing::get(handlers::create_test_route),
         )
         .route(
             "/api/create-test",

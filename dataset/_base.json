@@ -1,30 +1,61 @@
 {
   "classes": [
     {
-      "id": 12,
+      "id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b",
+      "name": 12,
       "subjects": [
         {
+          "id": "59bd4faa-dce6-4086-8115-af352e2cad84",
           "name": "physics",
           "chapters": [
-            { "id": 1, "name": "Electric Charges and Fields" },
-            { "id": 2, "name": "Electrostatic Potential and Capacitance" },
-            { "id": 3, "name": "Current Electricity" }
+            {
+              "id": "28bc2887-144c-49ec-8d5c-516a0657ca0c",
+              "name": "Electric Charges and Fields"
+            },
+            {
+              "id": "b2c66223-90ae-4598-9451-743ce685977e",
+              "name": "Electrostatic Potential and Capacitance"
+            },
+            {
+              "id": "ab18c9db-122f-47f8-be48-73ed738d2621",
+              "name": "Current Electricity"
+            }
           ]
         },
         {
+          "id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2",
           "name": "chemistry",
           "chapters": [
-            { "id": 1, "name": "Solutions" },
-            { "id": 2, "name": "Electrochemistry" },
-            { "id": 3, "name": "Chemical Kinetics" }
+            {
+              "id": "53ade05b-6c47-4045-b76c-0b2ae6efc8e0",
+              "name": "Solutions"
+            },
+            {
+              "id": "6d2655b7-2835-4f2d-bc18-e0067e64b90e",
+              "name": "Electrochemistry"
+            },
+            {
+              "id": "652a175f-e842-45c2-8c99-a020931def80",
+              "name": "Chemical Kinetics"
+            }
           ]
         },
         {
+          "id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e",
           "name": "maths",
           "chapters": [
-            { "id": 1, "name": "Relations and Functions" },
-            { "id": 2, "name": "Inverse Trigonometry" },
-            { "id": 3, "name": "Matrices" }
+            {
+              "id": "211a139c-d0fc-46a7-99b4-7e9c2340e79d",
+              "name": "Relations and Functions"
+            },
+            {
+              "id": "713890b5-4ec6-42f2-804f-5faa93a21fb8",
+              "name": "Inverse Trigonometry"
+            },
+            {
+              "id": "3d52644d-e0a5-42cb-b7d9-34bef17c98e2",
+              "name": "Matrices"
+            }
           ]
         }
       ]

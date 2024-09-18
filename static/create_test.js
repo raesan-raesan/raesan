@@ -1,5 +1,4 @@
-// main input and control variable
-let loading = false;
+// main input
 let create_test_input = {
   curr_step: 1,
   classes: [],
@@ -28,7 +27,7 @@ function updateControlButtons() {
     document.getElementById("prev_button").classList.add("hidden");
   }
 
-  if (create_test_input.curr_step == 5) {
+  if (create_test_input.curr_step === 5) {
     document.getElementById("next_button").innerHTML = "Create Test";
   } else {
     document.getElementById("next_button").innerHTML = "Next";
@@ -63,45 +62,46 @@ function handleStepInputDisplayUpdate() {
 
 // load data into `create_test_input` from DOM
 function loadCreateTestInputData() {
-  create_test_input.classes = Array.from(
-    new FormData(document.getElementById("class_input_form")).entries(),
-  ).map((element) => {
-    return parseInt(element[0]);
-  });
-}
-
-// fetch data into `create_test_input` from server
-async function fetchCreateTestInputData() {
-  try {
-    loading = true;
-    console.log("loading...");
-    const res = await fetch("/api/create-test", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(create_test_input),
-    });
-    create_test_input = await res.json();
-  } catch (error) {
-    console.log("Failed to fetch data from the server, Error:", error);
-  } finally {
-    loading = false;
-    console.log("loaded!");
+  console.log(create_test_input);
+  if (create_test_input.curr_step == 2) {
+    create_test_input.classes = Array.from(
+      document.getElementById("class_input_form").children,
+    )
+      .filter((element) => {
+        return element.children[1].checked;
+      })
+      .map((element) => {
+        return element.id;
+      });
+  }
+  if (create_test_input.curr_step == 3) {
+    create_test_input.subjects = Array.from(
+      document.getElementById("subject_input_form").children,
+    )
+      .filter((element) => {
+        return element.children[1].checked;
+      })
+      .map((element) => {
+        return element.id;
+      });
+  }
+  if (create_test_input.curr_step == 4) {
+  }
+  if (create_test_input.curr_step == 5) {
   }
 }
 
 // listener for `updateStepEvent`
 document.addEventListener("updateStepEvent", function (event) {
-  if (event.detail.next == true) {
+  if (event.detail.next === true) {
     if (create_test_input.curr_step === 5) {
-      window.location.href = "/test"; // ----- the `create_test_input` does not reset after this
+      console.log(create_test_input.chapters);
       return;
     } else {
       create_test_input.curr_step += 1;
     }
   }
-  if (event.detail.next == false) {
+  if (event.detail.next === false) {
     if (create_test_input.curr_step === 1) {
       alert("No Can Do!");
       return;
@@ -110,42 +110,54 @@ document.addEventListener("updateStepEvent", function (event) {
     }
   }
 
-  if (create_test_input.curr_step < 4 && event.detail.next == true) {
-    loadCreateTestInputData();
-    fetchCreateTestInputData();
-  }
-  if (create_test_input.curr_step >= 4 && event.detail.next == true) {
+  if (event.detail.next === true) {
     loadCreateTestInputData();
   }
-
   updateControlButtons();
   updateStepper();
   handleStepInputDisplayUpdate();
 
-  if (create_test_input.curr_step == 2) {
+  if (create_test_input.curr_step === 2) {
     let subject_input_form = document.getElementById("subject_input_form");
-    if (Array.from(subject_input_form.children).length === 0) {
-      create_test_input.subjects.forEach((subject) => {
+    if (event.detail.next === true) {
+      subject_input_form.innerHTML = "";
+    }
+    create_test_input.classes.forEach((class_id) => {
+      let subject_list = dataset.classes.find(
+        (dataset_class) => dataset_class.id === class_id,
+      ).subjects;
+      subject_list.forEach((subject) => {
         subject_input_form.innerHTML += `
-					<label class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
-						<span class="label-text">${subject}</span>
-						<input type="checkbox" class="checkbox" />
+					<label id="${subject.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
+						<span class="label-text">${subject.name}</span>
+						<input name=${subject.name} type="checkbox" class="checkbox" />
 					</label>
 				`;
       });
-    }
+    });
   }
-  if (create_test_input.curr_step == 3) {
+
+  if (create_test_input.curr_step === 3) {
     let chapter_input_form = document.getElementById("chapter_input_form");
-    if (Array.from(chapter_input_form.children).length === 0) {
-      create_test_input.chapters.forEach((chapter) => {
-        chapter_input_form.innerHTML += `
-					<label class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
+    if (event.detail.next === true) {
+      chapter_input_form.innerHTML = "";
+    }
+    create_test_input.classes.forEach((class_id) => {
+      create_test_input.subjects.forEach((subject_id) => {
+        let chapter_list = dataset.classes
+          .find((dataset_class) => dataset_class.id === class_id)
+          .subjects.find(
+            (dataset_subject) => dataset_subject.id === subject_id,
+          ).chapters;
+        chapter_list.forEach((chapter) => {
+          chapter_input_form.innerHTML += `
+					<label id="${chapter.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
 						<span class="label-text">${chapter.name}</span>
-						<input type="checkbox" class="checkbox" />
+						<input name=${chapter.name} type="checkbox" class="checkbox" />
 					</label>
 				`;
+        });
       });
-    }
+    });
   }
 });

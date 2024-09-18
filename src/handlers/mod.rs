@@ -75,7 +75,7 @@ pub async fn create_test_route(
     axum::extract::State(app): axum::extract::State<Arc<app::Application>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     let html = match (templates::CreateTestPage {
-        class_list: app.dataset.get_class_list(),
+        dataset: app.dataset.classes.clone(),
     }
     .render())
     {

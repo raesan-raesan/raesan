@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 axum = "0.7.5"
-askama = "0.12.1"
+askama = {version = "0.12.1", features = ["serde-json"]}
 askama_axum = "0.4.0"
 katex = "0.4.6"
 rust-embed="8.5.0"

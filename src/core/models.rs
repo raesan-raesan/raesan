@@ -9,19 +9,21 @@ pub struct Classes {
 // ----- `Class` model struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Class {
-    pub id: u32,
+    pub id: String,
+    pub name: u32,
     pub subjects: Vec<Subject>,
 }
 // ----- `Subject` model struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Subject {
+    pub id: String,
     pub name: String,
     pub chapters: Vec<Chapter>,
 }
 // ----- `Chapter` model struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Chapter {
-    pub id: u32,
+    pub id: String,
     pub name: String,
 }
 
@@ -38,5 +40,5 @@ pub struct CreateTestInput {
 // ----- `TestFormatInput` struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct TestFormatInput {
-    total_questions: u32,
+    pub total_questions: u32,
 }

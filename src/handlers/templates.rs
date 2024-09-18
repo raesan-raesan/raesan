@@ -1,4 +1,5 @@
 // imports
+use crate::core::models;
 use askama_axum::Template;
 
 // ----- `HomePage` template object
@@ -10,7 +11,7 @@ pub struct HomePage {}
 #[derive(Template)]
 #[template(path = "routes/create-test.html")]
 pub struct CreateTestPage {
-    pub class_list: Vec<String>,
+    pub dataset: models::Classes,
 }
 
 // ----- `TestPage` template object

@@ -1,6 +1,20 @@
 {% extends "../base.html" %}
 
 {% block page_scripts %}
+<script>
+	let dataset = {{dataset|json|safe}};
+	dataset.classes.forEach((dataset_class) => {
+		let class_input_form = document.getElementById("class_input_form");
+		if (Array.from(class_input_form.children).length === 0) {
+			class_input_form.innerHTML += `
+				<label id="${dataset_class.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
+					<span class="label-text">Class ${dataset_class.name}</span>
+					<input name="${dataset_class.name}" type="checkbox" class="checkbox" />
+				</label>
+			`;
+		}
+	})
+</script>
 <script src="/static/create_test.js"></script>
 {% endblock %}
 
@@ -17,12 +31,6 @@
 	<div id="create_test_input_box" class="w-full">
 		<div class="w-full">
 			<form id="class_input_form"  class="flex flex-col items-center w-full gap-[20px]">
-				{% for class in class_list %}
-					<label class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
-						<span class="label-text">Class {{class}}</span>
-						<input name="{{class}}" type="checkbox" class="checkbox" />
-					</label>
-				{% endfor %}
 			</form>
 		</div>
 		<div class="w-full hidden">

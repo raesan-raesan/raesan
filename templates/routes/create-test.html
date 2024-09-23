@@ -42,11 +42,21 @@
 			</form>
 		</div>
 		<div class="w-full hidden">
-			<form id="format_input_from" class="flex flex-col items-center w-full gap-[20px]">
+			<form id="format_input_form" class="flex flex-col items-center w-full gap-[20px]">
+				<label for="total_questions" class="text-2xl">Total Questions</label>
+				<input id="total_questions" name="total_questions" type="range" min="10" max="30" value="15" class="range max-w-[200px]" step="5"/>
+				<div class="flex w-full justify-between px-2 text-xs max-w-[200px]">
+				  <span class="text-lg">10</span>
+				  <span class="text-lg">15</span>
+				  <span class="text-lg">20</span>
+				  <span class="text-lg">25</span>
+				  <span class="text-lg">30</span>
+				</div>
 			</form>
 		</div>
 		<div class="w-full hidden">
-			<h2 class="text-2xl">Diplay The Whole CreateTestInput here</h2>
+			<div id="final_input_display" class="flex flex-col items-center w-full gap-[20px]">
+			</div>
 		</div>
 	</div>
 	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px]">

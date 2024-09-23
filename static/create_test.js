@@ -62,7 +62,6 @@ function handleStepInputDisplayUpdate() {
 
 // load data into `create_test_input` from DOM
 function loadCreateTestInputData() {
-  console.log(create_test_input);
   if (create_test_input.curr_step == 2) {
     create_test_input.classes = Array.from(
       document.getElementById("class_input_form").children,
@@ -86,8 +85,19 @@ function loadCreateTestInputData() {
       });
   }
   if (create_test_input.curr_step == 4) {
+    create_test_input.chapters = Array.from(
+      document.getElementById("chapter_input_form").children,
+    )
+      .filter((element) => {
+        return element.children[1].checked;
+      })
+      .map((element) => {
+        return element.id;
+      });
   }
   if (create_test_input.curr_step == 5) {
+    create_test_input.format.total_questions =
+      document.getElementById("format_input_form").children[1].value;
   }
 }
 
@@ -117,11 +127,9 @@ document.addEventListener("updateStepEvent", function (event) {
   updateStepper();
   handleStepInputDisplayUpdate();
 
-  if (create_test_input.curr_step === 2) {
+  if (create_test_input.curr_step === 2 && event.detail.next === true) {
     let subject_input_form = document.getElementById("subject_input_form");
-    if (event.detail.next === true) {
-      subject_input_form.innerHTML = "";
-    }
+    subject_input_form.innerHTML = "";
     create_test_input.classes.forEach((class_id) => {
       let subject_list = dataset.classes.find(
         (dataset_class) => dataset_class.id === class_id,
@@ -137,11 +145,9 @@ document.addEventListener("updateStepEvent", function (event) {
     });
   }
 
-  if (create_test_input.curr_step === 3) {
+  if (create_test_input.curr_step === 3 && event.detail.next === true) {
     let chapter_input_form = document.getElementById("chapter_input_form");
-    if (event.detail.next === true) {
-      chapter_input_form.innerHTML = "";
-    }
+    chapter_input_form.innerHTML = "";
     create_test_input.classes.forEach((class_id) => {
       create_test_input.subjects.forEach((subject_id) => {
         let chapter_list = dataset.classes
@@ -159,5 +165,14 @@ document.addEventListener("updateStepEvent", function (event) {
         });
       });
     });
+  }
+
+  if (create_test_input.curr_step == 5 && event.detail.next === true) {
+    let final_input_display = document.getElementById("final_input_display");
+    final_input_display.innerHTML += `
+		  <p>Total Questions: ${create_test_input.format.total_questions}</p>	
+		  <p class="text-semibold">Selected Chapters</p>
+	  `;
+    console.log(create_test_input);
   }
 });

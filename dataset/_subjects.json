@@ -1,0 +1,19 @@
+{
+  "subjects": [
+    {
+      "id": "59bd4faa-dce6-4086-8115-af352e2cad84",
+      "name": "physics",
+      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
+    },
+    {
+      "id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2",
+      "name": "chemistry",
+      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
+    },
+    {
+      "id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e",
+      "name": "maths",
+      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
+    }
+  ]
+}

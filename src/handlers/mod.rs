@@ -1,13 +1,15 @@
 // models
-pub mod api;
 pub mod templates;
 
 // imports
-use crate::{core::app, utils};
+use crate::{
+    core::{app, models},
+    utils,
+};
 use askama::Template;
 use axum::{self, response::IntoResponse};
 use mime_guess;
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 // GET (/static) route handler
 pub async fn static_route(
@@ -75,7 +77,9 @@ pub async fn create_test_route(
     axum::extract::State(app): axum::extract::State<Arc<app::Application>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     let html = match (templates::CreateTestPage {
-        dataset: app.dataset.classes.clone(),
+        dataset_classes: app.dataset.classes.clone().classes,
+        dataset_subjects: app.dataset.subjects.clone().subjects,
+        dataset_chapters: app.dataset.chapters.clone().chapters,
     }
     .render())
     {
@@ -99,7 +103,30 @@ pub async fn create_test_route(
 }
 
 // GET (/test) route handler
-pub async fn test_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+pub async fn test_page(
+    axum::extract::Query(query_params): axum::extract::Query<HashMap<String, String>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    let create_test_input: models::CreateTestInput =
+        match serde_json::from_str(match query_params.get("create_test_input") {
+            Some(some_query_param) => some_query_param,
+            None => {
+                return Err((
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    String::from("No Query Params Provided"),
+                ));
+            }
+        }) {
+            Ok(safe_create_test_input) => safe_create_test_input,
+            Err(e) => {
+                println!("Failed to PARSE query parameters, Error: {:#?}", e);
+                return Err((
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    String::from("Failed to PARSE query parameters"),
+                ));
+            }
+        };
+
+    println!("{:#?}", create_test_input);
     // render HTML struct (PS: this whole thing upto the return, is a single let statement)
     let html = match (templates::TestPage {
         latex_content: match katex::render_with_opts(

@@ -2,7 +2,11 @@
 
 {% block page_scripts %}
 <script>
-	let dataset = {{dataset|json|safe}};
+	let dataset = {
+		classes: {{dataset_classes|json|safe}},
+		subjects: {{dataset_subjects|json|safe}},
+		chapters: {{dataset_chapters|json|safe}}
+	};
 	dataset.classes.forEach((dataset_class) => {
 		let class_input_form = document.getElementById("class_input_form");
 		if (Array.from(class_input_form.children).length === 0) {

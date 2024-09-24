@@ -96,8 +96,9 @@ function loadCreateTestInputData() {
       });
   }
   if (create_test_input.curr_step == 5) {
-    create_test_input.format.total_questions =
-      document.getElementById("format_input_form").children[1].value;
+    create_test_input.format.total_questions = parseInt(
+      document.getElementById("format_input_form").children[1].value,
+    );
   }
 }
 
@@ -105,7 +106,7 @@ function loadCreateTestInputData() {
 document.addEventListener("updateStepEvent", function (event) {
   if (event.detail.next === true) {
     if (create_test_input.curr_step === 5) {
-      console.log(create_test_input.chapters);
+      window.location.href = `/test?create_test_input=${encodeURIComponent(JSON.stringify(create_test_input))}`;
       return;
     } else {
       create_test_input.curr_step += 1;
@@ -131,31 +132,30 @@ document.addEventListener("updateStepEvent", function (event) {
     let subject_input_form = document.getElementById("subject_input_form");
     subject_input_form.innerHTML = "";
     create_test_input.classes.forEach((class_id) => {
-      let subject_list = dataset.classes.find(
-        (dataset_class) => dataset_class.id === class_id,
-      ).subjects;
-      subject_list.forEach((subject) => {
-        subject_input_form.innerHTML += `
+      dataset.subjects
+        .filter((dataset_subject) => {
+          return dataset_subject.class_id === class_id;
+        })
+        .forEach((subject) => {
+          subject_input_form.innerHTML += `
 					<label id="${subject.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
 						<span class="label-text">${subject.name}</span>
 						<input name=${subject.name} type="checkbox" class="checkbox" />
 					</label>
 				`;
-      });
+        });
     });
   }
 
   if (create_test_input.curr_step === 3 && event.detail.next === true) {
     let chapter_input_form = document.getElementById("chapter_input_form");
     chapter_input_form.innerHTML = "";
-    create_test_input.classes.forEach((class_id) => {
-      create_test_input.subjects.forEach((subject_id) => {
-        let chapter_list = dataset.classes
-          .find((dataset_class) => dataset_class.id === class_id)
-          .subjects.find(
-            (dataset_subject) => dataset_subject.id === subject_id,
-          ).chapters;
-        chapter_list.forEach((chapter) => {
+    create_test_input.subjects.forEach((subject_id) => {
+      dataset.chapters
+        .filter((dataset_chapter) => {
+          return dataset_chapter.subject_id === subject_id;
+        })
+        .forEach((chapter) => {
           chapter_input_form.innerHTML += `
 					<label id="${chapter.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
 						<span class="label-text">${chapter.name}</span>
@@ -163,7 +163,6 @@ document.addEventListener("updateStepEvent", function (event) {
 					</label>
 				`;
         });
-      });
     });
   }
 
@@ -171,8 +170,18 @@ document.addEventListener("updateStepEvent", function (event) {
     let final_input_display = document.getElementById("final_input_display");
     final_input_display.innerHTML += `
 		  <p>Total Questions: ${create_test_input.format.total_questions}</p>	
-		  <p class="text-semibold">Selected Chapters</p>
+		  <p class="font-semibold text-xl">Selected Chapters</p>
 	  `;
-    console.log(create_test_input);
+    create_test_input.chapters
+      .map((chapter_id) => {
+        return dataset.chapters.find((dataset_chapter) => {
+          return dataset_chapter.id === chapter_id;
+        });
+      })
+      .forEach((chapter) => {
+        final_input_display.innerHTML += `
+		  	<p class="">${chapter.name}</p>
+		  `;
+      });
   }
 });

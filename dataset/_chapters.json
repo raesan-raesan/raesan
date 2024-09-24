@@ -1,0 +1,49 @@
+{
+  "chapters": [
+    {
+      "id": "28bc2887-144c-49ec-8d5c-516a0657ca0c",
+      "name": "Electric Charges and Fields",
+      "subject_id": "59bd4faa-dce6-4086-8115-af352e2cad84"
+    },
+    {
+      "id": "b2c66223-90ae-4598-9451-743ce685977e",
+      "name": "Electrostatic Potential and Capacitance",
+      "subject_id": "59bd4faa-dce6-4086-8115-af352e2cad84"
+    },
+    {
+      "id": "ab18c9db-122f-47f8-be48-73ed738d2621",
+      "name": "Current Electricity",
+      "subject_id": "59bd4faa-dce6-4086-8115-af352e2cad84"
+    },
+    {
+      "id": "53ade05b-6c47-4045-b76c-0b2ae6efc8e0",
+      "name": "Solutions",
+      "subject_id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2"
+    },
+    {
+      "id": "6d2655b7-2835-4f2d-bc18-e0067e64b90e",
+      "name": "Electrochemistry",
+      "subject_id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2"
+    },
+    {
+      "id": "652a175f-e842-45c2-8c99-a020931def80",
+      "name": "Chemical Kinetics",
+      "subject_id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2"
+    },
+    {
+      "id": "211a139c-d0fc-46a7-99b4-7e9c2340e79d",
+      "name": "Relations and Functions",
+      "subject_id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e"
+    },
+    {
+      "id": "713890b5-4ec6-42f2-804f-5faa93a21fb8",
+      "name": "Inverse Trigonometry",
+      "subject_id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e"
+    },
+    {
+      "id": "3d52644d-e0a5-42cb-b7d9-34bef17c98e2",
+      "name": "Matrices",
+      "subject_id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e"
+    }
+  ]
+}

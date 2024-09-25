@@ -22,7 +22,7 @@ async fn main() {
             "/create-test",
             axum::routing::get(handlers::create_test_route),
         )
-        .route("/test", axum::routing::get(handlers::test_page))
+        .route("/test", axum::routing::get(handlers::test_route::route))
         .with_state(Arc::new(match core::app::Application::new() {
             // supplying the main router with main application state
             Ok(safe_app) => safe_app,

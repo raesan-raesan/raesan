@@ -58,12 +58,10 @@
 				</div>
 			</form>
 		</div>
-		<div class="w-full hidden">
-			<div id="final_input_display" class="flex flex-col items-center w-full gap-[20px]">
-			</div>
+		<div class="w-full hidden flex justify-center" id="final_input_display">
 		</div>
 	</div>
-	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px]">
+	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px] mb-[50px]">
 		<button id="prev_button" hx-on:click="dispatchUpdateStepEvent(false)" class="hidden btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</button>
 		<button id="next_button" hx-on:click="dispatchUpdateStepEvent(true)" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</button>
 	</div>

@@ -168,10 +168,22 @@ document.addEventListener("updateStepEvent", function (event) {
 
   if (create_test_input.curr_step == 5 && event.detail.next === true) {
     let final_input_display = document.getElementById("final_input_display");
+    final_input_display.innerHTML = "";
     final_input_display.innerHTML += `
-		  <p>Total Questions: ${create_test_input.format.total_questions}</p>	
-		  <p class="font-semibold text-xl">Selected Chapters</p>
+		<div class="join join-vertical bg-base-200">
+		  <div class="flex gap-[5px] bg-base-200 join-item justify-center pt-2">
+			  <p class="font-semibold">Total Questions: </p>
+			  <p class="underline decoration-accent underline-offset-4">${create_test_input.format.total_questions}</p>
+		  </div>
+		  <div class="collapse collapse-arrow bg-base-200 max-w-[250px] join-item">
+			  <input type="checkbox" />
+			  <div class="collapse-title text-xl font-medium">Selected Chapters</div>
+			  <ul id="final_chapters_list" class="flex flex-col items-left collapse-content list-disc ml-[15px]">
+			  </ul>
+		  </div>
+		</div>
 	  `;
+    let final_chapters_list = document.getElementById("final_chapters_list");
     create_test_input.chapters
       .map((chapter_id) => {
         return dataset.chapters.find((dataset_chapter) => {
@@ -179,8 +191,8 @@ document.addEventListener("updateStepEvent", function (event) {
         });
       })
       .forEach((chapter) => {
-        final_input_display.innerHTML += `
-		  	<p class="">${chapter.name}</p>
+        final_chapters_list.innerHTML += `
+		  	<li class="">${chapter.name}</li>
 		  `;
       });
   }

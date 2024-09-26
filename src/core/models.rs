@@ -52,3 +52,30 @@ pub struct CreateTestInput {
 pub struct TestFormatInput {
     pub total_questions: u32,
 }
+
+// ----- `ChapterJSON` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChapterJSON {
+    pub id: String,
+    pub name: String,
+    pub questions: Vec<Question>,
+}
+
+// ----- `Question` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Question {
+    pub id: String,
+    pub chapter_id: String,
+    pub body: String,
+    pub kind: String,
+    pub answer: String,
+    pub solution: String,
+}
+
+// ----- `Test` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Test {
+    pub id: String,
+    pub total_questions: u32,
+    pub questions: Vec<Question>,
+}

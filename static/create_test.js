@@ -106,7 +106,27 @@ function loadCreateTestInputData() {
 document.addEventListener("updateStepEvent", function (event) {
   if (event.detail.next === true) {
     if (create_test_input.curr_step === 5) {
-      window.location.href = `/test?create_test_input=${encodeURIComponent(JSON.stringify(create_test_input))}`;
+      // POST request to the server
+      fetch("/api/create-test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(create_test_input),
+      })
+        .then((response) => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            console.log(response);
+          }
+        })
+        .cathc((error) => {
+          console.error(
+            "Failed to make a request to the Server, Error:",
+            error,
+          );
+        });
       return;
     } else {
       create_test_input.curr_step += 1;

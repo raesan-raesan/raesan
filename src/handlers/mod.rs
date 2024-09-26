@@ -1,4 +1,5 @@
 // models
+pub mod api;
 pub mod templates;
 pub mod test_route;
 
@@ -71,7 +72,7 @@ pub async fn home_page() -> Result<axum::response::Response, (axum::http::Status
 }
 
 // GET (/create-test) route handlers
-pub async fn create_test_route(
+pub async fn create_test_page(
     axum::extract::State(app): axum::extract::State<Arc<app::Application>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     let html = match (templates::CreateTestPage {

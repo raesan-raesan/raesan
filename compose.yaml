@@ -1,8 +1,8 @@
-name: raetest
+name: raesan
 
 services:
-  raetest:
-    container_name: raetest
+  raesan:
+    container_name: raesan
     build:
       context: .
       dockerfile: dev.dockerfile

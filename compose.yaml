@@ -8,6 +8,8 @@ services:
       dockerfile: dev.dockerfile
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - /usr/src/app/raesan/node_modules
+      - /usr/src/app/raesan-dbm/node_modules
+      - /usr/src/app/target
     ports:
       - "8080:8080"

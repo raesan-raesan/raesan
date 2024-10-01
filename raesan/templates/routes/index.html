@@ -1,0 +1,14 @@
+{% extends "../base.html" %} {% block page_content %}
+
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5">
+	<a class="btn btn-primary" hx-boost=true href="/create-test">
+		<span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+		Create Test
+	</a>
+</div>
+
+<div class="w-full flex flex-col items-center mt-[120px]">
+	<h2 class="text-2xl">Your Tests</h2>
+</div>
+
+{% endblock %}

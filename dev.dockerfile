@@ -17,12 +17,14 @@ RUN bash -c 'source ~/.asdf/asdf.sh && \
     cat /root/.tool-versions | awk "{print \$1}" | xargs -I {} asdf plugin add {} && \
     asdf install'
 RUN bash -c 'sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin'
+RUN bash -c "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/diesel-rs/diesel/releases/latest/download/diesel_cli-installer.sh | sh"
 
 WORKDIR /usr/src/app
 
 COPY . .
 
-RUN /root/.asdf/shims/cargo build
-RUN /root/.asdf/shims/bun install --yarn
+RUN /root/.asdf/shims/cargo build --workspace
+
+RUN cd ./raesan && /root/.asdf/shims/bun install --yarn && cd ../raesan-dbm && /root/.asdf/shims/bun install --yarn
 
 CMD ["tail", "-f", "/dev/null"]

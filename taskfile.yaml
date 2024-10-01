@@ -3,17 +3,35 @@ version: "3"
 interval: 500ms
 
 tasks:
-  dev-app:
+  raesan:
     watch: true
     sources:
-      - "**/*.rs"
-      - "**/*.html"
-      - "**/*.js"
+      - "raesan/**/*.rs"
+      - "raesan/**/*.html"
+      - "raesan/**/*.js"
     cmds:
-      - cargo run
+      - cargo run -p raesan
     status:
       - "exit 1"
     cleanup:
-      - rm -rf .task
-  dev-tw:
-    - bun tailwindcss -i ./tailwind.css -o ./static/style.css --minify --watch
+      - rm -rf .task/checksum/raesan
+  raesan-dbm:
+    watch: true
+    sources:
+      - "raesan-dbm/**/*.rs"
+      - "raesan-dbm/**/*.html"
+      - "raesan-dbm/**/*.js"
+    cmds:
+      - cargo run -p raesan-dbm
+    status:
+      - "exit 1"
+    cleanup:
+      - rm -rf .task/checksum/raesan-dbm
+  raesan-tw:
+    dir: raesan
+    cmds:
+      - bun tailwindcss -i ./tailwind.css -o ./static/style.css --minify --watch
+  raesan-dbm-tw:
+    dir: raesan-dbm
+    cmds:
+      - bun tailwindcss -i ./tailwind.css -o ./static/style.css --minify --watch

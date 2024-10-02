@@ -1,15 +1,20 @@
 [package]
 name = "raesan-dbm"
 version = "0.1.0"
+description = "Used to manage Raesan database"
 edition = "2021"
 
 [dependencies]
+raesan-common = { path="../raesan-common" }
 tokio = { version = "1", features = ["full"] }
 axum = "0.7.5"
-askama = {version = "0.12.1", features = ["serde-json"]}
+askama = { version = "0.12.1", features = ["serde-json"] }
 askama_axum = "0.4.0"
 rust-embed="8.5.0"
 mime_guess = "2.0.5"
 serde = { version = "1.0.170", features = ["derive"] }
 serde_json = "1.0.84"
 katex = "0.4.6"
+diesel = { version = "2.2.4", features = ["sqlite", "returning_clauses_for_sqlite_3_35"] }
+dotenvy = "0.15.7"
+clap = { version = "4.5.19", features = ["derive"] }

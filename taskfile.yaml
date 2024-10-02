@@ -10,7 +10,7 @@ tasks:
       - "raesan/**/*.html"
       - "raesan/**/*.js"
     cmds:
-      - cargo run -p raesan
+      - cargo run -p raesan {{.CLI_ARGS}}
     status:
       - "exit 1"
     cleanup:
@@ -22,7 +22,7 @@ tasks:
       - "raesan-dbm/**/*.html"
       - "raesan-dbm/**/*.js"
     cmds:
-      - cargo run -p raesan-dbm
+      - cargo run -p raesan-dbm {{.CLI_ARGS}}
     status:
       - "exit 1"
     cleanup:

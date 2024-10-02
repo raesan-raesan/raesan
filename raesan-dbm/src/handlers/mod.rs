@@ -1,14 +1,11 @@
 // models
-pub mod api;
 pub mod templates;
-pub mod test_route;
 
 // imports
-use crate::{core::app, utils};
+use crate::utils;
 use askama::Template;
 use axum::{self, response::IntoResponse};
 use mime_guess;
-use std::sync::Arc;
 
 // GET (/static) route handler
 pub async fn static_route(
@@ -61,36 +58,6 @@ pub async fn home_page() -> Result<axum::response::Response, (axum::http::Status
         }
     };
 
-    return Ok((
-        [(
-            axum::http::header::CONTENT_TYPE,
-            String::from("text/html; charset=utf-8"),
-        )],
-        html,
-    )
-        .into_response());
-}
-
-// GET (/create-test) route handlers
-pub async fn create_test_page(
-    axum::extract::State(app): axum::extract::State<Arc<app::Application>>,
-) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    let html = match (templates::CreateTestPage {
-        dataset_classes: app.dataset.classes.clone().classes,
-        dataset_subjects: app.dataset.subjects.clone().subjects,
-        dataset_chapters: app.dataset.chapters.clone().chapters,
-    }
-    .render())
-    {
-        Ok(safe_html) => safe_html,
-        Err(e) => {
-            println!("Failed to render HTML, Error: {:#?}", e);
-            return Err((
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("Failed to render HTML"),
-            ));
-        }
-    };
     return Ok((
         [(
             axum::http::header::CONTENT_TYPE,

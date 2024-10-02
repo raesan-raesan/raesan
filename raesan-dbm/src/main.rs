@@ -5,12 +5,41 @@ mod utils;
 
 // imports
 use axum;
-use std::sync::Arc;
+use clap::Parser;
+use dotenvy::dotenv;
+use std::{env, fs, sync::Arc};
 use tokio;
+
+#[derive(Parser, Debug)]
+#[command(version,about,long_about = None)]
+struct Args {
+    database_url: Option<String>,
+}
 
 #[tokio::main]
 async fn main() {
-    // main application router
+    dotenv().ok();
+
+    let mut database_url: Option<String> = None;
+    let args = Args::parse();
+    if let Some(url) = args.database_url.as_deref() {
+        // command line argument input
+        database_url = Some(url.to_string());
+    } else if let Ok(url) = env::var(core::DATABASE_URL_ENV_VAR) {
+        // environment variable input
+        database_url = Some(url.to_string());
+    } else if let Ok(_) = fs::metadata(core::DATABASE_URL) {
+        // .db in current directory
+        database_url = Some(core::DATABASE_URL.to_string())
+    }
+
+    if database_url == None {
+        println!(
+            "Error: {:#?}",
+            "No input .db file provided in CLI Arguments, ENV variables or current directory!"
+        );
+    }
+
     let app_router: axum::Router = axum::Router::new()
         .route(
             // static files route
@@ -18,18 +47,6 @@ async fn main() {
             axum::routing::get(handlers::static_route),
         )
         .route("/", axum::routing::get(handlers::home_page))
-        .route(
-            "/create-test",
-            axum::routing::get(handlers::create_test_page),
-        )
-        .route(
-            "/api/create-test",
-            axum::routing::post(handlers::api::create_test_route),
-        )
-        .route(
-            "/test/:test_id",
-            axum::routing::get(handlers::test_route::route),
-        )
         .with_state(Arc::new(match core::app::Application::new() {
             // supplying the main router with main application state
             Ok(safe_app) => safe_app,

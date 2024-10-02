@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
-members = [
-    "raesan",
+members = [ 
+    "raesan", 
+	"raesan-common",
     "raesan-dbm"
 ]

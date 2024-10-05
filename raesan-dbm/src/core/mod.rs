@@ -1,6 +1,6 @@
 // modules
 pub mod app;
-pub mod dataset;
+pub mod database;
 pub mod models;
 
 // constants

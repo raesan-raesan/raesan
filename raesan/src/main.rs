@@ -5,11 +5,20 @@ mod utils;
 
 // imports
 use axum;
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 use tokio;
 
 #[tokio::main]
 async fn main() {
+    // application state for the main router
+    let app_state = Arc::new(RwLock::new(match core::app::Application::new() {
+        Ok(safe_app) => safe_app,
+        Err(e) => {
+            eprintln!("Failed to create application state object, Error: {:#?}", e);
+            std::process::exit(1);
+        }
+    }));
+
     // main application router
     let app_router: axum::Router = axum::Router::new()
         .route(
@@ -30,14 +39,7 @@ async fn main() {
             "/test/:test_id",
             axum::routing::get(handlers::test_route::route),
         )
-        .with_state(Arc::new(match core::app::Application::new() {
-            // supplying the main router with main application state
-            Ok(safe_app) => safe_app,
-            Err(e) => {
-                eprintln!("Failed to create application state object, Error: {:#?}", e);
-                std::process::exit(1);
-            }
-        }));
+        .with_state(app_state);
 
     // bind a `TcpListener` to an address and port
     let listener = match tokio::net::TcpListener::bind(

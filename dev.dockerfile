@@ -4,7 +4,7 @@ ENV PATH="~/.local/bin:$PATH"
 ENV TMUX_CONF="/usr/src/app/.tmux.conf"
 
 RUN apt-get update && apt-get install -y \
-    curl git gnupg unzip build-essential tmux \
+    curl git gnupg unzip build-essential tmux psmisc \
     libssl-dev libreadline-dev zlib1g-dev libsqlite3-dev libbz2-dev libffi-dev liblzma-dev
 
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1

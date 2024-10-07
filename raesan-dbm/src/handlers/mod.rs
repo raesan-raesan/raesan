@@ -1,4 +1,5 @@
 // models
+pub mod api;
 pub mod templates;
 
 // imports
@@ -48,7 +49,12 @@ pub async fn static_route(
 }
 
 // GET (/) home page route handler
-pub async fn home_page(
+pub async fn home_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    return Ok(axum::response::Redirect::to("/class").into_response());
+}
+
+// GET(/class) page route handler
+pub async fn class_page(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // database connection
@@ -83,7 +89,177 @@ pub async fn home_page(
     println!("Classes: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::HomePage {}.render()) {
+    let html = match (templates::ClassPage {}.render()) {
+        Ok(safe_html) => safe_html,
+        Err(e) => {
+            println!("Failed to render HTML, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
+        }
+    };
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
+}
+
+// GET(/subject) page route handler
+pub async fn subject_page(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let results = raesan_common::schema::subject::dsl::subject
+        .select(core::models::Subject::as_select())
+        .load(&mut conn)
+        .expect("Error loading subjects");
+    println!("Subjects: {:#?}", results);
+
+    // render HTML struct
+    let html = match (templates::SubjectPage {}.render()) {
+        Ok(safe_html) => safe_html,
+        Err(e) => {
+            println!("Failed to render HTML, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
+        }
+    };
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
+}
+
+// GET(/chapter) page route handler
+pub async fn chapter_page(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let results = raesan_common::schema::chapter::dsl::chapter
+        .select(core::models::Chapter::as_select())
+        .load(&mut conn)
+        .expect("Error loading chapters");
+    println!("Chapters: {:#?}", results);
+
+    // render HTML struct
+    let html = match (templates::ChapterPage {}.render()) {
+        Ok(safe_html) => safe_html,
+        Err(e) => {
+            println!("Failed to render HTML, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
+        }
+    };
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
+}
+
+pub async fn question_page(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let results = raesan_common::schema::question::dsl::question
+        .select(core::models::Question::as_select())
+        .load(&mut conn)
+        .expect("Error loading questions");
+    println!("Questions: {:#?}", results);
+
+    // render HTML struct
+    let html = match (templates::QuestionPage {}.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);

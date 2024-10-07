@@ -29,6 +29,26 @@ async fn main() {
             axum::routing::get(handlers::static_route),
         )
         .route("/", axum::routing::get(handlers::home_page))
+        .route("/class", axum::routing::get(handlers::class_page))
+        .route("/subject", axum::routing::get(handlers::subject_page))
+        .route("/chapter", axum::routing::get(handlers::chapter_page))
+        .route("/question", axum::routing::get(handlers::question_page))
+        .route(
+            "/api/class",
+            axum::routing::post(handlers::api::create_class_route),
+        )
+        .route(
+            "/api/subject",
+            axum::routing::post(handlers::api::create_subject_route),
+        )
+        .route(
+            "/api/chapter",
+            axum::routing::post(handlers::api::create_chapter_route),
+        )
+        .route(
+            "/api/question",
+            axum::routing::post(handlers::api::create_question_route),
+        )
         .with_state(app_state);
 
     // bind a `TcpListener` to an address and port

@@ -21,6 +21,17 @@ async fn main() {
         }
     }));
 
+    match utils::generate_database_records_for_testing(app_state.clone()) {
+        Ok(_) => {}
+        Err(e) => {
+            eprint!(
+                "Failed to generate temporary database records for testing, Error: {:#?}",
+                e.to_string()
+            );
+            std::process::exit(1);
+        }
+    };
+
     // main application router
     let app_router: axum::Router = axum::Router::new()
         .route(

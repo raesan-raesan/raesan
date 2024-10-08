@@ -28,6 +28,7 @@ diesel::table! {
         id -> Text,
         name -> Text,
         class_id -> Text,
+        class_name -> Integer,
     }
 }
 

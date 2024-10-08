@@ -7,6 +7,7 @@ CREATE TABLE subject(
 	id TEXT PRIMARY KEY NOT NULL,
 	name TEXT NOT NULL,
 	class_id TEXT NOT NULL,
+	class_name INTEGER NOT NULL,
 	FOREIGN KEY  (class_id) REFERENCES class(id) ON DELETE CASCADE
 );
 

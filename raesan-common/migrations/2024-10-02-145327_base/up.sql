@@ -15,6 +15,8 @@ CREATE TABLE chapter(
 	id TEXT PRIMARY KEY NOT NULL,
 	name TEXT NOT NULL,
 	subject_id TEXT NOT NULL,
+	subject_name TEXT NOT NULL,
+	class_name INTEGER NOT NULL,
 	FOREIGN KEY  (subject_id) REFERENCES subject(id) ON DELETE CASCADE
 );
 

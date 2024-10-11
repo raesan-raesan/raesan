@@ -5,6 +5,8 @@ diesel::table! {
         id -> Text,
         name -> Text,
         subject_id -> Text,
+        subject_name -> Text,
+        class_name -> Integer,
     }
 }
 

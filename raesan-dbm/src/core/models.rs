@@ -52,6 +52,8 @@ pub struct Chapter {
     pub id: String,
     pub name: String,
     pub subject_id: String,
+    pub subject_name: String,
+    pub class_name: i32,
 }
 
 // ----- `Question` model struct

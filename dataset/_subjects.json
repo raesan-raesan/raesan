@@ -1,76 +1,86 @@
-{
-  "subjects": [
-    {
-      "id": "cc6d66b3-45b9-4c5e-8734-fd831cd6d835",
-      "class_name": 11,
-      "name": "Physics",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "db2028ba-cf38-45a5-b798-d482ac182fae",
-      "class_name": 11,
-      "name": "Chemistry",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "e982aba0-5b62-483f-bcf5-1a5b45f4ab38",
-      "class_name": 11,
-      "name": "Maths",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "fa90baec-716b-44d2-803f-3e0d8917850c",
-      "class_name": 11,
-      "name": "Biology",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "e3bc77f4-55d1-4cf8-82f6-6c7e5f73f0ed",
-      "class_name": 11,
-      "name": "English",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "b76852a5-9369-48a9-b2b7-5f3d602e44ed",
-      "class_name": 11,
-      "name": "Physical Education",
-      "class_id": "66ec31f6-f4cd-4266-8e3d-bdca3f164050"
-    },
-    {
-      "id": "59bd4faa-dce6-4086-8115-af352e2cad84",
-      "class_name": 12,
-      "name": "Physics",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    },
-    {
-      "id": "aac140f2-be97-431a-a9b3-b8e3bf22bea2",
-      "class_name": 12,
-      "name": "Chemistry",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    },
-    {
-      "id": "674ab93e-c05e-4b55-b7da-c6a1afd18f3e",
-      "class_name": 12,
-      "name": "Maths",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    },
-    {
-      "id": "a6c5f77b-c5a0-44c1-85d2-6d5dc5b27f85",
-      "class_name": 12,
-      "name": "Biology",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    },
-    {
-      "id": "2f0f1b70-7ae1-4213-897d-47b728c69164",
-      "class_name": 12,
-      "name": "English",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    },
-    {
-      "id": "8171a0a8-8ed9-42a4-80c3-b5f3c788912a",
-      "class_name": 12,
-      "name": "Physical Education",
-      "class_id": "e9d1d7b5-307b-48ac-9220-d91f3d4fa96b"
-    }
-  ]
-}
+[
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Physics",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Chemistry",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Maths",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Biology",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "English",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Physical Education",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 11,
+    "name": "Computer Science",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Physics",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Chemistry",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Maths",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Biology",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "English",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Physical Education",
+    "class_id": ""
+  },
+  {
+    "id": "",
+    "class_name": 12,
+    "name": "Computer Science",
+    "class_id": ""
+  }
+]

@@ -199,7 +199,7 @@ pub async fn chapter_page(
     let results = raesan_common::schema::chapter::dsl::chapter
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
-        .expect("Error loading chapters");
+        .unwrap();
     println!("Chapters: {:#?}", results);
 
     // render HTML struct

@@ -54,7 +54,15 @@ async fn main() {
         )
         .route(
             "/api/chapter",
+            axum::routing::get(handlers::api::get_chapter_route),
+        )
+        .route(
+            "/api/chapter",
             axum::routing::post(handlers::api::create_chapter_route),
+        )
+        .route(
+            "/api/question",
+            axum::routing::get(handlers::api::get_question_handler),
         )
         .route(
             "/api/question",

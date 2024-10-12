@@ -7,12 +7,78 @@
 			document.getElementById("create_chapter_modal").close();
 		}
 	});
+
+	let curr_page = 1;
+
+	// Function to fetch and append new data
+	function fetchAndAppendData() {
+		let chapter_table_body = document.getElementById("chapter_table_body");
+		curr_page += 1;
+
+		fetch(`/api/chapter?page=${curr_page}`, { method: "GET" })
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then((data) => {
+				if (data.length === 0) {
+					// If no more data, stop observing
+					observer.disconnect();
+					return;
+				}
+
+				// Append the new data to the table body
+				data.forEach((element) => {
+					chapter_table_body.innerHTML += `
+					<tr>
+						<td>${element.id}</td>
+						<td>${element.name}</td>
+						<td>${element.subject_name}</td>
+						<td>${element.class_name}</td>
+					</tr>
+					`;
+				});
+
+				// Update the observer to observe the new last element
+				const newLastElement = chapter_table_body.lastElementChild;
+				if (newLastElement) {
+					observer.observe(newLastElement);
+				}
+			})
+			.catch((err) => {
+				console.error('Failed to fetch data:', err);
+			});
+	}
+
+	// IntersectionObserver to load more data when the last element is visible
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				// Stop observing the current element
+				observer.unobserve(entry.target);
+				// Fetch and append new data
+				fetchAndAppendData();
+			}
+		});
+	}, {
+		threshold: 0.1 // when at least 10% of the element is visible
+	});
+
+	// Start observing when the page loads
+	document.addEventListener("DOMContentLoaded", () => {
+		const initialLastElement = document.getElementById("chapter_table_body").lastElementChild;
+		if (initialLastElement) {
+			observer.observe(initialLastElement);
+		}
+	});
 </script>
 {% endblock %}
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
   <button class="btn btn-primary" onclick="create_chapter_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
     Create Chapter
@@ -37,8 +103,30 @@
   </form>
 </dialog>
 
-<div class="w-full flex flex-col items-center mt-[120px]">
-  <h2 class="text-2xl">Chapters</h2>
+<div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
+	<h2 class="text-2xl">Chapters</h2>
+	<div class="overflow-x-auto">
+		<table class="table table-lg bg-base-200 mb-[150px]">
+			<thead>
+				<tr class="bg-base-300">
+					<th>ID</th>
+					<th>Name</th>
+					<th>Subject</th>
+					<th>Class</th>
+				</tr>
+			</thead>
+			<tbody id="chapter_table_body">
+				{% for chapter in chapters %}
+				<tr>
+					<td>{{ chapter.id }}</td>
+					<td>{{ chapter.name }}</td>
+					<td>{{ chapter.subject_name }}</td>
+					<td>{{ chapter.class_name }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 {% endblock %}

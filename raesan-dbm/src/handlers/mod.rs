@@ -83,13 +83,13 @@ pub async fn class_page(
     };
 
     let results = raesan_common::schema::class::dsl::class
+        .limit(core::PAGE_SIZE.into())
         .select(core::models::Class::as_select())
         .load(&mut conn)
         .expect("Error loading classes");
-    println!("Classes: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::ClassPage {}.render()) {
+    let html = match (templates::ClassPage { classes: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -140,13 +140,13 @@ pub async fn subject_page(
     };
 
     let results = raesan_common::schema::subject::dsl::subject
+        .limit(core::PAGE_SIZE.into())
         .select(core::models::Subject::as_select())
         .load(&mut conn)
         .expect("Error loading subjects");
-    println!("Subjects: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::SubjectPage {}.render()) {
+    let html = match (templates::SubjectPage { subjects: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -197,13 +197,13 @@ pub async fn chapter_page(
     };
 
     let results = raesan_common::schema::chapter::dsl::chapter
+        .limit(core::PAGE_SIZE.into())
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
         .unwrap();
-    println!("Chapters: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::ChapterPage {}.render()) {
+    let html = match (templates::ChapterPage { chapters: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -253,13 +253,13 @@ pub async fn question_page(
     };
 
     let results = raesan_common::schema::question::dsl::question
+        .limit(core::PAGE_SIZE.into())
         .select(core::models::Question::as_select())
         .load(&mut conn)
         .expect("Error loading questions");
-    println!("Questions: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::QuestionPage {}.render()) {
+    let html = match (templates::QuestionPage { questions: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);

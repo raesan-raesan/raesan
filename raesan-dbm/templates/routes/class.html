@@ -12,7 +12,7 @@
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
   <button class="btn btn-primary" onclick="create_class_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
     Create Class
@@ -37,8 +37,26 @@
   </form>
 </dialog>
 
-<div class="w-full flex flex-col items-center mt-[120px]">
-  <h2 class="text-2xl">Classes</h2>
+<div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
+	<h2 class="text-2xl">Classses</h2>
+	<div class="overflow-x-auto">
+		<table class="table table-lg bg-base-200 mb-[150px]">
+			<thead>
+				<tr class="bg-base-300">
+					<th>ID</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody id="class_table_body">
+				{% for class in classes %}
+				<tr>
+					<td>{{ class.id }}</td>
+					<td>{{ class.name }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 {% endblock %}

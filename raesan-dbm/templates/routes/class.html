@@ -2,20 +2,75 @@
 
 {% block page_scripts %}
 <script>
-	document.addEventListener("htmx:afterRequest", (event) => {
-		if (event.detail.successful && document.getElementById("create_class_modal")){
-			document.getElementById("create_class_modal").close();
+	// handle create_class_form submition
+	const handleCreateClassFormSubmit = () => {
+		let create_class_form = document.getElementById("create_class_form");
+		if (create_class_form.elements["name"].value.trim() === "" && create_class_form.elements["name"].value.trim().length === 0){
+			alert("Atleast enter something!");
+		}else{
+			fetch("/api/class",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					id: "",
+					name: parseInt(create_class_form.elements["name"].value),
+				})
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_class_modal")){
+					document.getElementById("create_class_modal").close();
+					document.getElementById("class_table_body").innerHTML += `
+					<tr id="${data.id}">
+						<td>${data.id}</td>
+						<td>${data.name}</td>
+						<th>
+							<button 
+								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								hx-on:click="deleteClass('${data.id}','${data.id}')"
+							></button>
+						</th>
+					</tr>
+				`;
+				}
+			});
 		}
-	});
+	};
+
+	// delete class handler
+	const deleteClass = (class_id,class_name) => {
+		let choice = confirm(`WARNING! Do you want to delete 'Class ${class_name}'`)
+		if (choice == true){
+			fetch(`/api/class/${class_id}`,{
+				method: "DELETE"
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.text();
+			}).then((data) => {
+				document.getElementById(class_id).remove();
+			});
+		}
+	}
 </script>
 {% endblock %}
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
-  <button class="btn btn-primary" onclick="create_class_modal.showModal()">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
+  <button class="join-item btn btn-primary" onclick="create_class_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Create Class
+    Single
+  </button>
+  <button class="join-item btn btn-primary" onclick="create_class_from_json_modal.showModal()">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+	JSON
   </button>
 </div>
 
@@ -26,10 +81,24 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Class</h3>
-		  <form id="create_class_form" hx-post="/api/class" hx-swap="none" class="flex flex-col items-center gap-[12px] w-full">
-			  <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
+		  <form id="create_class_form" class="flex flex-col items-center gap-[12px] w-full">
+			  <input type="number" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button type="submit" form="create_class_form" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
+		  <button hx-on:click="handleCreateClassFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
+	  </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<dialog id="create_class_from_json_modal" class="modal">
+  <div class="modal-box">
+	  <form method="dialog">
+		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	  </form>
+	  <div class="flex flex-col items-center gap-[25px] w-full">
+		  <h3 class="text-lg font-bold">Create Classes From JSON</h3>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -45,13 +114,20 @@
 				<tr class="bg-base-300">
 					<th>ID</th>
 					<th>Name</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="class_table_body">
 				{% for class in classes %}
-				<tr>
+				<tr id="{{ class.id }}">
 					<td>{{ class.id }}</td>
 					<td>{{ class.name }}</td>
+					<th>
+						<button 
+							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+							hx-on:click="deleteClass('{{ class.id }}','{{ class.name }}')"
+						></button>
+					</th>
 				</tr>
 				{% endfor %}
 			</tbody>

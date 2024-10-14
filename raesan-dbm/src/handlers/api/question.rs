@@ -1,0 +1,179 @@
+// imports
+use crate::core;
+use axum::{self, response::IntoResponse};
+use diesel::prelude::*;
+use raesan_common::schema;
+use std::{
+    collections::HashMap,
+    sync::{Arc, RwLock},
+};
+
+// GET (/api/question) route handler
+pub async fn get_question_handler(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Query(query): axum::extract::Query<HashMap<String, u64>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // offset
+    let offset = (match query.get("page") {
+        Some(page_value) => {
+            if *page_value == 0 {
+                println!("Invalid query parameters");
+                return Err((
+                    axum::http::StatusCode::BAD_REQUEST,
+                    String::from("Invalid query parameters"),
+                ));
+            } else {
+                page_value
+            }
+        }
+        None => {
+            println!("Invalid query parameters");
+            return Err((
+                axum::http::StatusCode::BAD_REQUEST,
+                String::from("Invalid query parameters"),
+            ));
+        }
+    } - 1)
+        * core::PAGE_SIZE as u64;
+
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let results: Vec<core::models::Question> = raesan_common::schema::question::dsl::question
+        .limit(core::PAGE_SIZE.into())
+        .offset(offset as i64)
+        .load(&mut conn)
+        .unwrap();
+
+    return Ok(axum::Json(results).into_response());
+}
+
+// POST (/api/question) route handler
+pub async fn create_question_route(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Json(json): axum::extract::Json<core::models::Question>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    let mut input_data = json.clone();
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    input_data.id = uuid::Uuid::new_v4().to_string();
+    let results: core::models::Question = diesel::insert_into(schema::question::dsl::question)
+        .values(input_data)
+        .get_result(&mut conn)
+        .unwrap();
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        axum::Json(results),
+    )
+        .into_response());
+}
+
+// DELETE (/api/question/:question_id) route handler
+pub async fn delete_question_route(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Path(question_id): axum::extract::Path<String>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    // delete the question
+    diesel::delete(
+        schema::question::dsl::question.filter(schema::question::dsl::id.eq(question_id)),
+    )
+    .execute(&mut conn)
+    .unwrap();
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        String::from("DELETE QUESTION"),
+    )
+        .into_response());
+}
+
+// POST (/api/question/json) route handler
+pub async fn json_to_question_route(
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    println!("CREATE QUESTION FROM JSON");
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        String::from("CREATE QUESTION FROM JSON"),
+    )
+        .into_response());
+}

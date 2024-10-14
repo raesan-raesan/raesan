@@ -2,14 +2,74 @@
 
 {% block page_scripts %}
 <script>
-	document.addEventListener("htmx:afterRequest", (event) => {
-		if (event.detail.successful && document.getElementById("create_chapter_modal")){
-			document.getElementById("create_chapter_modal").close();
+	// handle create_chapter_form submition
+	const handleCreateChapterFormSubmit = () => {
+		let create_chapter_form = document.getElementById("create_chapter_form");
+		if (
+			(create_chapter_form.elements["name"].value.trim() === "" && create_chapter_form.elements["name"].value.trim().length === 0) ||
+			(create_chapter_form.elements["subject_id"].value.trim() === "" && create_chapter_form.elements["subject_id"].value.trim().length === 0) ||
+			(create_chapter_form.elements["subject_name"].value.trim() === "" && create_chapter_form.elements["subject_name"].value.trim().length === 0) ||
+			(create_chapter_form.elements["class_name"].value.trim() === "" && create_chapter_form.elements["chapter_name"].value.trim().length === 0)
+		){
+			alert("You cannot leave things empty!");
+		}else{
+			fetch("/api/chapter",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					id: "",
+					name: create_chapter_form.elements["name"].value,
+					subject_id: create_chapter_form.elements["subject_id"].value,
+					subject_name: create_chapter_form.elements["subject_name"].value,
+					class_name: parseInt(create_chapter_form.elements["class_name"].value),
+				})
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_chapter_modal")){
+					document.getElementById("create_chapter_modal").close();
+					document.getElementById("chapter_table_body").innerHTML += `
+					<tr id="${data.id}">
+						<td>${data.id}</td>
+						<td>${data.name}</td>
+						<td>${data.subject_name}</td>
+						<td>${data.class_name}</td>
+						<th>
+							<button 
+								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								hx-on:click="deleteChapter('${data.id}','${data.name}')"
+							></button>
+						</th>
+					</tr>
+				`;
+				}
+			});
 		}
-	});
+	};
+
+	// delete chapter handler
+	const deleteChapter = (chapter_id,chapter_name) => {
+		let choice = confirm(`WARNING! Do you want to delete '${chapter_name}'`)
+		if (choice == true){
+			fetch(`/api/chapter/${chapter_id}`,{
+				method: "DELETE"
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.text();
+			}).then((data) => {
+				document.getElementById(chapter_id).remove();
+			});
+		}
+	}
 
 	let curr_page = 1;
-
 	// Function to fetch and append new data
 	function fetchAndAppendData() {
 		let chapter_table_body = document.getElementById("chapter_table_body");
@@ -37,6 +97,12 @@
 						<td>${element.name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
+						<th>
+							<button 
+								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								hx-on:click="deleteChapter('${element.id}','${element.name}')"
+							></button>
+						</th>
 					</tr>
 					`;
 				});
@@ -78,10 +144,14 @@
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
-  <button class="btn btn-primary" onclick="create_chapter_modal.showModal()">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
+  <button class="join-item btn btn-primary" onclick="create_chapter_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Create Chapter
+    Single
+  </button>
+  <button class="join-item btn btn-primary" onclick="create_chapter_from_json_modal.showModal()">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+	JSON
   </button>
 </div>
 
@@ -92,10 +162,27 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Chapter</h3>
-		  <form id="create_chapter_form" hx-post="/api/chapter" hx-swap="none" class="flex flex-col items-center gap-[12px] w-full">
+		  <form id="create_chapter_form" class="flex flex-col items-center gap-[12px] w-full">
 			  <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
+			  <input type="text" name="subject_id" placeholder="Subject ID" class="input input-bordered w-full max-w-xs" />
+			  <input type="text" name="subject_name" placeholder="Subject Name" class="input input-bordered w-full max-w-xs" />
+			  <input type="number" name="class_name" placeholder="Class Name" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button type="submit" form="create_chapter_form" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
+		  <button hx-on:click="handleCreateChapterFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
+	  </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<dialog id="create_chapter_from_json_modal" class="modal">
+  <div class="modal-box">
+	  <form method="dialog">
+		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	  </form>
+	  <div class="flex flex-col items-center gap-[25px] w-full">
+		  <h3 class="text-lg font-bold">Create Chapters From JSON</h3>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -113,15 +200,22 @@
 					<th>Name</th>
 					<th>Subject</th>
 					<th>Class</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="chapter_table_body">
 				{% for chapter in chapters %}
-				<tr>
+				<tr id="{{ chapter.id }}">
 					<td>{{ chapter.id }}</td>
 					<td>{{ chapter.name }}</td>
 					<td>{{ chapter.subject_name }}</td>
 					<td>{{ chapter.class_name }}</td>
+					<th>
+						<button 
+							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+							hx-on:click="deleteChapter('{{ chapter.id }}','{{ chapter.name }}')"
+						></button>
+					</th>
 				</tr>
 				{% endfor %}
 			</tbody>

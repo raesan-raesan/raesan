@@ -2,11 +2,66 @@
 
 {% block page_scripts %}
 <script>
-	document.addEventListener("htmx:afterRequest", (event) => {
-		if (event.detail.successful && document.getElementById("create_question_modal")){
-			document.getElementById("create_question_modal").close();
+	// handle create_question_form submition
+	const handleCreateQuestionFormSubmit = () => {
+		let create_question_form = document.getElementById("create_question_form");
+		if (
+			(create_question_form.elements["body"].value.trim() === "" && create_question_form.elements["body"].value.trim().length === 0) ||
+			(create_question_form.elements["chapter_id"].value.trim() === "" && create_question_form.elements["chapter_id"].value.trim().length === 0)
+		){
+			alert("You cannot leave things empty!");
+		}else{
+			fetch("/api/question",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					id: "",
+					body: create_question_form.elements["body"].value,
+					chapter_id: create_question_form.elements["chapter_id"].value,
+				})
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_question_modal")){
+					document.getElementById("create_question_modal").close();
+					document.getElementById("question_table_body").innerHTML += `
+					<tr id="${data.id}">
+						<td>${data.id}</td>
+						<td>${data.body}</td>
+						<th>
+							<button 
+								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								hx-on:click="deleteQuestion('${data.id}','${data.body}')"
+							></button>
+						</th>
+					</tr>
+				`;
+				}
+			});
 		}
-	});
+	};
+
+	// delete questio handler
+	const deleteQuestion = (question_id,question_body) => {
+		let choice = confirm(`WARNING! Do you want to delete '${question_body}'`)
+		if (choice == true){
+			fetch(`/api/question/${question_id}`,{
+				method: "DELETE"
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.text();
+			}).then((data) => {
+				document.getElementById(question_id).remove();
+			});
+		}
+	}
 
 
 	let curr_page = 1;
@@ -77,10 +132,14 @@
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
-  <button class="btn btn-primary" onclick="create_question_modal.showModal()">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
+  <button class="join-item btn btn-primary" onclick="create_question_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Create Question
+    Single
+  </button>
+  <button class="join-item btn btn-primary" onclick="create_question_from_json_modal.showModal()">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+	JSON
   </button>
 </div>
 
@@ -91,10 +150,25 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Question</h3>
-		  <form id="create_question_form" hx-post="/api/question" hx-swap="none" class="flex flex-col items-center gap-[12px] w-full">
-			  <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
+		  <form id="create_question_form" class="flex flex-col items-center gap-[12px] w-full">
+			  <input type="text" name="body" placeholder="Body" class="input input-bordered w-full max-w-xs" />
+			  <input type="text" name="chapter_id" placeholder="Chapter ID" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button type="submit" form="create_question_form" class="btn btn-wide btn-primary max-w-[180px]">Create Question</button>
+		  <button hx-on:click="handleCreateQuestionFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Question</button>
+	  </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<dialog id="create_question_from_json_modal" class="modal">
+  <div class="modal-box">
+	  <form method="dialog">
+		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	  </form>
+	  <div class="flex flex-col items-center gap-[25px] w-full">
+		  <h3 class="text-lg font-bold">Create Questions From JSON</h3>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -110,13 +184,20 @@
 				<tr class="bg-base-300">
 					<th>ID</th>
 					<th>Body</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="question_table_body">
 				{% for question in questions %}
-				<tr>
+				<tr id="{{ question.id }}">
 					<td>{{ question.id }}</td>
 					<td>{{ question.body }}</td>
+					<th>
+						<button 
+							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+							hx-on:click="deleteQuestion('{{ question.id }}','{{ question.body }}')"
+						></button>
+					</th>
 				</tr>
 				{% endfor %}
 			</tbody>

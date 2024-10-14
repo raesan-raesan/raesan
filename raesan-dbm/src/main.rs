@@ -46,27 +46,59 @@ async fn main() {
         .route("/question", axum::routing::get(handlers::question_page))
         .route(
             "/api/class",
-            axum::routing::post(handlers::api::create_class_route),
+            axum::routing::post(handlers::api::class::create_class_route),
+        )
+        .route(
+            "/api/class/:class_id",
+            axum::routing::delete(handlers::api::class::delete_class_route),
+        )
+        .route(
+            "/api/class/json",
+            axum::routing::post(handlers::api::class::json_to_class_route),
         )
         .route(
             "/api/subject",
-            axum::routing::post(handlers::api::create_subject_route),
+            axum::routing::post(handlers::api::subject::create_subject_route),
+        )
+        .route(
+            "/api/subject/:subject_id",
+            axum::routing::delete(handlers::api::subject::delete_subject_route),
+        )
+        .route(
+            "/api/subject/json",
+            axum::routing::post(handlers::api::subject::json_to_subject_route),
         )
         .route(
             "/api/chapter",
-            axum::routing::get(handlers::api::get_chapter_route),
+            axum::routing::get(handlers::api::chapter::get_chapter_route),
         )
         .route(
             "/api/chapter",
-            axum::routing::post(handlers::api::create_chapter_route),
+            axum::routing::post(handlers::api::chapter::create_chapter_route),
+        )
+        .route(
+            "/api/chapter/:chapter_id",
+            axum::routing::delete(handlers::api::chapter::delete_chapter_route),
+        )
+        .route(
+            "/api/chapter/json",
+            axum::routing::post(handlers::api::chapter::json_to_chapter_route),
         )
         .route(
             "/api/question",
-            axum::routing::get(handlers::api::get_question_handler),
+            axum::routing::get(handlers::api::question::get_question_handler),
         )
         .route(
             "/api/question",
-            axum::routing::post(handlers::api::create_question_route),
+            axum::routing::post(handlers::api::question::create_question_route),
+        )
+        .route(
+            "/api/question/:question_id",
+            axum::routing::delete(handlers::api::question::delete_question_route),
+        )
+        .route(
+            "/api/question/json",
+            axum::routing::post(handlers::api::question::json_to_question_route),
         )
         .with_state(app_state);
 

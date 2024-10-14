@@ -2,20 +2,82 @@
 
 {% block page_scripts %}
 <script>
-	document.addEventListener("htmx:afterRequest", (event) => {
-		if (event.detail.successful && document.getElementById("create_subject_modal")){
-			document.getElementById("create_subject_modal").close();
+	// handle create_subject_form submition
+	const handleCreateSubjectFormSubmit = () => {
+		let create_subject_form = document.getElementById("create_subject_form");
+		if (
+			(create_subject_form.elements["name"].value.trim() === "" && create_subject_form.elements["name"].value.trim().length === 0) ||
+			(create_subject_form.elements["class_id"].value.trim() === "" && create_subject_form.elements["class_id"].value.trim().length === 0) ||
+			(create_subject_form.elements["class_name"].value.trim() === "" && create_subject_form.elements["class_name"].value.trim().length === 0)
+		){
+			alert("You cannot leave things empty!");
+		}else{
+			fetch("/api/subject",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					id: "",
+					name: create_subject_form.elements["name"].value,
+					class_id: create_subject_form.elements["class_id"].value,
+					class_name: parseInt(create_subject_form.elements["class_name"].value),
+				})
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_subject_modal")){
+					document.getElementById("create_subject_modal").close();
+					document.getElementById("subject_table_body").innerHTML += `
+					<tr id="${data.id}">
+						<td>${data.id}</td>
+						<td>${data.name}</td>
+						<td>${data.class_name}</td>
+						<th>
+							<button 
+								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								hx-on:click="deleteSubject('${data.id}','${data.name}')"
+							></button>
+						</th>
+					</tr>
+				`;
+				}
+			});
 		}
-	});
+	};
+
+	// delete subject handler
+	const deleteSubject = (subject_id,subject_name) => {
+		let choice = confirm(`WARNING! Do you want to delete '${subject_name}'`)
+		if (choice == true){
+			fetch(`/api/subject/${subject_id}`,{
+				method: "DELETE"
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.text();
+			}).then((data) => {
+				document.getElementById(subject_id).remove();
+			});
+		}
+	}
 </script>
 {% endblock %}
 
 {% block page_content %}
 
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50">
-  <button class="btn btn-primary" onclick="create_subject_modal.showModal()">
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
+  <button class="join-item btn btn-primary" onclick="create_subject_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Create Subject
+    Single
+  </button>
+  <button class="join-item btn btn-primary" onclick="create_subject_from_json_modal.showModal()">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+	JSON
   </button>
 </div>
 
@@ -26,16 +88,33 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Subject</h3>
-		  <form id="create_subject_form" hx-post="/api/subject" hx-swap="none" class="flex flex-col items-center gap-[12px] w-full">
+		  <form id="create_subject_form" class="flex flex-col items-center gap-[12px] w-full">
 			  <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
+			  <input type="text" name="class_id" placeholder="Class ID" class="input input-bordered w-full max-w-xs" />
+			  <input type="number" name="class_name" placeholder="Class Name" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button type="submit" form="create_subject_form" class="btn btn-wide btn-primary max-w-[180px]">Create Subject</button>
+		  <button hx-on:click="handleCreateSubjectFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
     <button>close</button>
   </form>
 </dialog>
+
+<dialog id="create_subject_from_json_modal" class="modal">
+  <div class="modal-box">
+	  <form method="dialog">
+		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	  </form>
+	  <div class="flex flex-col items-center gap-[25px] w-full">
+		  <h3 class="text-lg font-bold">Create Subjects From JSON</h3>
+	  </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
 
 <div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Subjects</h2>
@@ -46,14 +125,21 @@
 					<th>ID</th>
 					<th>Name</th>
 					<th>Class Name</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="subject_table_body">
 				{% for subject in subjects %}
-				<tr>
+				<tr id="{{ subject.id }}">
 					<td>{{ subject.id }}</td>
 					<td>{{ subject.name }}</td>
 					<td>{{ subject.class_name }}</td>
+					<th>
+						<button 
+							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+							hx-on:click="deleteSubject('{{ subject.id }}','{{ subject.name }}')"
+						></button>
+					</th>
 				</tr>
 				{% endfor %}
 			</tbody>

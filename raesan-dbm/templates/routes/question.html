@@ -29,22 +29,36 @@
 			}).then((data) => {
 				if (document.getElementById("create_question_modal")){
 					document.getElementById("create_question_modal").close();
-					document.getElementById("question_table_body").innerHTML += `
-					<tr id="${data.id}">
-						<td>${data.id}</td>
-						<td>${data.body}</td>
-						<th>
-							<button 
-								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-								hx-on:click="deleteQuestion('${data.id}','${data.body}')"
-							></button>
-						</th>
-					</tr>
-				`;
 				}
 			});
 		}
 	};
+
+	// handle create_question_from_json_input submition
+	document.getElementById("create_question_from_json_input").value = "";
+	const handleCreateQuestionFromJsonFormSubmit = () => {
+		let create_question_from_json_input = document.getElementById("create_question_from_json_input");
+		if (create_question_from_json_input.value.trim() === "" && create_question_from_json_input.value.trim().length === 0){
+			alert("Atleast enter something!");
+		}else{
+			fetch("/api/question/json",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(JSON.parse(create_question_from_json_input.value)).trim()
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_question_from_json_modal")){
+					document.getElementById("create_question_from_json_modal").close();
+				}
+			});
+		}
+	}
 
 	// delete questio handler
 	const deleteQuestion = (question_id,question_body) => {
@@ -88,7 +102,7 @@
 				// Append the new data to the table body
 				data.forEach((element) => {
 					question_table_body.innerHTML += `
-					<tr>
+					<tr id="${element.id}">
 						<td>${element.id}</td>
 						<td>${element.body}</td>
 					</tr>
@@ -132,6 +146,7 @@
 
 {% block page_content %}
 
+<!-- hovering buttons -->
 <div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
   <button class="join-item btn btn-primary" onclick="create_question_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
@@ -143,6 +158,7 @@
   </button>
 </div>
 
+<!-- create question modal -->
 <dialog id="create_question_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -154,7 +170,7 @@
 			  <input type="text" name="body" placeholder="Body" class="input input-bordered w-full max-w-xs" />
 			  <input type="text" name="chapter_id" placeholder="Chapter ID" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button hx-on:click="handleCreateQuestionFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Question</button>
+		  <button onclick="handleCreateQuestionFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Question</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -162,6 +178,7 @@
   </form>
 </dialog>
 
+<!-- create question from json modal -->
 <dialog id="create_question_from_json_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -169,6 +186,25 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Questions From JSON</h3>
+		  <textarea
+				  id="create_question_from_json_input"
+				  placeholder='[
+	{
+		"id": "--this-should-be-empty--",
+		 "body": "some body",
+		 "chapter_id": "some id"
+	},
+	{
+		"id": "--this-should-be-empty--",
+		 "body": "some body 2",
+		 "chapter_id": "some id 2"
+	}
+]' 
+				  class="textarea p-0 textarea-bordered textarea-lg w-full min-h-xl"
+				  rows = "12"
+				  >
+		  </textarea>
+		  <button onclick="handleCreateQuestionFromJsonFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -176,7 +212,8 @@
   </form>
 </dialog>
 
-<div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
+<!-- main page body -->
+<main class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Questions</h2>
 	<div class="overflow-x-auto">
 		<table class="table table-lg bg-base-200 mb-[150px]">
@@ -195,7 +232,7 @@
 					<th>
 						<button 
 							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-							hx-on:click="deleteQuestion('{{ question.id }}','{{ question.body }}')"
+							onclick="deleteQuestion('{{ question.id }}','{{ question.body }}')"
 						></button>
 					</th>
 				</tr>
@@ -203,6 +240,6 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+</main>
 
 {% endblock %}

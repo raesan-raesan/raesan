@@ -39,15 +39,56 @@
 						<th>
 							<button 
 								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-								hx-on:click="deleteSubject('${data.id}','${data.name}')"
+								onclick="deleteSubject('${data.id}','${data.name}')"
 							></button>
 						</th>
 					</tr>
-				`;
+					`;
 				}
 			});
 		}
 	};
+
+	// handle create_subject_from_json_input submition
+	document.getElementById("create_subject_from_json_input").value = "";
+	const handleCreateSubjectFromJsonFormSubmit = () => {
+		let create_subject_from_json_input = document.getElementById("create_subject_from_json_input");
+		if (create_subject_from_json_input.value.trim() === "" && create_subject_from_json_input.value.trim().length === 0){
+			alert("Atleast enter something!");
+		}else{
+			fetch("/api/subject/json",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(JSON.parse(create_subject_from_json_input.value)).trim()
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_subject_from_json_modal")){
+					document.getElementById("create_subject_from_json_modal").close();
+					data.forEach((element) => {
+						document.getElementById("subject_table_body").innerHTML += `
+						<tr id="${element.id}">
+							<td>${element.id}</td>
+							<td>${element.name}</td>
+							<td>${element.class_name}</td>
+							<th>
+								<button 
+									class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+									onclick="deleteSubject('${element.id}','${element.name}')"
+								></button>
+							</th>
+						</tr>
+						`;
+					});
+				}
+			});
+		}
+	}
 
 	// delete subject handler
 	const deleteSubject = (subject_id,subject_name) => {
@@ -70,6 +111,7 @@
 
 {% block page_content %}
 
+<!-- hovering buttons -->
 <div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
   <button class="join-item btn btn-primary" onclick="create_subject_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
@@ -81,6 +123,7 @@
   </button>
 </div>
 
+<!-- create subject modal -->
 <dialog id="create_subject_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -93,7 +136,7 @@
 			  <input type="text" name="class_id" placeholder="Class ID" class="input input-bordered w-full max-w-xs" />
 			  <input type="number" name="class_name" placeholder="Class Name" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button hx-on:click="handleCreateSubjectFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
+		  <button onclick="handleCreateSubjectFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -101,6 +144,7 @@
   </form>
 </dialog>
 
+ <!-- create subject from json modal -->
 <dialog id="create_subject_from_json_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -108,6 +152,27 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Subjects From JSON</h3>
+		  <textarea
+				  id="create_subject_from_json_input"
+				  placeholder='[
+	{
+		"id": "--this-should-be-empty--",
+		"class_name": 11,
+		"name": "some-name",
+		"class_id": "some-id"
+	},
+	{
+		"id": "--this-should-be-empty--",
+		"class_name": 12,
+		"name": "some-name-2",
+		"class_id": "some-id-2"
+	}
+]' 
+				  class="textarea p-0 textarea-bordered textarea-lg w-full min-h-xl"
+				  rows = "12"
+				  >
+		  </textarea>
+		  <button onclick="handleCreateSubjectFromJsonFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Subject</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -116,7 +181,8 @@
 </dialog>
 
 
-<div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
+<!-- main page body -->
+<main class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Subjects</h2>
 	<div class="overflow-x-auto">
 		<table class="table table-lg bg-base-200 mb-[150px]">
@@ -137,7 +203,7 @@
 					<th>
 						<button 
 							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-							hx-on:click="deleteSubject('{{ subject.id }}','{{ subject.name }}')"
+							onclick="deleteSubject('{{ subject.id }}','{{ subject.name }}')"
 						></button>
 					</th>
 				</tr>
@@ -145,6 +211,6 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+</main>
 
 {% endblock %}

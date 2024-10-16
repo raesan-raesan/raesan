@@ -33,24 +33,36 @@
 			}).then((data) => {
 				if (document.getElementById("create_chapter_modal")){
 					document.getElementById("create_chapter_modal").close();
-					document.getElementById("chapter_table_body").innerHTML += `
-					<tr id="${data.id}">
-						<td>${data.id}</td>
-						<td>${data.name}</td>
-						<td>${data.subject_name}</td>
-						<td>${data.class_name}</td>
-						<th>
-							<button 
-								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-								hx-on:click="deleteChapter('${data.id}','${data.name}')"
-							></button>
-						</th>
-					</tr>
-				`;
 				}
 			});
 		}
 	};
+	
+	// handle create_chapter_from_json_input submition
+	document.getElementById("create_chapter_from_json_input").value = "";
+	const handleCreateChapterFromJsonFormSubmit = () => {
+		let create_chapter_from_json_input = document.getElementById("create_chapter_from_json_input");
+		if (create_chapter_from_json_input.value.trim() === "" && create_chapter_from_json_input.value.trim().length === 0){
+			alert("Atleast enter something!");
+		}else{
+			fetch("/api/chapter/json",{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(JSON.parse(create_chapter_from_json_input.value)).trim()
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				if (document.getElementById("create_chapter_from_json_modal")){
+					document.getElementById("create_chapter_from_json_modal").close();
+				}
+			});
+		}
+	}
 
 	// delete chapter handler
 	const deleteChapter = (chapter_id,chapter_name) => {
@@ -92,15 +104,15 @@
 				// Append the new data to the table body
 				data.forEach((element) => {
 					chapter_table_body.innerHTML += `
-					<tr>
+					<tr id="${element.id}">
 						<td>${element.id}</td>
 						<td>${element.name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
 						<th>
 							<button 
-								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-								hx-on:click="deleteChapter('${element.id}','${element.name}')"
+								class="cursor-pointer iconify mdi--bin-outline w-[22px] h-[22px] text-red-500" 
+								onclick="deleteChapter('${element.id}','${element.name}')"
 							></button>
 						</th>
 					</tr>
@@ -144,6 +156,7 @@
 
 {% block page_content %}
 
+<!-- hovering buttons -->
 <div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
   <button class="join-item btn btn-primary" onclick="create_chapter_modal.showModal()">
     <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
@@ -155,6 +168,7 @@
   </button>
 </div>
 
+<!-- create chapter modal -->
 <dialog id="create_chapter_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -168,7 +182,7 @@
 			  <input type="text" name="subject_name" placeholder="Subject Name" class="input input-bordered w-full max-w-xs" />
 			  <input type="number" name="class_name" placeholder="Class Name" class="input input-bordered w-full max-w-xs" />
 		  </form>
-		  <button hx-on:click="handleCreateChapterFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
+		  <button onclick="handleCreateChapterFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -176,6 +190,7 @@
   </form>
 </dialog>
 
+<!-- create chapter from json modal -->
 <dialog id="create_chapter_from_json_modal" class="modal">
   <div class="modal-box">
 	  <form method="dialog">
@@ -183,6 +198,29 @@
 	  </form>
 	  <div class="flex flex-col items-center gap-[25px] w-full">
 		  <h3 class="text-lg font-bold">Create Chapters From JSON</h3>
+		  <textarea
+				  id="create_chapter_from_json_input"
+				  placeholder='[
+	{
+		"id": "--this-should-be-empty",
+		"name": "some-name",
+		"subject_id": "some-subject-id",
+		"subject_name": "some-subject-name",
+		"class_name": 11
+	},
+	{
+		"id": "--this-should-be-empty",
+		"name": "some-name-2",
+		"subject_id": "some-subject-id-2",
+		"subject_name": "some-subject-name-2",
+		"class_name": 11
+	}
+]' 
+				  class="textarea p-0 textarea-bordered textarea-lg w-full min-h-xl"
+				  rows = "12"
+				  >
+		  </textarea>
+		  <button onclick="handleCreateChapterFromJsonFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
 	  </div>
   </div>
   <form method="dialog" class="modal-backdrop">
@@ -190,7 +228,8 @@
   </form>
 </dialog>
 
-<div class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
+<!-- main page body -->
+<main class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Chapters</h2>
 	<div class="overflow-x-auto">
 		<table class="table table-lg bg-base-200 mb-[150px]">
@@ -212,8 +251,8 @@
 					<td>{{ chapter.class_name }}</td>
 					<th>
 						<button 
-							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
-							hx-on:click="deleteChapter('{{ chapter.id }}','{{ chapter.name }}')"
+							class="cursor-pointer iconify mdi--bin-outline w-[22px] h-[22px] text-red-500" 
+							onclick="deleteChapter('{{ chapter.id }}','{{ chapter.name }}')"
 						></button>
 					</th>
 				</tr>
@@ -221,6 +260,6 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+</main>
 
 {% endblock %}

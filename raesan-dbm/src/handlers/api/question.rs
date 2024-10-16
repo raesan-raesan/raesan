@@ -117,6 +117,59 @@ pub async fn create_question_route(
         .into_response());
 }
 
+// POST (/api/question/json) route handler
+pub async fn json_to_question_route(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Json(json): axum::extract::Json<Vec<core::models::Question>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    let mut input_data = json.clone();
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    input_data
+        .iter_mut()
+        .for_each(|element| element.id = uuid::Uuid::new_v4().to_string());
+    let mut new_records: Vec<core::models::Question> = Vec::new();
+    input_data.iter().for_each(|element| {
+        new_records.push(
+            diesel::insert_into(schema::question::dsl::question)
+                .values(element)
+                .get_result(&mut conn)
+                .unwrap(),
+        );
+    });
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        axum::Json(new_records),
+    )
+        .into_response());
+}
+
 // DELETE (/api/question/:question_id) route handler
 pub async fn delete_question_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
@@ -160,20 +213,6 @@ pub async fn delete_question_route(
             String::from("text/html; charset=utf-8"),
         )],
         String::from("DELETE QUESTION"),
-    )
-        .into_response());
-}
-
-// POST (/api/question/json) route handler
-pub async fn json_to_question_route(
-) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    println!("CREATE QUESTION FROM JSON");
-    return Ok((
-        [(
-            axum::http::header::CONTENT_TYPE,
-            String::from("text/html; charset=utf-8"),
-        )],
-        String::from("CREATE QUESTION FROM JSON"),
     )
         .into_response());
 }

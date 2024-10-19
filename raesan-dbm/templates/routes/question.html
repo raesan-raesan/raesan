@@ -1,3 +1,7 @@
+{% import "../components/hovering_buttons.html" as hovering_buttons %}
+{% import "../components/create_modal.html" as create_modal %}
+{% import "../components/create_from_json_modal.html" as create_from_json_modal %}
+
 {% extends "../base.html" %} 
 
 {% block page_scripts %}
@@ -147,76 +151,33 @@
 {% block page_content %}
 
 <!-- hovering buttons -->
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
-  <button class="join-item btn btn-primary" onclick="create_question_modal.showModal()">
-    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Single
-  </button>
-  <button class="join-item btn btn-primary" onclick="create_question_from_json_modal.showModal()">
-    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-	JSON
-  </button>
-</div>
+{% call hovering_buttons::component("create_question_modal.showModal()","create_question_from_json_modal.showModal()") %}
 
 <!-- create question modal -->
-<dialog id="create_question_modal" class="modal">
-  <div class="modal-box">
-	  <form method="dialog">
-		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-	  </form>
-	  <div class="flex flex-col items-center gap-[25px] w-full">
-		  <h3 class="text-lg font-bold">Create Question</h3>
-		  <form id="create_question_form" class="flex flex-col items-center gap-[12px] w-full">
-			  <input type="text" name="body" placeholder="Body" class="input input-bordered w-full max-w-xs" />
-			  <input type="text" name="chapter_id" placeholder="Chapter ID" class="input input-bordered w-full max-w-xs" />
-		  </form>
-		  <button onclick="handleCreateQuestionFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Question</button>
-	  </div>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+{% call create_modal::component("Question","handleCreateQuestionFormSubmit()","
+	<input type='text' name='body' placeholder='Body' class='input input-bordered w-full max-w-xs' />
+	<input type='text' name='chapter_id' placeholder='Chapter ID' class='input input-bordered w-full max-w-xs' />
+") %}
 
 <!-- create question from json modal -->
-<dialog id="create_question_from_json_modal" class="modal">
-  <div class="modal-box">
-	  <form method="dialog">
-		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-	  </form>
-	  <div class="flex flex-col items-center gap-[25px] w-full">
-		  <h3 class="text-lg font-bold">Create Questions From JSON</h3>
-		  <textarea
-				  id="create_question_from_json_input"
-				  placeholder='[
+{% call create_from_json_modal::component("Question","handleCreateQuestionFromJsonFormSubmit()","[
 	{
-		"id": "--this-should-be-empty--",
-		 "body": "some body",
-		 "chapter_id": "some id"
+		 'id': '--this-should-be-empty--',
+		 'body': 'some body',
+		 'chapter_id': 'some id'
 	},
 	{
-		"id": "--this-should-be-empty--",
-		 "body": "some body 2",
-		 "chapter_id": "some id 2"
+		 'id': '--this-should-be-empty--',
+		 'body': 'some body 2',
+		 'chapter_id': 'some id 2'
 	}
-]' 
-				  class="textarea p-0 textarea-bordered textarea-lg w-full min-h-xl"
-				  rows = "12"
-				  >
-		  </textarea>
-		  <button onclick="handleCreateQuestionFromJsonFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Chapter</button>
-	  </div>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+]") %}
 
 <!-- main page body -->
 <main class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Questions</h2>
-	<div class="overflow-x-auto">
-		<table class="table table-lg bg-base-200 mb-[150px]">
+	<div class="overflow-x-auto w-full max-w-[1400px] px-4">
+	  	<table class="table table-lg bg-base-200 mb-[150px] w-full">
 			<thead>
 				<tr class="bg-base-300">
 					<th>ID</th>

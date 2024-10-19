@@ -1,4 +1,4 @@
-use crate::handlers::templates;
+use crate::templates;
 use askama::Template;
 use axum::{self, response::IntoResponse};
 
@@ -8,7 +8,7 @@ pub async fn route(
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     println!("Test ID: {:#?}", test_id);
     // render HTML struct (PS: this whole thing upto the return, is a single let statement)
-    let html = match (templates::TestPage {
+    let html = match (templates::routes::TestPage {
         latex_content: match katex::render_with_opts(
             "\\frac{\\pi}{\\oint x^2 dx} \\oint \\frac{\\sin(\\phi)}{\\tan(\\phi - \\theta)} dx",
             match katex::Opts::builder()

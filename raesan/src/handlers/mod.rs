@@ -1,10 +1,9 @@
 // models
 pub mod api;
-pub mod templates;
 pub mod test_route;
 
 // imports
-use crate::{core, utils};
+use crate::{core, templates, utils};
 use askama::Template;
 use axum::{self, response::IntoResponse};
 use diesel::{self, prelude::*};
@@ -85,7 +84,7 @@ pub async fn home_page(
     println!("Classes: {:#?}", results);
 
     // render HTML struct
-    let html = match (templates::HomePage {}.render()) {
+    let html = match (templates::routes::HomePage {}.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -109,7 +108,7 @@ pub async fn home_page(
 // GET (/create-test) route handlers
 pub async fn create_test_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)>
 {
-    let html = match (templates::CreateTestPage {
+    let html = match (templates::routes::CreateTestPage {
         dataset_classes: vec![],
         dataset_subjects: vec![],
         dataset_chapters: vec![],

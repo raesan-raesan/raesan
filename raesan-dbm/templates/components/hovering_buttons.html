@@ -1,0 +1,14 @@
+{% macro component(form_modal,json_modal) %}
+
+<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
+  <button class="join-item btn btn-primary" onclick="{{form_modal}}">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+    Single
+  </button>
+  <button class="join-item btn btn-primary" onclick="{{json_modal}}">
+    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
+    JSON
+  </button>
+</div>
+
+{% endmacro %}

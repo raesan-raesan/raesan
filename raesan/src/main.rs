@@ -1,6 +1,7 @@
 // modules
 mod core;
 mod handlers;
+pub mod templates;
 mod utils;
 
 // imports

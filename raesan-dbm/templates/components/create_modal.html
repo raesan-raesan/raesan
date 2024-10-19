@@ -1,0 +1,29 @@
+{% macro component(name,handler,inputs) %}
+<dialog id="create_{{name.to_lowercase()}}_modal" class="modal">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+        ✕
+      </button>
+    </form>
+    <div class="flex flex-col items-center gap-[25px] w-full">
+      <h3 class="text-lg font-bold">Create {{name}}</h3>
+      <form
+        id="create_{{name.to_lowercase()}}_form"
+        class="flex flex-col items-center gap-[12px] w-full"
+      >
+        {{inputs|safe}}
+      </form>
+      <button
+        onclick="{{handler}}"
+        class="btn btn-wide btn-primary max-w-[180px]"
+      >
+        Create {{name}}
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+{% endmacro %}

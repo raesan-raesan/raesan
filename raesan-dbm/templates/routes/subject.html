@@ -1,3 +1,7 @@
+{% import "../components/hovering_buttons.html" as hovering_buttons %}
+{% import "../components/create_modal.html" as create_modal %}
+{% import "../components/create_from_json_modal.html" as create_from_json_modal %}
+
 {% extends "../base.html" %} 
 
 {% block page_scripts %}
@@ -112,80 +116,36 @@
 {% block page_content %}
 
 <!-- hovering buttons -->
-<div class="fixed bottom-0 right-0 flex items-center justify-end p-5 z-50 join">
-  <button class="join-item btn btn-primary" onclick="create_subject_modal.showModal()">
-    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-    Single
-  </button>
-  <button class="join-item btn btn-primary" onclick="create_subject_from_json_modal.showModal()">
-    <span class="iconify mdi--plus-circle w-[22px] h-[22px]"></span>
-	JSON
-  </button>
-</div>
+{% call hovering_buttons::component("create_subject_modal.showModal()","create_subject_from_json_modal.showModal()") %}
 
 <!-- create subject modal -->
-<dialog id="create_subject_modal" class="modal">
-  <div class="modal-box">
-	  <form method="dialog">
-		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-	  </form>
-	  <div class="flex flex-col items-center gap-[25px] w-full">
-		  <h3 class="text-lg font-bold">Create Subject</h3>
-		  <form id="create_subject_form" class="flex flex-col items-center gap-[12px] w-full">
-			  <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
-			  <input type="text" name="class_id" placeholder="Class ID" class="input input-bordered w-full max-w-xs" />
-			  <input type="number" name="class_name" placeholder="Class Name" class="input input-bordered w-full max-w-xs" />
-		  </form>
-		  <button onclick="handleCreateSubjectFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Class</button>
-	  </div>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+{% call create_modal::component("Subject","handleCreateSubjectFormSubmit()","
+	<input type='text' name='name' placeholder='Name' class='input input-bordered w-full max-w-xs' />
+	<input type='text' name='class_id' placeholder='Class ID' class='input input-bordered w-full max-w-xs' />
+	<input type='number' name='class_name' placeholder='Class Name' class='input input-bordered w-full max-w-xs' />
+") %}
 
  <!-- create subject from json modal -->
-<dialog id="create_subject_from_json_modal" class="modal">
-  <div class="modal-box">
-	  <form method="dialog">
-		  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-	  </form>
-	  <div class="flex flex-col items-center gap-[25px] w-full">
-		  <h3 class="text-lg font-bold">Create Subjects From JSON</h3>
-		  <textarea
-				  id="create_subject_from_json_input"
-				  placeholder='[
+{% call create_from_json_modal::component("Subject","handleCreateSubjectFromJsonFormSubmit()","[
 	{
-		"id": "--this-should-be-empty--",
-		"class_name": 11,
-		"name": "some-name",
-		"class_id": "some-id"
+		'id': '--this-should-be-empty--',
+		'class_name': 11,
+		'name': 'some-name',
+		'class_id': 'some-id'
 	},
 	{
-		"id": "--this-should-be-empty--",
-		"class_name": 12,
-		"name": "some-name-2",
-		"class_id": "some-id-2"
+		'id': '--this-should-be-empty--',
+		'class_name': 12,
+		'name': 'some-name-2',
+		'class_id': 'some-id-2'
 	}
-]' 
-				  class="textarea p-0 textarea-bordered textarea-lg w-full min-h-xl"
-				  rows = "12"
-				  >
-		  </textarea>
-		  <button onclick="handleCreateSubjectFromJsonFormSubmit()" class="btn btn-wide btn-primary max-w-[180px]">Create Subject</button>
-	  </div>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
-
+]") %}
 
 <!-- main page body -->
 <main class="w-full flex flex-col items-center mt-[120px] gap-[25px]">
 	<h2 class="text-2xl">Subjects</h2>
-	<div class="overflow-x-auto">
-		<table class="table table-lg bg-base-200 mb-[150px]">
+	<div class="overflow-x-auto w-full max-w-[1400px] px-4">
+	  	<table class="table table-lg bg-base-200 mb-[150px] w-full">
 			<thead>
 				<tr class="bg-base-300">
 					<th>ID</th>

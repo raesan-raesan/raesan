@@ -1,9 +1,8 @@
 // models
 pub mod api;
-pub mod templates;
 
 // imports
-use crate::{core, utils};
+use crate::{core, templates, utils};
 use askama::Template;
 use axum::{self, response::IntoResponse};
 use diesel::{self, prelude::*};
@@ -89,7 +88,7 @@ pub async fn class_page(
         .expect("Error loading classes");
 
     // render HTML struct
-    let html = match (templates::ClassPage { classes: results }.render()) {
+    let html = match (templates::routes::ClassPage { classes: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -146,7 +145,7 @@ pub async fn subject_page(
         .expect("Error loading subjects");
 
     // render HTML struct
-    let html = match (templates::SubjectPage { subjects: results }.render()) {
+    let html = match (templates::routes::SubjectPage { subjects: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -203,7 +202,7 @@ pub async fn chapter_page(
         .unwrap();
 
     // render HTML struct
-    let html = match (templates::ChapterPage { chapters: results }.render()) {
+    let html = match (templates::routes::ChapterPage { chapters: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -259,7 +258,7 @@ pub async fn question_page(
         .expect("Error loading questions");
 
     // render HTML struct
-    let html = match (templates::QuestionPage { questions: results }.render()) {
+    let html = match (templates::routes::QuestionPage { questions: results }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);

@@ -216,3 +216,53 @@ pub async fn delete_question_route(
     )
         .into_response());
 }
+
+// PATCH (/api/question) route handler
+pub async fn update_question_route(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Json(json): axum::extract::Json<core::models::Question>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let chapter: core::models::Chapter = schema::chapter::dsl::chapter
+        .filter(schema::chapter::name.eq(json.clone().chapter_name))
+        .filter(schema::chapter::class_name.eq(json.clone().class_name))
+        .select(core::models::Chapter::as_select())
+        .first(&mut conn)
+        .unwrap();
+    let mut input_data = json.clone();
+    input_data.chapter_id = chapter.id;
+    let result: core::models::Question = input_data.save_changes(&mut conn).unwrap();
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        axum::Json(result),
+    )
+        .into_response());
+}

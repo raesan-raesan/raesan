@@ -12,6 +12,8 @@ use serde;
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::class)]
 pub struct Class {
@@ -28,6 +30,8 @@ pub struct Class {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::subject)]
 pub struct Subject {
@@ -46,6 +50,8 @@ pub struct Subject {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::chapter)]
 pub struct Chapter {
@@ -65,10 +71,14 @@ pub struct Chapter {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::question)]
 pub struct Question {
     pub id: String,
     pub body: String,
+    pub chapter_name: String,
     pub chapter_id: String,
+    pub class_name: i32,
 }

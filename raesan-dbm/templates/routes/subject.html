@@ -6,6 +6,9 @@
 
 {% block page_scripts %}
 <script>
+	// subject list
+	let subject_list = {{subjects|json|safe}};
+
 	// handle create_subject_form submition
 	const handleCreateSubjectFormSubmit = () => {
 		let create_subject_form = document.getElementById("create_subject_form");
@@ -41,10 +44,20 @@
 						<td>${data.name}</td>
 						<td>${data.class_name}</td>
 						<th>
-							<button 
-								class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+							<div class="join">
+							  <button
+								class="btn btn-sm btn-outline btn-secondary join-item"
+								onclick="editSubject('${data.id}')"
+							  >
+							  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
+							  </button>
+							  <button
+								class="btn btn-sm btn-outline btn-accent join-item"
 								onclick="deleteSubject('${data.id}','${data.name}')"
-							></button>
+							  >
+							  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+							  </button>
+							</div>
 						</th>
 					</tr>
 					`;
@@ -81,10 +94,20 @@
 							<td>${element.name}</td>
 							<td>${element.class_name}</td>
 							<th>
-								<button 
-									class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+								<div class="join">
+								  <button
+									class="btn btn-sm btn-outline btn-secondary join-item"
+									onclick="editSubject('${element.id}')"
+								  >
+								  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
+								  </button>
+								  <button
+									class="btn btn-sm btn-outline btn-accent join-item"
 									onclick="deleteSubject('${element.id}','${element.name}')"
-								></button>
+								  >
+								  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+								  </button>
+								</div>
 							</th>
 						</tr>
 						`;
@@ -109,6 +132,106 @@
 				document.getElementById(subject_id).remove();
 			});
 		}
+	}
+
+	// edit subject handler
+	const editSubject = (subject_id) => {
+		let subject = subject_list.find(sb => sb.id == subject_id);
+		if (subject) {
+			let subject_row = document.getElementById(subject.id);
+			if (subject_row) {
+				subject_row.innerHTML = `
+				<td class="whitespace-nowrap">${subject.id}</td>
+				<td id="name" class="whitespace-nowrap"><input type="text" placeholder="Name" value="${subject.name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
+				<td id="class_name" class="whitespace-nowrap"><input type="number" placeholder="Class Name" value="${subject.class_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
+				<th>
+					<div class="join">
+					  <button
+						class="btn btn-sm btn-outline btn-successfull join-item"
+						onclick="updateSubject(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(subject))}')))"
+					  >
+					 Save
+					  </button>
+					  <button
+						class="btn btn-sm btn-outline btn-error join-item"
+						onclick="resetSubject(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(subject))}')))"
+					  >
+					  Reset
+					  </button>
+					</div>
+				</th>
+				`;
+			}
+		}else{
+			alert("Something went wrong!");
+		}
+	}
+
+	// update subject handler
+	const updateSubject = (subject) => {
+        const subject_row = document.getElementById(subject.id);
+		let new_subject = {
+			id: subject.id,
+			name: subject_row.querySelector('#name input').value,
+			class_id: "",
+			class_name: parseInt(subject_row.querySelector('#class_name input').value),
+		}
+		subject.class_id = "";
+		// use `loadash` to compare structs
+		if (_.isEqual(new_subject,subject)){
+			resetSubject(subject);
+		}else{
+			fetch("/api/subject",{
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(new_subject).trim()
+			}).then((res) => {
+				if (!res.ok){
+					throw new Error(`HTTP error! Status: ${res.status}`);
+				}
+				return res.json();
+			}).then((data) => {
+				// update the subject in the subject_list
+				const index = subject_list.findIndex(sb => sb.id === data.id);
+				if (index !== -1) {
+					subject_list[index] = { ...data };
+				}else{
+					alert("Something went Terribly Wrong!");
+				}
+				resetSubject(data);
+			}).catch((err) => {
+				resetSubject(subject);
+				alert("Failed to update the Subject");
+				throw new Error(`HTTP error! Status: ${res.status}`);
+			});
+		}
+	}
+
+	// reset subject handler
+	const resetSubject = (subject) => {
+		document.getElementById(subject.id).innerHTML = `
+		<td>${subject.id}</td>
+		<td>${subject.name}</td>
+		<td>${subject.class_name}</td>
+		<th>
+			<div class="join">
+			  <button
+				class="btn btn-sm btn-outline btn-secondary join-item"
+				onclick="editSubject('${subject.id}')"
+			  >
+			  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
+			  </button>
+			  <button
+				class="btn btn-sm btn-outline btn-accent join-item"
+				onclick="deleteSubject('${subject.id}','${subject.name}')"
+			  >
+			  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+			  </button>
+			</div>
+		</th>
+		`;
 	}
 </script>
 {% endblock %}
@@ -161,10 +284,20 @@
 					<td>{{ subject.name }}</td>
 					<td>{{ subject.class_name }}</td>
 					<th>
-						<button 
-							class="cursor-pointer iconify mdi--bin-outline text-red-500 w-[22px] h-[22px]" 
+						<div class="join">
+						  <button
+							class="btn btn-sm btn-outline btn-secondary join-item"
+							onclick="editSubject('{{ subject.id }}')"
+						  >
+						  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
+						  </button>
+						  <button
+							class="btn btn-sm btn-outline btn-accent join-item"
 							onclick="deleteSubject('{{ subject.id }}','{{ subject.name }}')"
-						></button>
+						  >
+						  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+						  </button>
+						</div>
 					</th>
 				</tr>
 				{% endfor %}

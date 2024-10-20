@@ -23,6 +23,8 @@ CREATE TABLE chapter(
 CREATE TABLE question(
 	id TEXT PRIMARY KEY NOT NULL,
 	body TEXT UNIQUE NOT NULL,
+	chapter_name TEXT NOT NULL,
 	chapter_id TEXT NOT NULL,
+	class_name INTEGER NOT NULL,
 	FOREIGN KEY  (chapter_id) REFERENCES chapter(id) ON DELETE CASCADE
 );

@@ -21,7 +21,9 @@ diesel::table! {
     question (id) {
         id -> Text,
         body -> Text,
+        chapter_name -> Text,
         chapter_id -> Text,
+        class_name -> Integer,
     }
 }
 

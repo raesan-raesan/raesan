@@ -106,7 +106,6 @@ pub fn generate_database_records_for_testing(
         Err(e) => return Err(e.to_string()),
     };
     let classes = match schema::class::dsl::class
-        .limit(2)
         .select(core::models::Class::as_select())
         .load(&mut conn)
     {

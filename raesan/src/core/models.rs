@@ -3,12 +3,6 @@ use diesel;
 use raesan_common;
 use serde;
 
-// ----- `Classes` model struct
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct Classes {
-    pub classes: Vec<Class>,
-}
-
 // ----- `Class` model struct
 #[derive(
     Debug,
@@ -18,17 +12,13 @@ pub struct Classes {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::class)]
 pub struct Class {
     pub id: String,
     pub name: i32,
-}
-
-// ----- `Subjects` model struct
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct Subjects {
-    pub subjects: Vec<Subject>,
 }
 
 // ----- `Subject` model struct
@@ -40,18 +30,15 @@ pub struct Subjects {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::subject)]
 pub struct Subject {
     pub id: String,
     pub name: String,
     pub class_id: String,
-}
-
-// ----- `Chapters` model struct
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct Chapters {
-    pub chapters: Vec<Chapter>,
+    pub class_name: i32,
 }
 
 // ----- `Chapter` model struct
@@ -63,12 +50,16 @@ pub struct Chapters {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::chapter)]
 pub struct Chapter {
     pub id: String,
     pub name: String,
     pub subject_id: String,
+    pub subject_name: String,
+    pub class_name: i32,
 }
 
 // ----- `Question` model struct
@@ -80,12 +71,16 @@ pub struct Chapter {
     diesel::Queryable,
     diesel::Selectable,
     diesel::Insertable,
+    diesel::AsChangeset,
+    diesel::Identifiable,
 )]
 #[diesel(table_name=raesan_common::schema::question)]
 pub struct Question {
     pub id: String,
     pub body: String,
+    pub chapter_name: String,
     pub chapter_id: String,
+    pub class_name: i32,
 }
 
 // ----- `CreateTestInput` struct

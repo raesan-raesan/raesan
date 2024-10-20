@@ -61,7 +61,7 @@ pub async fn get_chapter_route(
         }
     };
 
-    let results: Vec<core::models::Chapter> = raesan_common::schema::chapter::dsl::chapter
+    let results: Vec<core::models::Chapter> = schema::chapter::dsl::chapter
         .limit(core::PAGE_SIZE.into())
         .offset(offset as i64)
         .load(&mut conn)
@@ -211,6 +211,56 @@ pub async fn delete_chapter_route(
             String::from("text/html; charset=utf-8"),
         )],
         String::from("DELETE CHAPTER"),
+    )
+        .into_response());
+}
+
+// PATCH (/api/chapter) route handler
+pub async fn update_chapter_route(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+    axum::extract::Json(json): axum::extract::Json<core::models::Chapter>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let subject: core::models::Subject = schema::subject::dsl::subject
+        .filter(schema::subject::name.eq(json.clone().subject_name))
+        .filter(schema::subject::class_name.eq(json.clone().class_name))
+        .select(core::models::Subject::as_select())
+        .first(&mut conn)
+        .unwrap();
+    let mut input_data = json.clone();
+    input_data.subject_id = subject.id;
+    let result: core::models::Chapter = input_data.save_changes(&mut conn).unwrap();
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        axum::Json(result),
     )
         .into_response());
 }

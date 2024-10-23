@@ -38,7 +38,7 @@ pub async fn create_class_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
-    let results: core::models::Class = diesel::insert_into(schema::class::dsl::class)
+    let results: core::models::Class = diesel::insert_into(schema::classes::dsl::classes)
         .values(input_data)
         .get_result(&mut conn)
         .unwrap();
@@ -90,7 +90,7 @@ pub async fn json_to_class_route(
     let mut new_records: Vec<core::models::Class> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(
-            diesel::insert_into(schema::class::dsl::class)
+            diesel::insert_into(schema::classes::dsl::classes)
                 .values(element)
                 .get_result(&mut conn)
                 .unwrap(),
@@ -137,7 +137,7 @@ pub async fn delete_class_route(
     };
 
     // delete the class
-    diesel::delete(schema::class::dsl::class.filter(schema::class::dsl::id.eq(class_id)))
+    diesel::delete(schema::classes::dsl::classes.filter(schema::classes::dsl::id.eq(class_id)))
         .execute(&mut conn)
         .unwrap();
 

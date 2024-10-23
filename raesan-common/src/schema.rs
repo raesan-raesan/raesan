@@ -1,7 +1,7 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    chapter (id) {
+    chapters (id) {
         id -> Text,
         name -> Text,
         subject_id -> Text,
@@ -11,24 +11,25 @@ diesel::table! {
 }
 
 diesel::table! {
-    class (id) {
+    classes (id) {
         id -> Text,
         name -> Integer,
     }
 }
 
 diesel::table! {
-    question (id) {
+    questions (id) {
         id -> Text,
         body -> Text,
         chapter_name -> Text,
-        chapter_id -> Text,
+        subject_name -> Text,
         class_name -> Integer,
+        chapter_id -> Text,
     }
 }
 
 diesel::table! {
-    subject (id) {
+    subjects (id) {
         id -> Text,
         name -> Text,
         class_id -> Text,
@@ -36,13 +37,13 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(chapter -> subject (subject_id));
-diesel::joinable!(question -> chapter (chapter_id));
-diesel::joinable!(subject -> class (class_id));
+diesel::joinable!(chapters -> subjects (subject_id));
+diesel::joinable!(questions -> chapters (chapter_id));
+diesel::joinable!(subjects -> classes (class_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    chapter,
-    class,
-    question,
-    subject,
+    chapters,
+    classes,
+    questions,
+    subjects,
 );

@@ -37,12 +37,6 @@
   },
   {
     "id": "",
-    "class_name": 11,
-    "name": "Computer Science",
-    "class_id": ""
-  },
-  {
-    "id": "",
     "class_name": 12,
     "name": "Physics",
     "class_id": ""
@@ -75,12 +69,6 @@
     "id": "",
     "class_name": 12,
     "name": "Physical Education",
-    "class_id": ""
-  },
-  {
-    "id": "",
-    "class_name": 12,
-    "name": "Computer Science",
     "class_id": ""
   }
 ]

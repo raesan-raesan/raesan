@@ -15,7 +15,7 @@ use serde;
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::class)]
+#[diesel(table_name=raesan_common::schema::classes)]
 pub struct Class {
     pub id: String,
     pub name: i32,
@@ -33,7 +33,7 @@ pub struct Class {
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::subject)]
+#[diesel(table_name=raesan_common::schema::subjects)]
 pub struct Subject {
     pub id: String,
     pub name: String,
@@ -53,7 +53,7 @@ pub struct Subject {
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::chapter)]
+#[diesel(table_name=raesan_common::schema::chapters)]
 pub struct Chapter {
     pub id: String,
     pub name: String,
@@ -74,13 +74,14 @@ pub struct Chapter {
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::question)]
+#[diesel(table_name=raesan_common::schema::questions)]
 pub struct Question {
     pub id: String,
     pub body: String,
     pub chapter_name: String,
-    pub chapter_id: String,
+    pub subject_name: String,
     pub class_name: i32,
+    pub chapter_id: String,
 }
 
 // ----- `CreateTestInput` struct

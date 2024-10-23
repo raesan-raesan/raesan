@@ -81,7 +81,7 @@ pub async fn class_page(
         }
     };
 
-    let results = raesan_common::schema::class::dsl::class
+    let results = raesan_common::schema::classes::dsl::classes
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Class::as_select())
         .load(&mut conn)
@@ -138,7 +138,7 @@ pub async fn subject_page(
         }
     };
 
-    let results = raesan_common::schema::subject::dsl::subject
+    let results = raesan_common::schema::subjects::dsl::subjects
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Subject::as_select())
         .load(&mut conn)
@@ -195,7 +195,7 @@ pub async fn chapter_page(
         }
     };
 
-    let results = raesan_common::schema::chapter::dsl::chapter
+    let results = raesan_common::schema::chapters::dsl::chapters
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
@@ -251,7 +251,7 @@ pub async fn question_page(
         }
     };
 
-    let results = raesan_common::schema::question::dsl::question
+    let results = raesan_common::schema::questions::dsl::questions
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Question::as_select())
         .load(&mut conn)

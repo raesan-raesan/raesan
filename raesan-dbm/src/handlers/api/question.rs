@@ -61,7 +61,7 @@ pub async fn get_question_handler(
         }
     };
 
-    let results: Vec<core::models::Question> = raesan_common::schema::question::dsl::question
+    let results: Vec<core::models::Question> = raesan_common::schema::questions::dsl::questions
         .limit(core::PAGE_SIZE.into())
         .offset(offset as i64)
         .load(&mut conn)
@@ -102,7 +102,7 @@ pub async fn create_question_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
-    let results: core::models::Question = diesel::insert_into(schema::question::dsl::question)
+    let results: core::models::Question = diesel::insert_into(schema::questions::dsl::questions)
         .values(input_data)
         .get_result(&mut conn)
         .unwrap();
@@ -154,7 +154,7 @@ pub async fn json_to_question_route(
     let mut new_records: Vec<core::models::Question> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(
-            diesel::insert_into(schema::question::dsl::question)
+            diesel::insert_into(schema::questions::dsl::questions)
                 .values(element)
                 .get_result(&mut conn)
                 .unwrap(),
@@ -202,7 +202,7 @@ pub async fn delete_question_route(
 
     // delete the question
     diesel::delete(
-        schema::question::dsl::question.filter(schema::question::dsl::id.eq(question_id)),
+        schema::questions::dsl::questions.filter(schema::questions::dsl::id.eq(question_id)),
     )
     .execute(&mut conn)
     .unwrap();
@@ -247,9 +247,10 @@ pub async fn update_question_route(
         }
     };
 
-    let chapter: core::models::Chapter = schema::chapter::dsl::chapter
-        .filter(schema::chapter::name.eq(json.clone().chapter_name))
-        .filter(schema::chapter::class_name.eq(json.clone().class_name))
+    let chapter: core::models::Chapter = schema::chapters::dsl::chapters
+        .filter(schema::chapters::name.eq(json.clone().chapter_name))
+        .filter(schema::chapters::subject_name.eq(json.clone().subject_name))
+        .filter(schema::chapters::class_name.eq(json.clone().class_name))
         .select(core::models::Chapter::as_select())
         .first(&mut conn)
         .unwrap();

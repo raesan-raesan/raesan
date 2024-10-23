@@ -68,7 +68,7 @@ pub fn generate_database_records_for_testing(
         }
         Err(e) => return Err(e.to_string()),
     };
-    match diesel::insert_into(schema::class::dsl::class)
+    match diesel::insert_into(schema::classes::dsl::classes)
         .values(
             match serde_json::from_str::<Vec<core::models::Class>>(classes_json_string.as_str()) {
                 Ok(safe_class_vec) => safe_class_vec,
@@ -105,7 +105,7 @@ pub fn generate_database_records_for_testing(
         }
         Err(e) => return Err(e.to_string()),
     };
-    let classes = match schema::class::dsl::class
+    let classes = match schema::classes::dsl::classes
         .select(core::models::Class::as_select())
         .load(&mut conn)
     {
@@ -114,7 +114,7 @@ pub fn generate_database_records_for_testing(
             return Err(e.to_string());
         }
     };
-    match diesel::insert_into(schema::subject::dsl::subject)
+    match diesel::insert_into(schema::subjects::dsl::subjects)
         .values(
             match serde_json::from_str::<Vec<core::models::Subject>>(subjects_json_string.as_str())
             {
@@ -184,17 +184,17 @@ pub fn generate_database_records_for_testing(
     }
 
     // print the final database state
-    let results = raesan_common::schema::class::dsl::class
+    let results = raesan_common::schema::classes::dsl::classes
         .select(core::models::Class::as_select())
         .load(&mut conn)
         .expect("Error loading classes");
     println!("Classes: {:#?}", results);
-    let results = raesan_common::schema::subject::dsl::subject
+    let results = raesan_common::schema::subjects::dsl::subjects
         .select(core::models::Subject::as_select())
         .load(&mut conn)
         .expect("Error loading subjects");
     println!("Subjects: {:#?}", results);
-    let results = raesan_common::schema::chapter::dsl::chapter
+    let results = raesan_common::schema::chapters::dsl::chapters
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
         .expect("Error loading chapters");
@@ -227,9 +227,9 @@ pub fn insert_chapters(
             Ok(safe_chapter_vec) => safe_chapter_vec,
             Err(e) => return Err(e.to_string()),
         };
-    let curr_subject: core::models::Subject = match schema::subject::dsl::subject
-        .filter(schema::subject::class_name.eq(chapters_json_vec[0].class_name))
-        .filter(schema::subject::name.eq(chapters_json_vec[0].subject_name.clone()))
+    let curr_subject: core::models::Subject = match schema::subjects::dsl::subjects
+        .filter(schema::subjects::class_name.eq(chapters_json_vec[0].class_name))
+        .filter(schema::subjects::name.eq(chapters_json_vec[0].subject_name.clone()))
         .select(core::models::Subject::as_select())
         .first(&mut conn)
     {
@@ -238,7 +238,7 @@ pub fn insert_chapters(
             return Err(e.to_string());
         }
     };
-    match diesel::insert_into(schema::chapter::dsl::chapter)
+    match diesel::insert_into(schema::chapters::dsl::chapters)
         .values(
             chapters_json_vec
                 .clone()

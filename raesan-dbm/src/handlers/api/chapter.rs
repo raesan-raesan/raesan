@@ -61,7 +61,7 @@ pub async fn get_chapter_route(
         }
     };
 
-    let results: Vec<core::models::Chapter> = schema::chapter::dsl::chapter
+    let results: Vec<core::models::Chapter> = schema::chapters::dsl::chapters
         .limit(core::PAGE_SIZE.into())
         .offset(offset as i64)
         .load(&mut conn)
@@ -102,7 +102,7 @@ pub async fn create_chapter_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
-    let results: core::models::Chapter = diesel::insert_into(schema::chapter::dsl::chapter)
+    let results: core::models::Chapter = diesel::insert_into(schema::chapters::dsl::chapters)
         .values(input_data)
         .get_result(&mut conn)
         .unwrap();
@@ -154,7 +154,7 @@ pub async fn json_to_chapter_route(
     let mut new_records: Vec<core::models::Chapter> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(
-            diesel::insert_into(schema::chapter::dsl::chapter)
+            diesel::insert_into(schema::chapters::dsl::chapters)
                 .values(element)
                 .get_result(&mut conn)
                 .unwrap(),
@@ -201,9 +201,11 @@ pub async fn delete_chapter_route(
     };
 
     // delete the chapter
-    diesel::delete(schema::chapter::dsl::chapter.filter(schema::chapter::dsl::id.eq(chapter_id)))
-        .execute(&mut conn)
-        .unwrap();
+    diesel::delete(
+        schema::chapters::dsl::chapters.filter(schema::chapters::dsl::id.eq(chapter_id)),
+    )
+    .execute(&mut conn)
+    .unwrap();
 
     return Ok((
         [(
@@ -245,9 +247,9 @@ pub async fn update_chapter_route(
         }
     };
 
-    let subject: core::models::Subject = schema::subject::dsl::subject
-        .filter(schema::subject::name.eq(json.clone().subject_name))
-        .filter(schema::subject::class_name.eq(json.clone().class_name))
+    let subject: core::models::Subject = schema::subjects::dsl::subjects
+        .filter(schema::subjects::name.eq(json.clone().subject_name))
+        .filter(schema::subjects::class_name.eq(json.clone().class_name))
         .select(core::models::Subject::as_select())
         .first(&mut conn)
         .unwrap();

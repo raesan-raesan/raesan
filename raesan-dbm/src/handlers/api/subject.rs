@@ -38,7 +38,7 @@ pub async fn create_subject_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
-    let results: core::models::Subject = diesel::insert_into(schema::subject::dsl::subject)
+    let results: core::models::Subject = diesel::insert_into(schema::subjects::dsl::subjects)
         .values(input_data)
         .get_result(&mut conn)
         .unwrap();
@@ -90,7 +90,7 @@ pub async fn json_to_subject_route(
     let mut new_records: Vec<core::models::Subject> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(
-            diesel::insert_into(schema::subject::dsl::subject)
+            diesel::insert_into(schema::subjects::dsl::subjects)
                 .values(element)
                 .get_result(&mut conn)
                 .unwrap(),
@@ -137,9 +137,11 @@ pub async fn delete_subject_route(
     };
 
     // delete the subject
-    diesel::delete(schema::subject::dsl::subject.filter(schema::subject::dsl::id.eq(subject_id)))
-        .execute(&mut conn)
-        .unwrap();
+    diesel::delete(
+        schema::subjects::dsl::subjects.filter(schema::subjects::dsl::id.eq(subject_id)),
+    )
+    .execute(&mut conn)
+    .unwrap();
 
     return Ok((
         [(
@@ -181,8 +183,8 @@ pub async fn update_subject_route(
         }
     };
 
-    let class: core::models::Class = schema::class::dsl::class
-        .filter(schema::class::name.eq(json.clone().class_name))
+    let class: core::models::Class = schema::classes::dsl::classes
+        .filter(schema::classes::name.eq(json.clone().class_name))
         .select(core::models::Class::as_select())
         .first(&mut conn)
         .unwrap();

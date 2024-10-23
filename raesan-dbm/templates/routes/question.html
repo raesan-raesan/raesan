@@ -15,6 +15,8 @@
 		if (
 			(create_question_form.elements["body"].value.trim() === "" && create_question_form.elements["body"].value.trim().length === 0) ||
 			(create_question_form.elements["chapter_name"].value.trim() === "" && create_question_form.elements["chapter_name"].value.trim().length === 0) ||
+			(create_question_form.elements["subject_name"].value.trim() === "" && create_question_form.elements["subject_name"].value.trim().length === 0) ||
+			(create_question_form.elements["class_name"].value.trim() === "" && create_question_form.elements["class_name"].value.trim().length === 0) ||
 			(create_question_form.elements["chapter_id"].value.trim() === "" && create_question_form.elements["chapter_id"].value.trim().length === 0)
 		){
 			alert("You cannot leave things empty!");
@@ -28,8 +30,9 @@
 					id: "",
 					body: create_question_form.elements["body"].value,
 					chapter_name: create_question_form.elements["chapter_name"].value,
+					subject_name: create_question_form.elements["subject_name"].value,
+					class_name: parseInt(create_question_form.elements["class_name"].value),
 					chapter_id: create_question_form.elements["chapter_id"].value,
-					class_name: create_question_form.elements["class_name"].value,
 				})
 			}).then((res) => {
 				if (!res.ok){
@@ -89,7 +92,7 @@
 
 	// edit question handler
 	const editQuestion = (question_id) => {
-		let question = question_list.find(ch => ch.id == question_id);
+		let question = question_list.find(q => q.id == question_id);
 		if (question) {
 			let question_row = document.getElementById(question.id);
 			if (question_row) {
@@ -97,6 +100,7 @@
 				<td class="whitespace-nowrap">${question.id}</td>
 				<td id="body" class="whitespace-nowrap"><input type="text" placeholder="Body" value="${question.body}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
 				<td id="chapter_name" class="whitespace-nowrap"><input type="text" placeholder="Chapter" value="${question.chapter_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
+				<td id="subject_name" class="whitespace-nowrap"><input type="text" placeholder="Subject" value="${question.subject_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
 				<td id="class_name" class="whitespace-nowrap"><input type="number" placeholder="Class" value="${question.class_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
 				<th>
 					<div class="join">
@@ -129,7 +133,8 @@
 			body: question_row.querySelector('#body input').value,
 			chapter_id: "",
 			chapter_name: question_row.querySelector('#chapter_name input').value,
-			class_name: question_row.querySelector('#class_name input').value,
+			subject_name: question_row.querySelector('#subject_name input').value,
+			class_name: parseInt(question_row.querySelector('#class_name input').value),
 		}
 		question.chapter_id = "";
 		// use `loadash` to compare structs
@@ -149,7 +154,7 @@
 				return res.json();
 			}).then((data) => {
 				// update the question in the question_list
-				const index = question_list.findIndex(ch => ch.id === data.id);
+				const index = question_list.findIndex(q => q.id === data.id);
 				if (index !== -1) {
 					question_list[index] = { ...data };
 				}else{
@@ -170,6 +175,7 @@
 			<td>${question.id}</td>
 			<td>${question.body}</td>
 			<td>${question.chapter_name}</td>
+			<td>${question.subject_name}</td>
 			<td>${question.class_name}</td>
 			<th>
 				<div class="join">
@@ -218,6 +224,7 @@
 							<td>${element.id}</td>
 							<td>${element.body}</td>
 							<td>${element.chapter_name}</td>
+							<td>${element.subject_name}</td>
 							<td>${question.class_name}</td>
 							<th>
 								<div class="join">
@@ -283,25 +290,28 @@
 {% call create_modal::component("Question","handleCreateQuestionFormSubmit()","
 	<input type='text' name='body' placeholder='Body' class='input input-bordered w-full max-w-xs' />
 	<input type='text' name='chapter_name' placeholder='Chapter' class='input input-bordered w-full max-w-xs' />
-	<input type='text' name='chapter_id' placeholder='Chapter ID' class='input input-bordered w-full max-w-xs' />
+	<input type='text' name='subject_name' placeholder='Subject' class='input input-bordered w-full max-w-xs' />
 	<input type='number' name='class_name' placeholder='Class' class='input input-bordered w-full max-w-xs' />
+	<input type='text' name='chapter_id' placeholder='Chapter ID' class='input input-bordered w-full max-w-xs' />
 ") %}
 
 <!-- create question from json modal -->
 {% call create_from_json_modal::component("Question","handleCreateQuestionFromJsonFormSubmit()","[
 	{
-		 'id': '--this-should-be-empty--',
-		 'body': 'some body',
-		 'chapter_name': 'some name',
-		 'chapter_id': 'some id',
-		 'class_name': 'some name'
+		\"id\": \"--this-should-be-empty--\",
+		\"body\": \"some body\",
+		\"chapter_name\": \"some name\",
+		\"subject_name\": \"some name\",
+		\"class_name\": \"some name\",
+		\"chapter_id\": \"some id\"
 	},
 	{
-		 'id': '--this-should-be-empty--',
-		 'body': 'some body 2',
-		 'chapter_name': 'some name',
-		 'chapter_id': 'some id 2',
-		 'class_name': 'some name'
+		\"id\": \"--this-should-be-empty--\",
+		\"body\": \"some body 2\",
+		\"chapter_name\": \"some name\",
+		\"subject_name\": \"some name\",
+		\"class_name\": \"some name\",
+		\"chapter_id\": \"some id 2\"
 	}
 ]") %}
 
@@ -315,6 +325,7 @@
 					<th>ID</th>
 					<th>Body</th>
 					<th>Chapter</th>
+					<th>Subject</th>
 					<th>Class</th>
 					<th></th>
 				</tr>
@@ -325,6 +336,7 @@
 					<td>{{ question.id }}</td>
 					<td>{{ question.body }}</td>
 					<td>{{ question.chapter_name }}</td>
+					<td>{{ question.subject_name }}</td>
 					<td>{{ question.class_name }}</td>
 					<th>
 						<div class="join">

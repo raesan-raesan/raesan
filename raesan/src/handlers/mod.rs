@@ -77,7 +77,7 @@ pub async fn home_page(
         }
     };
 
-    let results = raesan_common::schema::class::dsl::class
+    let results = raesan_common::schema::classes::dsl::classes
         .select(core::models::Class::as_select())
         .load(&mut conn)
         .expect("Error loading classes");

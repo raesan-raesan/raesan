@@ -3,72 +3,84 @@
     "id": "",
     "class_name": 11,
     "name": "Physics",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - Physics"
   },
   {
     "id": "",
     "class_name": 11,
     "name": "Chemistry",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - Chemistry"
   },
   {
     "id": "",
     "class_name": 11,
     "name": "Maths",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - Maths"
   },
   {
     "id": "",
     "class_name": 11,
     "name": "Biology",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - Biology"
   },
   {
     "id": "",
     "class_name": 11,
     "name": "English",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - English"
   },
   {
     "id": "",
     "class_name": 11,
     "name": "Physical Education",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "11 - Physical Education"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "Physics",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - Physics"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "Chemistry",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - Chemistry"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "Maths",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - Maths"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "Biology",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - Biology"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "English",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - English"
   },
   {
     "id": "",
     "class_name": 12,
     "name": "Physical Education",
-    "class_id": ""
+    "class_id": "",
+    "display_name": "12 - Physical Education"
   }
 ]

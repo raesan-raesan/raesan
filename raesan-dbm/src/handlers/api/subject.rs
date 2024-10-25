@@ -183,14 +183,7 @@ pub async fn update_subject_route(
         }
     };
 
-    let class: core::models::Class = schema::classes::dsl::classes
-        .filter(schema::classes::name.eq(json.clone().class_name))
-        .select(core::models::Class::as_select())
-        .first(&mut conn)
-        .unwrap();
-    let mut input_data = json.clone();
-    input_data.class_id = class.id;
-    let result: core::models::Subject = input_data.save_changes(&mut conn).unwrap();
+    let result: core::models::Subject = json.save_changes(&mut conn).unwrap();
 
     return Ok((
         [(

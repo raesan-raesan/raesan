@@ -13,6 +13,7 @@ pub struct ClassPage {
 #[derive(Template)]
 #[template(path = "routes/subject.html")]
 pub struct SubjectPage {
+    pub classes: Vec<core::models::Class>,
     pub subjects: Vec<core::models::Subject>,
 }
 
@@ -20,6 +21,7 @@ pub struct SubjectPage {
 #[derive(Template)]
 #[template(path = "routes/chapter.html")]
 pub struct ChapterPage {
+    pub subjects: Vec<core::models::Subject>,
     pub chapters: Vec<core::models::Chapter>,
 }
 

@@ -247,15 +247,7 @@ pub async fn update_chapter_route(
         }
     };
 
-    let subject: core::models::Subject = schema::subjects::dsl::subjects
-        .filter(schema::subjects::name.eq(json.clone().subject_name))
-        .filter(schema::subjects::class_name.eq(json.clone().class_name))
-        .select(core::models::Subject::as_select())
-        .first(&mut conn)
-        .unwrap();
-    let mut input_data = json.clone();
-    input_data.subject_id = subject.id;
-    let result: core::models::Chapter = input_data.save_changes(&mut conn).unwrap();
+    let result: core::models::Chapter = json.save_changes(&mut conn).unwrap();
 
     return Ok((
         [(

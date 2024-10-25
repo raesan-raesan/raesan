@@ -32,6 +32,7 @@ diesel::table! {
     subjects (id) {
         id -> Text,
         name -> Text,
+        display_name -> Text,
         class_id -> Text,
         class_name -> Integer,
     }

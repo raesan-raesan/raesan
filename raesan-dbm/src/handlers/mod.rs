@@ -138,14 +138,17 @@ pub async fn subject_page(
         }
     };
 
-    let results = raesan_common::schema::subjects::dsl::subjects
-        .limit(core::PAGE_SIZE.into())
+    let classes = raesan_common::schema::classes::dsl::classes
+        .select(core::models::Class::as_select())
+        .load(&mut conn)
+        .expect("Error loading classes");
+    let subjects = raesan_common::schema::subjects::dsl::subjects
         .select(core::models::Subject::as_select())
         .load(&mut conn)
         .expect("Error loading subjects");
 
     // render HTML struct
-    let html = match (templates::routes::SubjectPage { subjects: results }.render()) {
+    let html = match (templates::routes::SubjectPage { classes, subjects }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);
@@ -195,14 +198,18 @@ pub async fn chapter_page(
         }
     };
 
-    let results = raesan_common::schema::chapters::dsl::chapters
+    let subjects = raesan_common::schema::subjects::dsl::subjects
+        .select(core::models::Subject::as_select())
+        .load(&mut conn)
+        .unwrap();
+    let chapters = raesan_common::schema::chapters::dsl::chapters
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
         .unwrap();
 
     // render HTML struct
-    let html = match (templates::routes::ChapterPage { chapters: results }.render()) {
+    let html = match (templates::routes::ChapterPage { subjects, chapters }.render()) {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);

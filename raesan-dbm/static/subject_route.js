@@ -1,6 +1,7 @@
 window.class_list.forEach((element) => {
-  document.getElementById("create_subject_form").elements["class_name"] +=
-    `<option value="${element.name}">${element.name}</option>`;
+  document.getElementById("create_subject_form").elements[
+    "class_name"
+  ].innerHTML += `<option value="${element.name}">${element.name}</option>`;
 });
 // handle create_subject_form submition
 const handleCreateSubjectFormSubmit = () => {

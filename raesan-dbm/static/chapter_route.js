@@ -1,18 +1,27 @@
+window.subject_list.forEach((element) => {
+  document.getElementById("create_chapter_form").elements[
+    "subject_display_name"
+  ].innerHTML +=
+    `<option value="${element.display_name}">${element.display_name}</option>`;
+});
 // handle create_chapter_form submition
 const handleCreateChapterFormSubmit = () => {
   let create_chapter_form = document.getElementById("create_chapter_form");
   if (
-    (create_chapter_form.elements["name"].value.trim() === "" &&
-      create_chapter_form.elements["name"].value.trim().length === 0) ||
-    (create_chapter_form.elements["subject_id"].value.trim() === "" &&
-      create_chapter_form.elements["subject_id"].value.trim().length === 0) ||
-    (create_chapter_form.elements["subject_name"].value.trim() === "" &&
-      create_chapter_form.elements["subject_name"].value.trim().length === 0) ||
-    (create_chapter_form.elements["class_name"].value.trim() === "" &&
-      create_chapter_form.elements["chapter_name"].value.trim().length === 0)
+    create_chapter_form.elements["name"].value.trim() === "" ||
+    create_chapter_form.elements["name"].value.trim().length === 0 ||
+    create_chapter_form.elements["subject_display_name"].value.trim() === "" ||
+    create_chapter_form.elements["subject_display_name"].value.trim().length ===
+      0 ||
+    create_chapter_form.elements["subject_display_name"].value === "0"
   ) {
     alert("You cannot leave things empty!");
   } else {
+    let curr_subject = window.subject_list.find(
+      (sb) =>
+        sb.display_name ==
+        create_chapter_form.elements["subject_display_name"].value,
+    );
     fetch("/api/chapter", {
       method: "POST",
       headers: {
@@ -21,9 +30,9 @@ const handleCreateChapterFormSubmit = () => {
       body: JSON.stringify({
         id: "",
         name: create_chapter_form.elements["name"].value,
-        subject_id: create_chapter_form.elements["subject_id"].value,
-        subject_name: create_chapter_form.elements["subject_name"].value,
-        class_name: parseInt(create_chapter_form.elements["class_name"].value),
+        subject_id: curr_subject.id,
+        subject_name: curr_subject.name,
+        class_name: curr_subject.class_name,
       }),
     })
       .then((res) => {
@@ -32,13 +41,14 @@ const handleCreateChapterFormSubmit = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then((_) => {
         if (document.getElementById("create_chapter_modal")) {
           document.getElementById("create_chapter_modal").close();
         }
       });
   }
 };
+window.handleCreateChapterFormSubmit = handleCreateChapterFormSubmit;
 
 // handle create_chapter_from_json_input submition
 document.getElementById("create_chapter_from_json_input").value = "";
@@ -67,16 +77,18 @@ const handleCreateChapterFromJsonFormSubmit = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then((_) => {
         if (document.getElementById("create_chapter_from_json_modal")) {
           document.getElementById("create_chapter_from_json_modal").close();
         }
       });
   }
 };
+window.handleCreateChapterFromJsonFormSubmit =
+  handleCreateChapterFromJsonFormSubmit;
 
 // delete chapter handler
-const deleteChapter = (chapter_id, chapter_name) => {
+const handleDeleteChapter = (chapter_id, chapter_name) => {
   let choice = confirm(`WARNING! Do you want to delete '${chapter_name}'`);
   if (choice == true) {
     fetch(`/api/chapter/${chapter_id}`, {
@@ -88,60 +100,70 @@ const deleteChapter = (chapter_id, chapter_name) => {
         }
         return res.text();
       })
-      .then((data) => {
+      .then((_) => {
         document.getElementById(chapter_id).remove();
       });
   }
 };
+window.handleDeleteChapter = handleDeleteChapter;
 
 // edit chapter handler
-const editChapter = (chapter_id) => {
-  let chapter = chapter_list.find((ch) => ch.id == chapter_id);
+const handleEditChapter = (chapter_id) => {
+  let chapter = window.chapter_list.find((ch) => ch.id == chapter_id);
   if (chapter) {
     let chapter_row = document.getElementById(chapter.id);
     if (chapter_row) {
       chapter_row.innerHTML = `
 				<td class="whitespace-nowrap">${chapter.id}</td>
 				<td id="name" class="whitespace-nowrap"><input type="text" placeholder="Name" value="${chapter.name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
-				<td id="subject_name" class="whitespace-nowrap"><input type="text" placeholder="Subject" value="${chapter.subject_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
-				<td id="class_name" class="whitespace-nowrap"><input type="number" placeholder="Class" value="${chapter.class_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
+				<td id="subject_display_name" class="whitespace-nowrap"><select id="subject" class="select select-bordered w-full max-w-xs"></select></td>
 				<th>
 					<div class="join">
 					  <button
 						class="btn btn-sm btn-outline btn-successfull join-item"
-						onclick="updateChapter(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(chapter))}')))"
+						onclick="handleUpdateChapter(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(chapter))}')))"
 					  >
 					 Save
 					  </button>
 					  <button
 						class="btn btn-sm btn-outline btn-error join-item"
-						onclick="resetChapter(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(chapter))}')))"
+						onclick="handleResetChapter(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(chapter))}')))"
 					  >
 					  Reset
 					  </button>
 					</div>
 				</th>
 				`;
+      window.subject_list.forEach((element) => {
+        chapter_row.querySelector("#subject_display_name select").innerHTML +=
+          `<option ${element.display_name == `${chapter.class_name} - ${chapter.subject_name}` ? "selected" : ""} value="${element.display_name}">${element.display_name}</option>`;
+      });
     }
   } else {
     alert("Something went wrong!");
   }
 };
+window.handleEditChapter = handleEditChapter;
 
 // update chapter handler
-const updateChapter = (chapter) => {
+const handleUpdateChapter = (chapter) => {
   const chapter_row = document.getElementById(chapter.id);
+  let curr_subject = window.subject_list.find(
+    (sb) =>
+      sb.display_name ==
+      chapter_row.querySelector("#subject_display_name select").value,
+  );
   let new_chapter = {
     id: chapter.id,
     name: chapter_row.querySelector("#name input").value,
-    subject_id: "",
-    subject_name: chapter_row.querySelector("#subject_name input").value,
-    class_name: parseInt(chapter_row.querySelector("#class_name input").value),
+    subject_id: curr_subject.id,
+    subject_name: curr_subject.name,
+    class_name: curr_subject.class_name,
   };
   chapter.subject_id = "";
   // use `loadash` to compare structs
   if (_.isEqual(new_chapter, chapter)) {
-    resetChapter(chapter);
+    handleResetChapter(chapter);
   } else {
     fetch("/api/chapter", {
       method: "PATCH",
@@ -158,24 +180,25 @@ const updateChapter = (chapter) => {
       })
       .then((data) => {
         // update the chapter in the chapter_list
-        const index = chapter_list.findIndex((ch) => ch.id === data.id);
+        const index = window.chapter_list.findIndex((ch) => ch.id === data.id);
         if (index !== -1) {
-          chapter_list[index] = { ...data };
+          window.chapter_list[index] = { ...data };
         } else {
           alert("Something went Terribly Wrong!");
         }
-        resetChapter(data);
+        handleResetChapter(data);
       })
-      .catch((err) => {
-        resetChapter(chapter);
+      .catch((_) => {
+        handleResetChapter(chapter);
         alert("Failed to update the Chapter");
         throw new Error(`HTTP error! Status: ${res.status}`);
       });
   }
 };
+window.handleUpdateChapter = handleUpdateChapter;
 
 // reset chapter handler
-const resetChapter = (chapter) => {
+const handleResetChapter = (chapter) => {
   document.getElementById(chapter.id).innerHTML = `
 		<td class="whitespace-nowrap">${chapter.id}</td>
 		<td class="whitespace-nowrap">${chapter.name}</td>
@@ -185,13 +208,13 @@ const resetChapter = (chapter) => {
 			<div class="join">
 			  <button
 				class="btn btn-sm btn-outline btn-secondary join-item"
-				onclick="editChapter('${chapter.id}')"
+				onclick="handleEditChapter('${chapter.id}')"
 			  >
 			  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
 			  </button>
 			  <button
 				class="btn btn-sm btn-outline btn-accent join-item"
-				onclick="deleteChapter('${chapter.id}','${chapter.name}')"
+				onclick="handleDeleteChapter('${chapter.id}','${chapter.name}')"
 			  >
 			  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
 			  </button>
@@ -199,6 +222,7 @@ const resetChapter = (chapter) => {
 		</th>
 		`;
 };
+window.handleResetChapter = handleResetChapter;
 
 let curr_page = 1;
 // Function to fetch and append new data
@@ -222,7 +246,7 @@ function fetchAndAppendData() {
 
       // Append the new data to the table body
       data.forEach((element) => {
-        chapter_list.push(element); // push the element to the chapter list
+        window.chapter_list.push(element); // push the element to the chapter list
         chapter_table_body.innerHTML += `
 					<tr id="${element.id}">
 						<td class="whitespace-nowrap">${element.id}</td>
@@ -233,13 +257,13 @@ function fetchAndAppendData() {
 							<div class="join">
 							  <button
 								class="btn btn-sm btn-outline btn-secondary join-item"
-								onclick="editChapter('${element.id}')"
+								onclick="handleEditChapter('${element.id}')"
 							  >
 							  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
 							  </button>
 							  <button
 								class="btn btn-sm btn-outline btn-accent join-item"
-								onclick="deleteChapter('${element.id}','${element.name}')"
+								onclick="handleDeleteChapter('${element.id}','${element.name}')"
 							  >
 							  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
 							  </button>

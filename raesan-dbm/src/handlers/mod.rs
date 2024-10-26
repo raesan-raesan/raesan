@@ -230,6 +230,7 @@ pub async fn chapter_page(
         .into_response());
 }
 
+// GET(/question) page route handler
 pub async fn question_page(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
@@ -258,14 +259,23 @@ pub async fn question_page(
         }
     };
 
-    let results = raesan_common::schema::questions::dsl::questions
+    let chapters = raesan_common::schema::chapters::dsl::chapters
+        .select(core::models::Chapter::as_select())
+        .load(&mut conn)
+        .expect("Error loading chapters");
+    let questions = raesan_common::schema::questions::dsl::questions
         .limit(core::PAGE_SIZE.into())
         .select(core::models::Question::as_select())
         .load(&mut conn)
         .expect("Error loading questions");
 
     // render HTML struct
-    let html = match (templates::routes::QuestionPage { questions: results }.render()) {
+    let html = match (templates::routes::QuestionPage {
+        chapters,
+        questions,
+    }
+    .render())
+    {
         Ok(safe_html) => safe_html,
         Err(e) => {
             println!("Failed to render HTML, Error {:#?}", e);

@@ -6,7 +6,8 @@
 
 {% block page_scripts %}
 <script>
-	let question_list = {{questions|json|safe}};
+	window.question_list = {{questions|json|safe}};
+	window.chapter_list = {{chapters|json|safe}};
 </script>
 <script src="/static/question_route.js"></script>
 {% endblock %}
@@ -72,13 +73,13 @@
 						<div class="join">
 						  <button
 							class="btn btn-sm btn-outline btn-secondary join-item"
-							onclick="editQuestion('{{ question.id }}')"
+							onclick="handleEditQuestion('{{ question.id }}')"
 						  >
 						  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
 						  </button>
 						  <button
 							class="btn btn-sm btn-outline btn-accent join-item"
-							onclick="deleteQuestion('{{ question.id }}','{{ question.body }}')"
+							onclick="handleDeleteQuestion('{{ question.id }}','{{ question.body }}')"
 						  >
 						  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
 						  </button>

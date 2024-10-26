@@ -37,13 +37,14 @@ const handleCreateQuestionFormSubmit = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then((_) => {
         if (document.getElementById("create_question_modal")) {
           document.getElementById("create_question_modal").close();
         }
       });
   }
 };
+window.handleCreateQuestionFormSubmit = handleCreateQuestionFormSubmit;
 
 // handle create_question_from_json_input submition
 document.getElementById("create_question_from_json_input").value = "";
@@ -72,16 +73,18 @@ const handleCreateQuestionFromJsonFormSubmit = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then((_) => {
         if (document.getElementById("create_question_from_json_modal")) {
           document.getElementById("create_question_from_json_modal").close();
         }
       });
   }
 };
+window.handleCreateQuestionFromJsonFormSubmit =
+  handleCreateQuestionFromJsonFormSubmit;
 
 // delete question handler
-const deleteQuestion = (question_id, question_body) => {
+const handleDeleteQuestion = (question_id, question_body) => {
   let choice = confirm(`WARNING! Do you want to delete '${question_body}'`);
   if (choice == true) {
     fetch(`/api/question/${question_id}`, {
@@ -93,15 +96,16 @@ const deleteQuestion = (question_id, question_body) => {
         }
         return res.text();
       })
-      .then((data) => {
+      .then((_) => {
         document.getElementById(question_id).remove();
       });
   }
 };
+window.handleDeleteQuestion = handleDeleteQuestion;
 
 // edit question handler
-const editQuestion = (question_id) => {
-  let question = question_list.find((q) => q.id == question_id);
+const handleEditQuestion = (question_id) => {
+  let question = window.question_list.find((q) => q.id == question_id);
   if (question) {
     let question_row = document.getElementById(question.id);
     if (question_row) {
@@ -115,13 +119,13 @@ const editQuestion = (question_id) => {
 				<div class="join">
 				  <button
 					class="btn btn-sm btn-outline btn-successfull join-item"
-					onclick="updateQuestion(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(question))}')))"
+					onclick="handleUpdateQuestion(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(question))}')))"
 				  >
 				 Save
 				  </button>
 				  <button
 					class="btn btn-sm btn-outline btn-error join-item"
-					onclick="resetQuestion(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(question))}')))"
+					onclick="handleResetQuestion(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(question))}')))"
 				  >
 				  Reset
 				  </button>
@@ -133,9 +137,10 @@ const editQuestion = (question_id) => {
     alert("Something went wrong!");
   }
 };
+window.handleEditQuestion = handleEditQuestion;
 
 // update question handler
-const updateQuestion = (question) => {
+const handleUpdateQuestion = (question) => {
   const question_row = document.getElementById(question.id);
   let new_question = {
     id: question.id,
@@ -148,7 +153,7 @@ const updateQuestion = (question) => {
   question.chapter_id = "";
   // use `loadash` to compare structs
   if (_.isEqual(new_question, question)) {
-    resetQuestion(question);
+    handleResetQuestion(question);
   } else {
     fetch("/api/question", {
       method: "PATCH",
@@ -165,24 +170,25 @@ const updateQuestion = (question) => {
       })
       .then((data) => {
         // update the question in the question_list
-        const index = question_list.findIndex((q) => q.id === data.id);
+        const index = window.question_list.findIndex((q) => q.id === data.id);
         if (index !== -1) {
-          question_list[index] = { ...data };
+          window.question_list[index] = { ...data };
         } else {
           alert("Something went Terribly Wrong!");
         }
-        resetQuestion(data);
+        handleResetQuestion(data);
       })
-      .catch((err) => {
-        resetQuestion(question);
+      .catch((_) => {
+        handleResetQuestion(question);
         alert("Failed to update the Question");
         throw new Error(`HTTP error! Status: ${res.status}`);
       });
   }
 };
+window.handleUpdatQuestion = handleUpdateQuestion;
 
 // reset question handler
-const resetQuestion = (question) => {
+const handleResetQuestion = (question) => {
   document.getElementById(question.id).innerHTML = `
 		<td>${question.id}</td>
 		<td>${question.body}</td>
@@ -193,13 +199,13 @@ const resetQuestion = (question) => {
 			<div class="join">
 			  <button
 				class="btn btn-sm btn-outline btn-secondary join-item"
-				onclick="editQuestion('${question.id}')"
+				onclick="handleEditQuestion('${question.id}')"
 			  >
 			  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
 			  </button>
 			  <button
 				class="btn btn-sm btn-outline btn-accent join-item"
-				onclick="deleteQuestion('${question.id}','${question.body}')"
+				onclick="handleDeleteQuestion('${question.id}','${question.body}')"
 			  >
 			  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
 			  </button>
@@ -207,6 +213,7 @@ const resetQuestion = (question) => {
 		</th>
 	`;
 };
+window.handleResetQuestion = handleResetQuestion;
 
 let curr_page = 1;
 
@@ -242,13 +249,13 @@ function fetchAndAppendData() {
 							<div class="join">
 							  <button
 								class="btn btn-sm btn-outline btn-secondary join-item"
-								onclick="editQuestion('${element.id}')"
+								onclick="handleEditQuestion('${element.id}')"
 							  >
 							  <span class="iconify mdi--edit-outline w-[22px] h-[22px]"></span>
 							  </button>
 							  <button
 								class="btn btn-sm btn-outline btn-accent join-item"
-								onclick="deleteQuestion('${element.id}','${element.name}')"
+								onclick="handleDeleteQuestion('${element.id}','${element.name}')"
 							  >
 							  <span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
 							  </button>

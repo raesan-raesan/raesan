@@ -29,5 +29,6 @@ pub struct ChapterPage {
 #[derive(Template)]
 #[template(path = "routes/question.html")]
 pub struct QuestionPage {
+    pub chapters: Vec<core::models::Chapter>,
     pub questions: Vec<core::models::Question>,
 }

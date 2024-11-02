@@ -1,22 +1,27 @@
+window.chapter_list.forEach((element) => {
+  document.getElementById("create_question_form").elements[
+    "chapter_display_name"
+  ].innerHTML +=
+    `<option value="${element.display_name}">${element.display_name}</option>`;
+});
 // handle create_question_form submition
 const handleCreateQuestionFormSubmit = () => {
   let create_question_form = document.getElementById("create_question_form");
   if (
-    (create_question_form.elements["body"].value.trim() === "" &&
-      create_question_form.elements["body"].value.trim().length === 0) ||
-    (create_question_form.elements["chapter_name"].value.trim() === "" &&
-      create_question_form.elements["chapter_name"].value.trim().length ===
-        0) ||
-    (create_question_form.elements["subject_name"].value.trim() === "" &&
-      create_question_form.elements["subject_name"].value.trim().length ===
-        0) ||
-    (create_question_form.elements["class_name"].value.trim() === "" &&
-      create_question_form.elements["class_name"].value.trim().length === 0) ||
-    (create_question_form.elements["chapter_id"].value.trim() === "" &&
-      create_question_form.elements["chapter_id"].value.trim().length === 0)
+    create_question_form.elements["body"].value.trim() === "" ||
+    create_question_form.elements["body"].value.trim().length === 0 ||
+    create_question_form.elements["chapter_display_name"].value.trim() === "" ||
+    create_question_form.elements["chapter_display_name"].value.trim()
+      .length === 0 ||
+    create_question_form.elements["chapter_display_name"].value === "0"
   ) {
     alert("You cannot leave things empty!");
   } else {
+    let curr_chapter = window.chapter_list.find(
+      (ch) =>
+        ch.display_name ==
+        create_question_form.elements["chapter_display_name"].value,
+    );
     fetch("/api/question", {
       method: "POST",
       headers: {
@@ -25,10 +30,10 @@ const handleCreateQuestionFormSubmit = () => {
       body: JSON.stringify({
         id: "",
         body: create_question_form.elements["body"].value,
-        chapter_name: create_question_form.elements["chapter_name"].value,
-        subject_name: create_question_form.elements["subject_name"].value,
-        class_name: parseInt(create_question_form.elements["class_name"].value),
-        chapter_id: create_question_form.elements["chapter_id"].value,
+        chapter_name: curr_chapter.name,
+        subject_name: curr_chapter.subject_name,
+        class_name: curr_chapter.class_name,
+        chapter_id: curr_chapter.id,
       }),
     })
       .then((res) => {
@@ -112,9 +117,7 @@ const handleEditQuestion = (question_id) => {
       question_row.innerHTML = `
 			<td class="whitespace-nowrap">${question.id}</td>
 			<td id="body" class="whitespace-nowrap"><input type="text" placeholder="Body" value="${question.body}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
-			<td id="chapter_name" class="whitespace-nowrap"><input type="text" placeholder="Chapter" value="${question.chapter_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
-			<td id="subject_name" class="whitespace-nowrap"><input type="text" placeholder="Subject" value="${question.subject_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
-			<td id="class_name" class="whitespace-nowrap"><input type="number" placeholder="Class" value="${question.class_name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
+			<td id="chapter_display_name" class="whitespace-nowrap"><select id="chapter" class="select select-bordered w-full max-w-xs"></select></td>
 			<th>
 				<div class="join">
 				  <button
@@ -132,6 +135,10 @@ const handleEditQuestion = (question_id) => {
 				</div>
 			</th>
 			`;
+      window.chapter_list.forEach((element) => {
+        question_row.querySelector("#chapter_display_name select").innerHTML +=
+          `<option ${element.display_name == `${question.class_name} - ${question.subject_name} - ${question.chapter_name}` ? "selected" : ""} value="${element.display_name}">${element.display_name}</option>`;
+      });
     }
   } else {
     alert("Something went wrong!");
@@ -142,15 +149,19 @@ window.handleEditQuestion = handleEditQuestion;
 // update question handler
 const handleUpdateQuestion = (question) => {
   const question_row = document.getElementById(question.id);
+  let curr_chapter = window.chapter_list.find(
+    (ch) =>
+      ch.display_name ==
+      question_row.querySelector("#chapter_display_name select").value,
+  );
   let new_question = {
     id: question.id,
     body: question_row.querySelector("#body input").value,
-    chapter_id: "",
-    chapter_name: question_row.querySelector("#chapter_name input").value,
-    subject_name: question_row.querySelector("#subject_name input").value,
-    class_name: parseInt(question_row.querySelector("#class_name input").value),
+    chapter_id: curr_chapter.id,
+    chapter_name: curr_chapter.name,
+    subject_name: curr_chapter.subject_name,
+    class_name: curr_chapter.class_name,
   };
-  question.chapter_id = "";
   // use `loadash` to compare structs
   if (_.isEqual(new_question, question)) {
     handleResetQuestion(question);
@@ -238,13 +249,14 @@ function fetchAndAppendData() {
 
       // Append the new data to the table body
       data.forEach((element) => {
+        window.question_list.push(element); // push the element to the question list
         question_table_body.innerHTML += `
 					<tr id="${element.id}">
 						<td>${element.id}</td>
 						<td>${element.body}</td>
 						<td>${element.chapter_name}</td>
 						<td>${element.subject_name}</td>
-						<td>${question.class_name}</td>
+						<td>${element.class_name}</td>
 						<th>
 							<div class="join">
 							  <button

@@ -20,10 +20,9 @@
 <!-- create question modal -->
 {% call create_modal::component("Question","handleCreateQuestionFormSubmit()","
 	<input type='text' name='body' placeholder='Body' class='input input-bordered w-full max-w-xs' />
-	<input type='text' name='chapter_name' placeholder='Chapter' class='input input-bordered w-full max-w-xs' />
-	<input type='text' name='subject_name' placeholder='Subject' class='input input-bordered w-full max-w-xs' />
-	<input type='number' name='class_name' placeholder='Class' class='input input-bordered w-full max-w-xs' />
-	<input type='text' name='chapter_id' placeholder='Chapter ID' class='input input-bordered w-full max-w-xs' />
+	<select name='chapter_display_name' class='select select-bordered w-full max-w-xs'>
+		<option disabled selected value='0'>Chapter</option>
+	</select>
 ") %}
 
 <!-- create question from json modal -->
@@ -54,8 +53,8 @@
 			<thead>
 				<tr class="bg-base-300">
 					<th>ID</th>
-					<th>Body</th>
-					<th>Chapter</th>
+					<th class="max-w-[250px]">Body</th>
+					<th class="max-w-[250px]">Chapter</th>
 					<th>Subject</th>
 					<th>Class</th>
 					<th></th>

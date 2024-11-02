@@ -4,69 +4,79 @@
     "name": "Management of Sporting Events",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Management of Sporting Events"
   },
   {
     "id": "",
     "name": "Children and Women in Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Children and Women in Sports"
   },
   {
     "id": "",
     "name": "Yoga as Preventive Measure for Lifestyle Diseases",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Yoga as Preventive Measure for Lifestyle Diseases"
   },
   {
     "id": "",
     "name": "Physical Education and Sports for Children with Special Needs",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Physical Education and Sports for Children with Special Needs"
   },
   {
     "id": "",
     "name": "Sports and Nutrition",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Sports and Nutrition"
   },
   {
     "id": "",
     "name": "Test and Measurement in Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Test and Measurement in Sports"
   },
   {
     "id": "",
     "name": "Physiology and Injuries in Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Physiology and Injuries in Sports"
   },
   {
     "id": "",
     "name": "Biomechanics and Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Biomechanics and Sports"
   },
   {
     "id": "",
     "name": "Psychology and Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Psychology and Sports"
   },
   {
     "id": "",
     "name": "Training in Sports",
     "subject_id": "",
     "subject_name": "Physical Education",
-    "class_name": 12
+    "class_name": 12,
+    "display_name": "12 - Physical Education - Training in Sports"
   }
 ]

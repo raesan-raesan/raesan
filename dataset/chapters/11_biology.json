@@ -4,132 +4,151 @@
     "name": "The Living World",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - The Living World"
   },
   {
     "id": "",
     "name": "Biological Classification",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Biological Classification"
   },
   {
     "id": "",
     "name": "Plant Kingdom",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Plant Kingdom"
   },
   {
     "id": "",
     "name": "Animal Kingdom",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Animal Kingdom"
   },
   {
     "id": "",
     "name": "Morphology of Flowering Plants",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Morphology of Flowering Plants"
   },
   {
     "id": "",
     "name": "Anatomy of Flowering Plants",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Anatomy of Flowering Plants"
   },
   {
     "id": "",
     "name": "Structural Organisation in Animals",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Structural Organisation in Animals"
   },
   {
     "id": "",
     "name": "Cell - The Unit of Life",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Cell - The Unit of Life"
   },
   {
     "id": "",
     "name": "Biomolecules",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Biomolecules"
   },
   {
     "id": "",
     "name": "Cell Cycle and Cell Division",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Cell Cycle and Cell Division"
   },
   {
     "id": "",
     "name": "Photosynthesis in Higher Plants",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Photosynthesis in Higher Plants"
   },
   {
     "id": "",
     "name": "Respiration in Plants",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Respiration in Plants"
   },
   {
     "id": "",
     "name": "Plant Growth and Development",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Plant Growth and Development"
   },
   {
     "id": "",
     "name": "Breathing and Exchange of Gases",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Breathing and Exchange of Gases"
   },
   {
     "id": "",
     "name": "Body Fluids and Circulation",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Body Fluids and Circulation"
   },
   {
     "id": "",
     "name": "Excretory Products and their Elimination",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Excretory Products and their Elimination"
   },
   {
     "id": "",
     "name": "Locomotion and Movement",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Locomotion and Movement"
   },
   {
     "id": "",
     "name": "Neural Control and Coordination",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Neural Control and Coordination"
   },
   {
     "id": "",
     "name": "Chemical Coordination and Integration",
     "subject_id": "",
     "subject_name": "Biology",
-    "class_name": 11
+    "class_name": 11,
+    "display_name": "11 - Biology - Chemical Coordination and Integration"
   }
 ]

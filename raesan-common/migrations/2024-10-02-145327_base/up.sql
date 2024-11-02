@@ -15,6 +15,7 @@ CREATE TABLE subjects(
 CREATE TABLE chapters(
 	id TEXT PRIMARY KEY NOT NULL,
 	name TEXT NOT NULL,
+	display_name TEXT NOT NULL,
 	subject_id TEXT NOT NULL,
 	subject_name TEXT NOT NULL,
 	class_name INTEGER NOT NULL,

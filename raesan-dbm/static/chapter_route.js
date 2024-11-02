@@ -30,6 +30,7 @@ const handleCreateChapterFormSubmit = () => {
       body: JSON.stringify({
         id: "",
         name: create_chapter_form.elements["name"].value,
+        display_name: `${curr_subject.class_name} - ${curr_subject.name} - ${create_chapter_form.elements["name"].value}`,
         subject_id: curr_subject.id,
         subject_name: curr_subject.name,
         class_name: curr_subject.class_name,
@@ -114,7 +115,7 @@ const handleEditChapter = (chapter_id) => {
     let chapter_row = document.getElementById(chapter.id);
     if (chapter_row) {
       chapter_row.innerHTML = `
-				<td class="whitespace-nowrap">${chapter.id}</td>
+				<td>${chapter.id}</td>
 				<td id="name" class="whitespace-nowrap"><input type="text" placeholder="Name" value="${chapter.name}" class="input input-bordered w-full max-w-xs min-w-[60px]"/></td>
 				<td id="subject_display_name" class="whitespace-nowrap"><select id="subject" class="select select-bordered w-full max-w-xs"></select></td>
 				<th>
@@ -156,6 +157,7 @@ const handleUpdateChapter = (chapter) => {
   let new_chapter = {
     id: chapter.id,
     name: chapter_row.querySelector("#name input").value,
+    display_name: `${curr_subject.class_name} - ${curr_subject.name} - ${chapter_row.querySelector("#name input").value}`,
     subject_id: curr_subject.id,
     subject_name: curr_subject.name,
     class_name: curr_subject.class_name,
@@ -200,10 +202,10 @@ window.handleUpdateChapter = handleUpdateChapter;
 // reset chapter handler
 const handleResetChapter = (chapter) => {
   document.getElementById(chapter.id).innerHTML = `
-		<td class="whitespace-nowrap">${chapter.id}</td>
-		<td class="whitespace-nowrap">${chapter.name}</td>
-		<td class="whitespace-nowrap">${chapter.subject_name}</td>
-		<td class="whitespace-nowrap">${chapter.class_name}</td>
+		<td>${chapter.id}</td>
+		<td class="max-w-[250px]">${chapter.name}</td>
+		<td>${chapter.subject_name}</td>
+		<td>${chapter.class_name}</td>
 		<th>
 			<div class="join">
 			  <button
@@ -249,10 +251,10 @@ function fetchAndAppendData() {
         window.chapter_list.push(element); // push the element to the chapter list
         chapter_table_body.innerHTML += `
 					<tr id="${element.id}">
-						<td class="whitespace-nowrap">${element.id}</td>
-						<td class="whitespace-nowrap">${element.name}</td>
-						<td class="whitespace-nowrap">${element.subject_name}</td>
-						<td class="whitespace-nowrap">${element.class_name}</td>
+						<td>${element.id}</td>
+						<td class="max-w-[250px]">${element.name}</td>
+						<td>${element.subject_name}</td>
+						<td>${element.class_name}</td>
 						<th>
 							<div class="join">
 							  <button

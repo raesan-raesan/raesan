@@ -4,6 +4,7 @@ diesel::table! {
     chapters (id) {
         id -> Text,
         name -> Text,
+        display_name -> Text,
         subject_id -> Text,
         subject_name -> Text,
         class_name -> Integer,

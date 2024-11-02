@@ -44,7 +44,7 @@ const handleCreateSubjectFormSubmit = () => {
           document.getElementById("subject_table_body").innerHTML += `
 				<tr id="${data.id}">
 					<td>${data.id}</td>
-					<td>${data.name}</td>
+					<td class="max-w-[250px]">${data.name}</td>
 					<td>${data.class_name}</td>
 					<th>
 						<div class="join">
@@ -104,7 +104,7 @@ const handleCreateSubjectFromJsonFormSubmit = () => {
             document.getElementById("subject_table_body").innerHTML += `
 					<tr id="${element.id}">
 						<td>${element.id}</td>
-						<td>${element.name}</td>
+						<td class="max-w-[250px]">${element.name}</td>
 						<td>${element.class_name}</td>
 						<th>
 							<div class="join">
@@ -244,7 +244,7 @@ window.handleUpdateSubject = handleUpdateSubject;
 const handleResetSubject = (subject) => {
   document.getElementById(subject.id).innerHTML = `
 	<td>${subject.id}</td>
-	<td>${subject.name}</td>
+	<td class="max-w-[250px]">${subject.name}</td>
 	<td>${subject.class_name}</td>
 	<th>
 		<div class="join">

@@ -1,72 +1,106 @@
 [
   {
     "id": "",
-    "name": "Solutions",
+    "name": "Sexual Reproduction in Flowering Plants",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Sexual Reproduction in Flowering Plants"
   },
   {
     "id": "",
-    "name": "Electrochemistry",
+    "name": "Human Reproduction",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Human Reproduction"
   },
   {
     "id": "",
-    "name": "Chemical Kinetics",
+    "name": "Reproductive Health",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Reproductive Health"
   },
   {
     "id": "",
-    "name": "d and f block elements",
+    "name": "Principles of Inheritance and Variation Heredity and Variation",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Principles of Inheritance and Variation Heredity and Variation"
   },
   {
     "id": "",
-    "name": "Coordination Compounds",
+    "name": "Molecular Basis of Inheritance",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Molecular Basis of Inheritance"
   },
   {
     "id": "",
-    "name": "Haloalkanes and Haloarenes",
+    "name": "Evolution",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Evolution"
   },
   {
     "id": "",
-    "name": "Alcohols, Phenols and Ethers",
+    "name": "Human Health and Diseases",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Human Health and Diseases"
   },
   {
     "id": "",
-    "name": "Aldehydes, Ketones and Carboxylic Acids",
+    "name": "Microbes in Human Welfare",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Microbes in Human Welfare"
   },
   {
     "id": "",
-    "name": "Amines",
+    "name": "Biotechnology - Principles and Processes",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Biotechnology - Principles and Processes"
   },
   {
     "id": "",
-    "name": "Biomolecules",
+    "name": "Biotechnology and its Applications",
     "subject_id": "",
-    "subject_name": "Chemistry",
-    "class_name": 12
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Biotechnology and its Applications"
+  },
+  {
+    "id": "",
+    "name": "Organisms and Populations",
+    "subject_id": "",
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Organisms and Populations"
+  },
+  {
+    "id": "",
+    "name": "Ecosystem",
+    "subject_id": "",
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Ecosystem"
+  },
+  {
+    "id": "",
+    "name": "Biodiversity and its Conservation",
+    "subject_id": "",
+    "subject_name": "Biology",
+    "class_name": 12,
+    "display_name": "12 - Biology - Biodiversity and its Conservation"
   }
 ]

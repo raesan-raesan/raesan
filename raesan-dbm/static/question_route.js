@@ -239,9 +239,6 @@ const handleResetQuestion = (question) => {
       output
         .appendChild(document.createElement("pre"))
         .appendChild(document.createTextNode(err.message));
-    })
-    .then(function () {
-      // ----- maybe do something async here
     });
 };
 window.handleResetQuestion = handleResetQuestion;
@@ -299,22 +296,13 @@ function fetchAndAppendData() {
         let output = document
           .getElementById(element.id)
           .querySelector("#latex-body");
-        console.log(output);
-        MathJax.tex2chtmlPromise(element.body, MathJax.getMetricsFor(output))
-          .then(function (node) {
-            console.log(node);
-            output.appendChild(node);
-            MathJax.startup.document.clear();
-            MathJax.startup.document.updateDocument();
-          })
-          .catch(function (err) {
-            output
-              .appendChild(document.createElement("pre"))
-              .appendChild(document.createTextNode(err.message));
-          })
-          .then(function () {
-            // ----- maybe do something async here
-          });
+        let html = MathJax.tex2chtml(
+          element.body,
+          MathJax.getMetricsFor(output),
+        );
+        output.appendChild(html);
+        MathJax.startup.document.clear();
+        MathJax.startup.document.updateDocument();
       });
 
       // Update the observer to observe the new last element

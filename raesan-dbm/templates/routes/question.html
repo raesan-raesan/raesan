@@ -64,7 +64,7 @@
 				{% for question in questions %}
 				<tr id="{{ question.id }}">
 					<td>{{ question.id }}</td>
-					<td>{{ question.body }}</td>
+					<td id="latex-body">$${{ question.body }}$$</td>
 					<td>{{ question.chapter_name }}</td>
 					<td>{{ question.subject_name }}</td>
 					<td>{{ question.class_name }}</td>

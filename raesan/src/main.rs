@@ -6,11 +6,14 @@ mod utils;
 
 // imports
 use axum;
+use dotenvy;
 use std::sync::{Arc, RwLock};
 use tokio;
 
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().ok();
+
     // application state for the main router
     let app_state = Arc::new(RwLock::new(match core::app::Application::new() {
         Ok(safe_app) => safe_app,

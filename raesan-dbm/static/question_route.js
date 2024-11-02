@@ -200,9 +200,10 @@ window.handleUpdatQuestion = handleUpdateQuestion;
 
 // reset question handler
 const handleResetQuestion = (question) => {
+  // let body = MathJax.tex2chtml(question.body, { display: true });
   document.getElementById(question.id).innerHTML = `
 		<td>${question.id}</td>
-		<td>${question.body}</td>
+		<td id="latex-body"></td>
 		<td>${question.chapter_name}</td>
 		<td>${question.subject_name}</td>
 		<td>${question.class_name}</td>
@@ -223,6 +224,25 @@ const handleResetQuestion = (question) => {
 			</div>
 		</th>
 	`;
+
+  // append rendered latex
+  let output = document
+    .getElementById(question.id)
+    .querySelector("#latex-body");
+  MathJax.tex2chtmlPromise(question.body, MathJax.getMetricsFor(output))
+    .then(function (node) {
+      output.appendChild(node);
+      MathJax.startup.document.clear();
+      MathJax.startup.document.updateDocument();
+    })
+    .catch(function (err) {
+      output
+        .appendChild(document.createElement("pre"))
+        .appendChild(document.createTextNode(err.message));
+    })
+    .then(function () {
+      // ----- maybe do something async here
+    });
 };
 window.handleResetQuestion = handleResetQuestion;
 
@@ -253,7 +273,7 @@ function fetchAndAppendData() {
         question_table_body.innerHTML += `
 					<tr id="${element.id}">
 						<td>${element.id}</td>
-						<td>${element.body}</td>
+						<td id="latex-body"></td>
 						<td>${element.chapter_name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
@@ -275,6 +295,26 @@ function fetchAndAppendData() {
 						</th>
 					</tr>
 				`;
+        // append rendered latex
+        let output = document
+          .getElementById(element.id)
+          .querySelector("#latex-body");
+        console.log(output);
+        MathJax.tex2chtmlPromise(element.body, MathJax.getMetricsFor(output))
+          .then(function (node) {
+            console.log(node);
+            output.appendChild(node);
+            MathJax.startup.document.clear();
+            MathJax.startup.document.updateDocument();
+          })
+          .catch(function (err) {
+            output
+              .appendChild(document.createElement("pre"))
+              .appendChild(document.createTextNode(err.message));
+          })
+          .then(function () {
+            // ----- maybe do something async here
+          });
       });
 
       // Update the observer to observe the new last element

@@ -1,3 +1,15 @@
+if (Array.from(class_input_form.children).length === 0) {
+  window.dataset.classes.forEach((dataset_class) => {
+    let class_input_form = document.getElementById("class_input_form");
+    class_input_form.innerHTML += `
+				<label id="${dataset_class.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
+					<span class="label-text">Class ${dataset_class.name}</span>
+					<input name="${dataset_class.name}" type="checkbox" class="checkbox" />
+				</label>
+			`;
+  });
+}
+
 // main input
 let create_test_input = {
   curr_step: 1,
@@ -18,6 +30,7 @@ function dispatchUpdateStepEvent(next) {
   });
   document.dispatchEvent(updateStepEvent);
 }
+window.dispatchUpdateStepEvent = dispatchUpdateStepEvent;
 
 // updating the form control buttons i.e `Next`, `Previous` buttons
 function updateControlButtons() {
@@ -33,6 +46,7 @@ function updateControlButtons() {
     document.getElementById("next_button").innerHTML = "Next";
   }
 }
+window.updateControlButtons = updateControlButtons;
 
 // handler to update the `Stepper` component
 function updateStepper() {
@@ -45,6 +59,7 @@ function updateStepper() {
     }
   }
 }
+window.updateStepper = updateStepper;
 
 // handle displaying current step inputs
 function handleStepInputDisplayUpdate() {
@@ -59,6 +74,7 @@ function handleStepInputDisplayUpdate() {
     }
   }
 }
+window.handleStepInputDisplayUpdate = handleStepInputDisplayUpdate;
 
 // load data into `create_test_input` from DOM
 function loadCreateTestInputData() {
@@ -101,6 +117,7 @@ function loadCreateTestInputData() {
     );
   }
 }
+window.loadCreateTestInputData = loadCreateTestInputData;
 
 // listener for `updateStepEvent`
 document.addEventListener("updateStepEvent", function (event) {
@@ -121,7 +138,7 @@ document.addEventListener("updateStepEvent", function (event) {
             console.log(response);
           }
         })
-        .cathc((error) => {
+        .catch((error) => {
           console.error(
             "Failed to make a request to the Server, Error:",
             error,
@@ -159,8 +176,8 @@ document.addEventListener("updateStepEvent", function (event) {
         .forEach((subject) => {
           subject_input_form.innerHTML += `
 					<label id="${subject.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
-						<span class="label-text">${subject.name}</span>
-						<input name=${subject.name} type="checkbox" class="checkbox" />
+						<span class="label-text">${subject.display_name}</span>
+						<input name=${subject.display_name} type="checkbox" class="checkbox" />
 					</label>
 				`;
         });
@@ -178,8 +195,8 @@ document.addEventListener("updateStepEvent", function (event) {
         .forEach((chapter) => {
           chapter_input_form.innerHTML += `
 					<label id="${chapter.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
-						<span class="label-text">${chapter.name}</span>
-						<input name=${chapter.name} type="checkbox" class="checkbox" />
+						<span class="label-text">${chapter.display_name}</span>
+						<input name=${chapter.display_name} type="checkbox" class="checkbox" />
 					</label>
 				`;
         });
@@ -212,7 +229,7 @@ document.addEventListener("updateStepEvent", function (event) {
       })
       .forEach((chapter) => {
         final_chapters_list.innerHTML += `
-		  	<li class="">${chapter.name}</li>
+		  	<li class="">${chapter.display_name}</li>
 		  `;
       });
   }

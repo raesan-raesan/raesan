@@ -6,9 +6,11 @@ pub mod test_route;
 use crate::{core, templates, utils};
 use askama::Template;
 use axum::{self, response::IntoResponse};
+use axum_extra;
 use diesel::{self, prelude::*};
 use mime_guess;
 use raesan_common;
+use serde_json;
 use std::sync::{Arc, RwLock};
 
 // GET (/static) route handler
@@ -50,6 +52,40 @@ pub async fn static_route(
 
 // GET (/) home page route handler
 pub async fn home_page(
+    cookie_jar: axum_extra::extract::cookie::CookieJar,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // render HTML struct
+    let html = match (templates::routes::HomePage {}.render()) {
+        Ok(safe_html) => safe_html,
+        Err(e) => {
+            println!("Failed to render HTML, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to render HTML"),
+            ));
+        }
+    };
+
+    println!(
+        "{:#?}",
+        serde_json::from_str::<core::models::CreateTestInput>(
+            cookie_jar.get("create_test_input").unwrap().value()
+        )
+        .unwrap()
+    );
+
+    return Ok((
+        [(
+            axum::http::header::CONTENT_TYPE,
+            String::from("text/html; charset=utf-8"),
+        )],
+        html,
+    )
+        .into_response());
+}
+
+// GET (/create-test) route handlers
+pub async fn create_test_page(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // database connection
@@ -77,41 +113,23 @@ pub async fn home_page(
         }
     };
 
-    let results = raesan_common::schema::classes::dsl::classes
+    let classes = raesan_common::schema::classes::dsl::classes
         .select(core::models::Class::as_select())
         .load(&mut conn)
         .expect("Error loading classes");
-    println!("Classes: {:#?}", results);
+    let subjects = raesan_common::schema::subjects::dsl::subjects
+        .select(core::models::Subject::as_select())
+        .load(&mut conn)
+        .expect("Error loading subjects");
+    let chapters = raesan_common::schema::chapters::dsl::chapters
+        .select(core::models::Chapter::as_select())
+        .load(&mut conn)
+        .expect("Error loading chapters");
 
-    // render HTML struct
-    let html = match (templates::routes::HomePage {}.render()) {
-        Ok(safe_html) => safe_html,
-        Err(e) => {
-            println!("Failed to render HTML, Error {:#?}", e);
-            return Err((
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("Failed to render HTML"),
-            ));
-        }
-    };
-
-    return Ok((
-        [(
-            axum::http::header::CONTENT_TYPE,
-            String::from("text/html; charset=utf-8"),
-        )],
-        html,
-    )
-        .into_response());
-}
-
-// GET (/create-test) route handlers
-pub async fn create_test_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)>
-{
     let html = match (templates::routes::CreateTestPage {
-        dataset_classes: vec![],
-        dataset_subjects: vec![],
-        dataset_chapters: vec![],
+        dataset_classes: classes,
+        dataset_subjects: subjects,
+        dataset_chapters: chapters,
     }
     .render())
     {

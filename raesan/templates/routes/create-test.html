@@ -2,22 +2,11 @@
 
 {% block page_scripts %}
 <script>
-	let dataset = {
+	window.dataset = {
 		classes: {{dataset_classes|json|safe}},
 		subjects: {{dataset_subjects|json|safe}},
 		chapters: {{dataset_chapters|json|safe}}
 	};
-	dataset.classes.forEach((dataset_class) => {
-		let class_input_form = document.getElementById("class_input_form");
-		if (Array.from(class_input_form.children).length === 0) {
-			class_input_form.innerHTML += `
-				<label id="${dataset_class.id}" class="label cursor-pointer gap-[15px] border border-gray-500 rounded-[6px] px-4 py-3 max-w-[220px] w-full">
-					<span class="label-text">Class ${dataset_class.name}</span>
-					<input name="${dataset_class.name}" type="checkbox" class="checkbox" />
-				</label>
-			`;
-		}
-	})
 </script>
 <script src="/static/create_test.js"></script>
 {% endblock %}
@@ -62,8 +51,8 @@
 		</div>
 	</div>
 	<div class="w-full flex items-center justify-evenly max-w-[400px] gap-[15px] mb-[50px]">
-		<button id="prev_button" hx-on:click="dispatchUpdateStepEvent(false)" class="hidden btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</button>
-		<button id="next_button" hx-on:click="dispatchUpdateStepEvent(true)" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</button>
+		<button id="prev_button" onclick="dispatchUpdateStepEvent(false)" class="hidden btn btn-secondary rounded-[6px] max-w-[160px] flex-1">Previous</button>
+		<button id="next_button" onclick="dispatchUpdateStepEvent(true)" class="btn btn-primary rounded-[6px] max-w-[160px] flex-1">Next</button>
 	</div>
 </div>
 {% endblock %}

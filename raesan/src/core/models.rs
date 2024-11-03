@@ -37,6 +37,7 @@ pub struct Class {
 pub struct Subject {
     pub id: String,
     pub name: String,
+    pub display_name: String,
     pub class_id: String,
     pub class_name: i32,
 }
@@ -57,6 +58,7 @@ pub struct Subject {
 pub struct Chapter {
     pub id: String,
     pub name: String,
+    pub display_name: String,
     pub subject_id: String,
     pub subject_name: String,
     pub class_name: i32,

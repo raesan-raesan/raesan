@@ -183,6 +183,64 @@ pub fn generate_database_records_for_testing(
         return Err("The provided path for generating database records of chapters table is not a directory".to_string());
     }
 
+    // questions
+    let mut questions_json_string = String::new();
+    let questions_json_file = "dataset/_questions.json";
+    match fs::metadata(questions_json_file) {
+        Ok(safe_metadata) => {
+            if safe_metadata.is_file() {
+                match fs::read_to_string(questions_json_file) {
+                    Ok(safe_contents) => {
+                        questions_json_string = safe_contents.to_string();
+                    }
+                    Err(e) => return Err(e.to_string()),
+                }
+            }
+        }
+        Err(e) => return Err(e.to_string()),
+    };
+    let chapters = match schema::chapters::dsl::chapters
+        .select(core::models::Chapter::as_select())
+        .load(&mut conn)
+    {
+        Ok(safe_results) => safe_results,
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    };
+    match diesel::insert_into(schema::questions::dsl::questions)
+        .values(
+            match serde_json::from_str::<Vec<core::models::Question>>(
+                questions_json_string.as_str(),
+            ) {
+                Ok(safe_question_vec) => safe_question_vec,
+                Err(e) => return Err(e.to_string()),
+            }
+            .into_iter()
+            .map(|mut element| {
+                element.id = uuid::Uuid::new_v4().to_string();
+                element.chapter_id = chapters
+                    .iter()
+                    .find(|chapter| {
+                        chapter.class_name == element.class_name
+                            && chapter.subject_name == element.subject_name
+                            && chapter.name == element.chapter_name
+                    })
+                    .unwrap()
+                    .clone()
+                    .id;
+                element
+            })
+            .collect::<Vec<core::models::Question>>(),
+        )
+        .execute(&mut conn)
+    {
+        Ok(_) => {}
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    }
+
     // print the final database state
     let results = raesan_common::schema::classes::dsl::classes
         .select(core::models::Class::as_select())
@@ -198,6 +256,11 @@ pub fn generate_database_records_for_testing(
         .select(core::models::Chapter::as_select())
         .load(&mut conn)
         .expect("Error loading chapters");
+    println!("Chapters: {:#?}", results);
+    let results = raesan_common::schema::questions::dsl::questions
+        .select(core::models::Question::as_select())
+        .load(&mut conn)
+        .expect("Error loading questions");
     println!("Chapters: {:#?}", results);
     return Ok(());
 }

@@ -1,106 +1,82 @@
 [
   {
     "id": "",
-    "name": "Sexual Reproduction in Flowering Plants",
+    "name": "Solutions",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Sexual Reproduction in Flowering Plants"
+    "display_name": "12 - Chemistry - Solutions"
   },
   {
     "id": "",
-    "name": "Human Reproduction",
+    "name": "Electrochemistry",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Human Reproduction"
+    "display_name": "12 - Chemistry - Electrochemistry"
   },
   {
     "id": "",
-    "name": "Reproductive Health",
+    "name": "Chemical Kinetics",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Reproductive Health"
+    "display_name": "12 - Chemistry - Chemical Kinetics"
   },
   {
     "id": "",
-    "name": "Principles of Inheritance and Variation Heredity and Variation",
+    "name": "d- and f-Block Elements",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Principles of Inheritance and Variation Heredity and Variation"
+    "display_name": "12 - Chemistry - d- and f-Block Elements"
   },
   {
     "id": "",
-    "name": "Molecular Basis of Inheritance",
+    "name": "Coordination Complexes",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Molecular Basis of Inheritance"
+    "display_name": "Coordination Compounds"
   },
   {
     "id": "",
-    "name": "Evolution",
+    "name": "Haloalkanes and Haloarenes",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Evolution"
+    "display_name": "12 - Chemistry - Haloalkanes and Haloarenes"
   },
   {
     "id": "",
-    "name": "Human Health and Diseases",
+    "name": "Alcohols, Phenols, and Ethers",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Human Health and Diseases"
+    "display_name": "12 - Chemistry - Alcohols, Phenols, and Ethers"
   },
   {
     "id": "",
-    "name": "Microbes in Human Welfare",
+    "name": "Aldehydes, Ketones, and Carboxylic Acids",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Microbes in Human Welfare"
+    "display_name": "12 - Chemistry - Aldehydes, Ketones, and Carboxylic Acids"
   },
   {
     "id": "",
-    "name": "Biotechnology - Principles and Processes",
+    "name": "Amines",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Biotechnology - Principles and Processes"
+    "display_name": "12 - Chemistry - Biotechnology - Amines"
   },
   {
     "id": "",
-    "name": "Biotechnology and its Applications",
+    "name": "Biomolecules",
     "subject_id": "",
-    "subject_name": "Biology",
+    "subject_name": "Chemistry",
     "class_name": 12,
-    "display_name": "12 - Biology - Biotechnology and its Applications"
-  },
-  {
-    "id": "",
-    "name": "Organisms and Populations",
-    "subject_id": "",
-    "subject_name": "Biology",
-    "class_name": 12,
-    "display_name": "12 - Biology - Organisms and Populations"
-  },
-  {
-    "id": "",
-    "name": "Ecosystem",
-    "subject_id": "",
-    "subject_name": "Biology",
-    "class_name": 12,
-    "display_name": "12 - Biology - Ecosystem"
-  },
-  {
-    "id": "",
-    "name": "Biodiversity and its Conservation",
-    "subject_id": "",
-    "subject_name": "Biology",
-    "class_name": 12,
-    "display_name": "12 - Biology - Biodiversity and its Conservation"
+    "display_name": "12 - Chemistry - Biomolecules"
   }
 ]

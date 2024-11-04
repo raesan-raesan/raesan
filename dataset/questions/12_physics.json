@@ -1,0 +1,562 @@
+[
+  {
+    "id": "",
+    "body": "\\text{Two point charges } q_1 = 3 \\times 10^{-6} \\text{ C and } q_2 = -3 \\times 10^{-6} \\text{ C are placed 10 cm apart in vacuum. Find the electric force acting between them.}",
+    "chapter_name": "Electric Charges and Fields",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of quantisation of electric charge and give an example illustrating it.}",
+    "chapter_name": "Electric Charges and Fields",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A charged metallic sphere A is suspended by a nylon thread. Another charged metallic sphere B held by an insulating handle is brought close to A such that the distance between their centres is 10 cm. What will happen if B is brought even closer to A? Justify your answer.}",
+    "chapter_name": "Electric Charges and Fields",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State Coulomb’s law of electrostatics and express it in vector form.}",
+    "chapter_name": "Electric Charges and Fields",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define electric field and electric flux. How is electric flux related to the electric field?}",
+    "chapter_name": "Electric Charges and Fields",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Derive the expression for the electrostatic potential energy of a system of two point charges in vacuum.}",
+    "chapter_name": "Electrostatic Potential and Capacitance",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the work done in moving a charge of } 5 \\; \\mu C \\text{ between two points on an equipotential surface.}",
+    "chapter_name": "Electrostatic Potential and Capacitance",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A parallel plate capacitor is charged by a battery. After some time, the battery is disconnected and a dielectric slab is introduced between the plates. Explain how the capacitance, electric field, and energy of the capacitor are affected.}",
+    "chapter_name": "Electrostatic Potential and Capacitance",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define capacitance and derive an expression for the capacitance of a parallel plate capacitor with a dielectric medium.}",
+    "chapter_name": "Electrostatic Potential and Capacitance",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the potential at a point 5 cm away from a point charge of } 4 \\times 10^{-7} \\text{ C in vacuum.}",
+    "chapter_name": "Electrostatic Potential and Capacitance",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State and explain Ohm's law. Describe an experiment to verify Ohm's law.}",
+    "chapter_name": "Current Electricity",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Derive the formula for the equivalent resistance when three resistors } R_1, R_2, \\text{ and } R_3 \\text{ are connected in parallel.}",
+    "chapter_name": "Current Electricity",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A wire of resistance } 5 \\; \\Omega \\text{ is stretched to double its original length. Calculate the new resistance of the wire.}",
+    "chapter_name": "Current Electricity",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of drift velocity and derive an expression for the current in a conductor in terms of the drift velocity of electrons.}",
+    "chapter_name": "Current Electricity",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Determine the current flowing through a conductor of cross-sectional area } 0.2 \\; \\text{cm}^2 \\text{ and free electron density } 10^{29} \\text{ electrons/m}^3 \\text{ when the drift velocity of electrons is } 10^{-4} \\; \\text{m/s}.",
+    "chapter_name": "Current Electricity",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State and derive the expression for the force on a moving charge in a magnetic field.}",
+    "chapter_name": "Moving Charges and Magnetism",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the working principle of a cyclotron and derive an expression for the kinetic energy of a particle accelerated in a cyclotron.}",
+    "chapter_name": "Moving Charges and Magnetism",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A charged particle enters a uniform magnetic field and follows a circular path. Explain why this happens and derive an expression for the radius of the circular path.}",
+    "chapter_name": "Moving Charges and Magnetism",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State Biot-Savart law and use it to derive an expression for the magnetic field at the center of a circular loop carrying current.}",
+    "chapter_name": "Moving Charges and Magnetism",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the force on a 2 C charge moving at a speed of } 3 \\times 10^6 \\; \\text{m/s perpendicular to a magnetic field of strength } 2 \\; \\text{T}.",
+    "chapter_name": "Moving Charges and Magnetism",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define magnetic susceptibility and explain how it differs for diamagnetic, paramagnetic, and ferromagnetic materials.}",
+    "chapter_name": "Magnetism and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the Earth’s magnetic field and explain the terms magnetic declination and magnetic inclination.}",
+    "chapter_name": "Magnetism and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of magnetic domains and how they contribute to the magnetic properties of ferromagnetic materials.}",
+    "chapter_name": "Magnetism and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A short bar magnet placed in a horizontal plane has its axis aligned along the Earth's magnetic field direction. If the magnetic moment of the bar magnet is } 0.4 \\; \\text{Am}^2 \\text{ and Earth's horizontal field is } 30 \\; \\mu T \\text{, find the magnitude of the torque acting on the magnet.}",
+    "chapter_name": "Magnetism and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Derive an expression for the magnetic field at a point on the axis of a circular current loop.}",
+    "chapter_name": "Magnetism and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State Faraday’s law of electromagnetic induction and derive the expression for induced EMF in a coil.}",
+    "chapter_name": "Electromagnetic Induction",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A circular loop of radius 10 cm is placed in a magnetic field of strength 0.5 T, perpendicular to the plane of the loop. If the magnetic field decreases to 0.2 T in 0.5 s, calculate the induced EMF in the loop.}",
+    "chapter_name": "Electromagnetic Induction",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain Lenz's law and illustrate it with an example.}",
+    "chapter_name": "Electromagnetic Induction",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Derive an expression for the energy stored in an inductor when current flows through it.}",
+    "chapter_name": "Electromagnetic Induction",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A coil with 500 turns and cross-sectional area } 2 \\; \\text{cm}^2 \\text{ is placed perpendicular to a magnetic field of strength 0.1 T. If the magnetic field is reversed in direction in 0.1 s, calculate the induced EMF.}",
+    "chapter_name": "Electromagnetic Induction",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of RMS value of an alternating current and derive the expression for the RMS value of sinusoidal AC.}",
+    "chapter_name": "Alternating Current",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the working of a transformer and derive the relation between primary and secondary voltage.}",
+    "chapter_name": "Alternating Current",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A series circuit consists of a resistor } (R = 10 \\; \\Omega), \\text{ an inductor } (L = 0.5 \\; \\text{H}), \\text{ and a capacitor } (C = 20 \\; \\mu F) \\text{ connected to a 50 Hz AC source. Calculate the impedance of the circuit.}",
+    "chapter_name": "Alternating Current",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define the power factor in an AC circuit and explain its significance.}",
+    "chapter_name": "Alternating Current",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{An AC source of } 230 \\; \\text{V, 50 Hz} \\text{ is connected to an inductance of } 0.5 \\; \\text{H}. \\text{ Find the current in the circuit.}",
+    "chapter_name": "Alternating Current",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the source of electromagnetic waves and describe their nature.}",
+    "chapter_name": "Electromagnetic Waves",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State Maxwell’s equations and explain their significance in the context of electromagnetic waves.}",
+    "chapter_name": "Electromagnetic Waves",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the electromagnetic spectrum and list the uses of different types of electromagnetic waves.}",
+    "chapter_name": "Electromagnetic Waves",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the speed of electromagnetic waves in a medium with a permittivity of } 4 \\times 10^{-7} \\; \\text{F/m} \\text{ and permeability of } 10^{-7} \\; \\text{H/m}.",
+    "chapter_name": "Electromagnetic Waves",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Discuss the concept of displacement current and its role in the continuity of electric current in an AC circuit.}",
+    "chapter_name": "Electromagnetic Waves",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State Snell’s law of refraction and derive it using Huygens' principle.}",
+    "chapter_name": "Ray Optics and Optical Instruments",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the working principle of a simple microscope and derive an expression for its magnifying power.}",
+    "chapter_name": "Ray Optics and Optical Instruments",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the phenomenon of total internal reflection and derive the critical angle for total internal reflection.}",
+    "chapter_name": "Ray Optics and Optical Instruments",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A convex lens of focal length 20 cm is used to form an image of an object placed 30 cm from the lens. Find the position and nature of the image.}",
+    "chapter_name": "Ray Optics and Optical Instruments",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the construction and working of an astronomical telescope and derive the expression for its magnifying power.}",
+    "chapter_name": "Ray Optics and Optical Instruments",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain Young’s double-slit experiment and derive the expression for fringe width.}",
+    "chapter_name": "Wave Optics",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the phenomenon of diffraction and explain the conditions under which it occurs.}",
+    "chapter_name": "Wave Optics",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define Brewster’s law and derive an expression for the Brewster angle.}",
+    "chapter_name": "Wave Optics",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the formation of Newton's rings and derive the expression for the radius of the nth dark ring.}",
+    "chapter_name": "Wave Optics",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{A light wave with wavelength 600 nm is incident on a slit of width 0.1 mm. Calculate the angle at which the first diffraction minimum occurs.}",
+    "chapter_name": "Wave Optics",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State and explain Einstein's photoelectric equation.}",
+    "chapter_name": "Dual Nature of Radiation and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{An electron is accelerated through a potential difference of 100 V. Calculate the de Broglie wavelength associated with it.}",
+    "chapter_name": "Dual Nature of Radiation and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the phenomenon of photoelectric effect and discuss its experimental observations.}",
+    "chapter_name": "Dual Nature of Radiation and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the concept of matter waves and derive the expression for de Broglie wavelength.}",
+    "chapter_name": "Dual Nature of Radiation and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Light of wavelength 400 nm ejects photoelectrons from a metal surface with a maximum kinetic energy of 1.2 eV. Find the work function of the metal.}",
+    "chapter_name": "Dual Nature of Radiation and Matter",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe Rutherford’s model of the atom and discuss its limitations.}",
+    "chapter_name": "Atoms",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State and explain Bohr's postulates for the hydrogen atom.}",
+    "chapter_name": "Atoms",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the radius of the first orbit of the hydrogen atom using Bohr's model.}",
+    "chapter_name": "Atoms",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of energy levels in an atom and derive the expression for the energy of an electron in the nth orbit of hydrogen.}",
+    "chapter_name": "Atoms",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{An electron jumps from the third to the second orbit in a hydrogen atom. Calculate the wavelength of the emitted radiation.}",
+    "chapter_name": "Atoms",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Define binding energy and binding energy per nucleon. Explain its significance.}",
+    "chapter_name": "Nuclei",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Calculate the binding energy per nucleon of } ^{16}O \\text{ if its atomic mass is 15.994915 u.}",
+    "chapter_name": "Nuclei",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{State and explain the concept of mass defect and nuclear binding energy.}",
+    "chapter_name": "Nuclei",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the phenomenon of nuclear fission and mention two applications of it.}",
+    "chapter_name": "Nuclei",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of half-life and derive the relation between half-life and decay constant.}",
+    "chapter_name": "Nuclei",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the difference between conductors, semiconductors, and insulators based on band theory.}",
+    "chapter_name": "Semiconductor Electronics: Materials, Devices, and Simple Circuits",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the construction and working of a p-n junction diode.}",
+    "chapter_name": "Semiconductor Electronics: Materials, Devices, and Simple Circuits",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the concept of doping and its effect on the conductivity of semiconductors.}",
+    "chapter_name": "Semiconductor Electronics: Materials, Devices, and Simple Circuits",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Describe the characteristics of a Zener diode and its application in voltage regulation.}",
+    "chapter_name": "Semiconductor Electronics: Materials, Devices, and Simple Circuits",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  },
+  {
+    "id": "",
+    "body": "\\text{Explain the working of a transistor as an amplifier.}",
+    "chapter_name": "Semiconductor Electronics: Materials, Devices, and Simple Circuits",
+    "subject_name": "Physics",
+    "class_name": 12,
+    "chapter_id": ""
+  }
+]

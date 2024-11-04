@@ -66,13 +66,13 @@ pub async fn home_page(
         }
     };
 
-    println!(
-        "{:#?}",
-        serde_json::from_str::<core::models::CreateTestInput>(
-            cookie_jar.get("create_test_input").unwrap().value()
-        )
-        .unwrap()
-    );
+    // println!(
+    //     "{:#?}",
+    //     serde_json::from_str::<core::models::CreateTestInput>(
+    //         cookie_jar.get("create_test_input").unwrap().value()
+    //     )
+    //     .unwrap()
+    // );
 
     return Ok((
         [(

@@ -57,11 +57,11 @@
   },
   {
     "id": "",
-    "name": "Applications of the Integrals",
+    "name": "Applications of Integrals",
     "subject_id": "",
     "subject_name": "Maths",
     "class_name": 12,
-    "display_name": "12 - Maths - Applications of the Integrals"
+    "display_name": "12 - Maths - Applications of Integrals"
   },
   {
     "id": "",
@@ -73,19 +73,19 @@
   },
   {
     "id": "",
-    "name": "Vectors",
+    "name": "Vector Algebra",
     "subject_id": "",
     "subject_name": "Maths",
     "class_name": 12,
-    "display_name": "12 - Maths - Vectors"
+    "display_name": "12 - Maths - Vector Algebra"
   },
   {
     "id": "",
-    "name": "Three Dimensional Geometry",
+    "name": "Three-Dimensional Geometry",
     "subject_id": "",
     "subject_name": "Maths",
     "class_name": 12,
-    "display_name": "12 - Maths - Three Dimensional Geometry"
+    "display_name": "12 - Maths - Three-Dimensional Geometry"
   },
   {
     "id": "",

@@ -10,7 +10,7 @@ use axum_extra;
 use diesel::{self, prelude::*};
 use mime_guess;
 use raesan_common;
-use serde_json;
+// use serde_json;
 use std::sync::{Arc, RwLock};
 
 // GET (/static) route handler
@@ -52,7 +52,7 @@ pub async fn static_route(
 
 // GET (/) home page route handler
 pub async fn home_page(
-    cookie_jar: axum_extra::extract::cookie::CookieJar,
+    _cookie_jar: axum_extra::extract::cookie::CookieJar,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // render HTML struct
     let html = match (templates::routes::HomePage {}.render()) {

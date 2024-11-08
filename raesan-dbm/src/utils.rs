@@ -5,11 +5,7 @@ use r2d2;
 use raesan_common::schema;
 use rust_embed;
 use serde_json;
-use std::{
-    fs,
-    path::Path,
-    sync::{Arc, RwLock},
-};
+use std::{fs, path::Path};
 
 // ----- `StaticAssets` object
 #[derive(rust_embed::Embed)]
@@ -32,20 +28,14 @@ pub fn get_embedded_file(filepath: String) -> Option<Result<String, String>> {
 }
 
 // generate database records for testing
-#[allow(dead_code)]
 pub fn generate_database_records_for_testing(
-    app_state: Arc<RwLock<core::app::Application>>,
+    data: core::app::GenerateDatabaseRecords,
 ) -> Result<(), String> {
-    let mut conn = match match app_state.write() {
-        Ok(safe_app_state) => safe_app_state,
-        Err(e) => {
-            return Err(e.to_string());
-        }
-    }
-    .database
-    .pool
-    .get()
-    {
+    let database = match core::database::Database::new(data.database) {
+        Ok(safe_db) => safe_db,
+        Err(e) => return Err(e.to_string()),
+    };
+    let mut conn = match database.pool.get() {
         Ok(safe_conn) => safe_conn,
         Err(e) => {
             return Err(e.to_string());
@@ -149,20 +139,9 @@ pub fn generate_database_records_for_testing(
             Ok(entries) => {
                 for entry in entries {
                     if let Ok(entry) = entry {
-                        let loop_conn = match match app_state.write() {
-                            Ok(safe_app_state) => safe_app_state,
-                            Err(e) => {
-                                return Err(e.to_string());
-                            }
-                        }
-                        .database
-                        .pool
-                        .get()
-                        {
+                        let loop_conn = match database.pool.get() {
                             Ok(safe_conn) => safe_conn,
-                            Err(e) => {
-                                return Err(e.to_string());
-                            }
+                            Err(e) => return Err(e.to_string()),
                         };
                         match insert_chapters(
                             loop_conn,

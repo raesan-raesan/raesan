@@ -16,6 +16,5 @@ pub async fn create_test_route(
     .expires(time::OffsetDateTime::now_utc() + time::Duration::days(30));
 
     let cookie_jar = axum_extra::extract::cookie::CookieJar::new().add(cookie.clone());
-    println!("{:#?}", cookie);
     return Ok((cookie_jar, axum::http::StatusCode::OK).into_response());
 }

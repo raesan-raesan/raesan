@@ -2,6 +2,8 @@ version: "3"
 
 interval: 500ms
 
+dotenv: [".env"]
+
 tasks:
   # main raesan application
   raesan:
@@ -24,7 +26,7 @@ tasks:
       - "raesan-dbm/**/*.html"
       - "raesan-dbm/**/*.js"
     cmds:
-      - cargo run -p raesan-dbm {{.CLI_ARGS}}
+      - cargo run -p raesan-dbm serve --database $DATABASE_URL {{.CLI_ARGS}}
     status:
       - "exit 1"
     cleanup:

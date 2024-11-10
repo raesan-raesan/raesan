@@ -5,7 +5,7 @@ use r2d2;
 use raesan_common::schema;
 use rust_embed;
 use serde_json;
-use std::{fs, path::Path};
+use std::{fs, io, path::Path};
 
 // ----- `StaticAssets` object
 #[derive(rust_embed::Embed)]
@@ -44,11 +44,11 @@ pub fn generate_database_records_for_testing(
 
     // classes
     let mut classes_json_string = String::new();
-    let classes_json_file = "dataset/_classes.json";
-    match fs::metadata(classes_json_file) {
+    let classes_json_file = format!("{}/classes.json", data.dataset);
+    match fs::metadata(&classes_json_file) {
         Ok(safe_metadata) => {
             if safe_metadata.is_file() {
-                match fs::read_to_string(classes_json_file) {
+                match fs::read_to_string(&classes_json_file) {
                     Ok(safe_contents) => {
                         classes_json_string = safe_contents.to_string();
                     }
@@ -79,13 +79,15 @@ pub fn generate_database_records_for_testing(
         }
     };
 
+    println!("Successfully created class records from the dataset");
+
     // subjects
     let mut subjects_json_string = String::new();
-    let subjects_json_file = "dataset/_subjects.json";
-    match fs::metadata(subjects_json_file) {
+    let subjects_json_file = format!("{}/subjects.json", data.dataset);
+    match fs::metadata(&subjects_json_file) {
         Ok(safe_metadata) => {
             if safe_metadata.is_file() {
-                match fs::read_to_string(subjects_json_file) {
+                match fs::read_to_string(&subjects_json_file) {
                     Ok(safe_contents) => {
                         subjects_json_string = safe_contents.to_string();
                     }
@@ -131,9 +133,11 @@ pub fn generate_database_records_for_testing(
             return Err(e.to_string());
         }
     }
+    println!("Successfully created subject records from the dataset");
 
     // chapters
-    let chapters_path = Path::new("dataset/chapters");
+    let chapters_dir = format!("{}/chapters", data.dataset);
+    let chapters_path = Path::new(&chapters_dir);
     if chapters_path.is_dir() {
         match fs::read_dir(chapters_path) {
             Ok(entries) => {
@@ -143,11 +147,8 @@ pub fn generate_database_records_for_testing(
                             Ok(safe_conn) => safe_conn,
                             Err(e) => return Err(e.to_string()),
                         };
-                        match insert_chapters(
-                            loop_conn,
-                            String::from("dataset/chapters/")
-                                + entry.file_name().to_string_lossy().to_string().as_str(),
-                        ) {
+                        match insert_chapters(loop_conn, entry.path().to_string_lossy().to_string())
+                        {
                             Ok(_) => {}
                             Err(e) => {
                                 return Err(e.to_string());
@@ -161,64 +162,45 @@ pub fn generate_database_records_for_testing(
     } else {
         return Err("The provided path for generating database records of chapters table is not a directory".to_string());
     }
+    println!("Successfully created chapter records from the dataset");
 
     // questions
-    let mut questions_json_string = String::new();
-    let questions_json_file = "dataset/_questions.json";
-    match fs::metadata(questions_json_file) {
-        Ok(safe_metadata) => {
-            if safe_metadata.is_file() {
-                match fs::read_to_string(questions_json_file) {
-                    Ok(safe_contents) => {
-                        questions_json_string = safe_contents.to_string();
+    let questions_dir = format!("{}/questions", data.dataset);
+    let questions_path = Path::new(&questions_dir);
+    if questions_path.is_dir() {
+        match fs::read_dir(questions_path) {
+            Ok(subjects) => {
+                for subject in subjects {
+                    if let Ok(subject) = subject {
+                        match fs::read_dir(subject.path()) {
+                            Ok(chapters) => {
+                                for chapter in chapters {
+                                    if let Ok(chapter) = chapter {
+                                        let loop_conn = match database.pool.get() {
+                                            Ok(safe_conn) => safe_conn,
+                                            Err(e) => return Err(e.to_string()),
+                                        };
+                                        match insert_questions(
+                                            loop_conn,
+                                            chapter.path().to_string_lossy().to_string(),
+                                        ) {
+                                            Ok(_) => {}
+                                            Err(e) => return Err(e.to_string()),
+                                        }
+                                    }
+                                }
+                            }
+                            Err(e) => return Err(e.to_string()),
+                        }
                     }
-                    Err(e) => return Err(e.to_string()),
                 }
             }
+            Err(e) => println!("Error reading directory: {}", e),
         }
-        Err(e) => return Err(e.to_string()),
-    };
-    let chapters = match schema::chapters::dsl::chapters
-        .select(core::models::Chapter::as_select())
-        .load(&mut conn)
-    {
-        Ok(safe_results) => safe_results,
-        Err(e) => {
-            return Err(e.to_string());
-        }
-    };
-    match diesel::insert_into(schema::questions::dsl::questions)
-        .values(
-            match serde_json::from_str::<Vec<core::models::Question>>(
-                questions_json_string.as_str(),
-            ) {
-                Ok(safe_question_vec) => safe_question_vec,
-                Err(e) => return Err(e.to_string()),
-            }
-            .into_iter()
-            .map(|mut element| {
-                element.id = uuid::Uuid::new_v4().to_string();
-                element.chapter_id = chapters
-                    .iter()
-                    .find(|chapter| {
-                        chapter.class_name == element.class_name
-                            && chapter.subject_name == element.subject_name
-                            && chapter.name == element.chapter_name
-                    })
-                    .unwrap()
-                    .clone()
-                    .id;
-                element
-            })
-            .collect::<Vec<core::models::Question>>(),
-        )
-        .execute(&mut conn)
-    {
-        Ok(_) => {}
-        Err(e) => {
-            return Err(e.to_string());
-        }
+    } else {
+        return Err("The provided path for generating database records of chapters table is not a directory".to_string());
     }
+    println!("Successfully created chapter records from the dataset");
 
     // print the final database state
     let results = raesan_common::schema::classes::dsl::classes
@@ -291,6 +273,77 @@ pub fn insert_chapters(
                     element
                 })
                 .collect::<Vec<core::models::Chapter>>(),
+        )
+        .execute(&mut conn)
+    {
+        Ok(_) => return Ok(()),
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    }
+}
+
+pub fn insert_questions(
+    mut conn: r2d2::PooledConnection<
+        diesel::r2d2::ConnectionManager<diesel::sqlite::SqliteConnection>,
+    >,
+    questions_json_file: String,
+) -> Result<(), String> {
+    let mut questions_json_string = String::new();
+    match fs::metadata(questions_json_file.clone()) {
+        Ok(safe_metadata) => {
+            if safe_metadata.is_file() {
+                match fs::read_to_string(questions_json_file.clone()) {
+                    Ok(safe_contents) => {
+                        questions_json_string = safe_contents.to_string();
+                    }
+                    Err(e) => {
+                        if e.kind() == io::ErrorKind::UnexpectedEof {
+                            return Ok(());
+                        } else {
+                            return Err(e.to_string());
+                        }
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    };
+    if questions_json_string.trim().is_empty() {
+        return Ok(());
+    }
+    let questions_json_vec =
+        match serde_json::from_str::<Vec<core::models::Question>>(questions_json_string.as_str()) {
+            Ok(safe_questions_vec) => safe_questions_vec,
+            Err(e) => {
+                return Err(e.to_string());
+            }
+        };
+    let curr_chapter: core::models::Chapter = match schema::chapters::dsl::chapters
+        .filter(schema::chapters::class_name.eq(questions_json_vec[0].class_name))
+        .filter(schema::chapters::subject_name.eq(questions_json_vec[0].subject_name.clone()))
+        .filter(schema::chapters::name.eq(questions_json_vec[0].chapter_name.clone()))
+        .select(core::models::Chapter::as_select())
+        .first(&mut conn)
+    {
+        Ok(safe_results) => safe_results,
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    };
+    match diesel::insert_into(schema::questions::dsl::questions)
+        .values(
+            questions_json_vec
+                .clone()
+                .into_iter()
+                .map(|mut element| {
+                    element.id = uuid::Uuid::new_v4().to_string();
+                    element.chapter_id = curr_chapter.id.clone();
+                    element
+                })
+                .collect::<Vec<core::models::Question>>(),
         )
         .execute(&mut conn)
     {

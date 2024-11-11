@@ -148,9 +148,25 @@ pub async fn json_to_chapter_route(
         }
     };
 
-    input_data
-        .iter_mut()
-        .for_each(|element| element.id = uuid::Uuid::new_v4().to_string());
+    for element in input_data.iter_mut() {
+        let curr_subject: core::models::Subject = match schema::subjects::dsl::subjects
+            .filter(schema::subjects::class_name.eq(element.class_name))
+            .filter(schema::subjects::name.eq(element.subject_name.clone()))
+            .select(core::models::Subject::as_select())
+            .first(&mut conn)
+        {
+            Ok(safe_results) => safe_results,
+            Err(e) => {
+                println!("Failed to validate records from JSON data, Error {:#?}", e);
+                return Err((
+                    axum::http::StatusCode::BAD_REQUEST,
+                    String::from("Failed to validate records from JSON data"),
+                ));
+            }
+        };
+        element.id = uuid::Uuid::new_v4().to_string();
+        element.subject_id = curr_subject.id;
+    }
     let mut new_records: Vec<core::models::Chapter> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(

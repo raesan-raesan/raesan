@@ -17,6 +17,7 @@ async fn main() {
 
     // match sub-commands
     match &args.sub_commands {
+        // serve the actual application
         core::app::SubCommands::Serve(data) => {
             // application state for the main router
             let app_state = Arc::new(RwLock::new(
@@ -143,23 +144,31 @@ async fn main() {
                 }
             };
         }
+        // Generate database records from dataset
         core::app::SubCommands::GenerateDatabaseRecords(data) => {
-            match utils::generate_database_records_for_testing(data.clone()) {
+            match utils::generate_database_records::generate_database_records(data.clone()) {
                 Ok(_) => {}
                 Err(e) => {
                     eprint!(
-                        "Failed to generate temporary database records for testing, Error: {:#?}",
+                        "Failed to generate database records from dataset, Error: {:#?}",
                         e.to_string()
                     );
                     std::process::exit(1);
                 }
             };
         }
+        // Export database records to JSON dataset
         core::app::SubCommands::ExportDataset(data) => {
-            println!(
-                "Exporting JSON dataset from database:{:#?}, to:{:#?}",
-                data.database, data.dataset
-            );
+            match utils::export_dataset::export_dataset(data.clone()) {
+                Ok(_) => {}
+                Err(e) => {
+                    eprint!(
+                        "Failed to export database records to JSON dataset, Error: {:#?}",
+                        e.to_string()
+                    );
+                    std::process::exit(1);
+                }
+            };
         }
     }
 }

@@ -3,34 +3,11 @@ use crate::core;
 use diesel::{self, prelude::*};
 use r2d2;
 use raesan_common::schema;
-use rust_embed;
 use serde_json;
 use std::{fs, io, path::Path};
 
-// ----- `StaticAssets` object
-#[derive(rust_embed::Embed)]
-#[folder = "static"]
-pub struct StaticAssets;
-
-// get files contents from embedded files i.e `static` directory
-pub fn get_embedded_file(filepath: String) -> Option<Result<String, String>> {
-    match StaticAssets::get(filepath.as_str()) {
-        Some(file_content) => {
-            return Some(match String::from_utf8(file_content.data.to_vec()) {
-                Ok(safe_value) => Ok(safe_value),
-                Err(e) => Err(e.to_string()),
-            });
-        }
-        None => {
-            return None;
-        }
-    }
-}
-
 // generate database records for testing
-pub fn generate_database_records_for_testing(
-    data: core::app::GenerateDatabaseRecords,
-) -> Result<(), String> {
+pub fn generate_database_records(data: core::app::GenerateDatabaseRecords) -> Result<(), String> {
     let database = match core::database::Database::new(data.database) {
         Ok(safe_db) => safe_db,
         Err(e) => return Err(e.to_string()),

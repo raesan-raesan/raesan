@@ -84,9 +84,24 @@ pub async fn json_to_subject_route(
         }
     };
 
-    input_data
-        .iter_mut()
-        .for_each(|element| element.id = uuid::Uuid::new_v4().to_string());
+    for element in input_data.iter_mut() {
+        let curr_class: core::models::Class = match schema::classes::dsl::classes
+            .filter(schema::classes::name.eq(element.class_name.clone()))
+            .select(core::models::Class::as_select())
+            .first(&mut conn)
+        {
+            Ok(safe_results) => safe_results,
+            Err(e) => {
+                println!("Failed to validate records from JSON data, Error {:#?}", e);
+                return Err((
+                    axum::http::StatusCode::BAD_REQUEST,
+                    String::from("Failed to validate records from JSON data"),
+                ));
+            }
+        };
+        element.id = uuid::Uuid::new_v4().to_string();
+        element.class_id = curr_class.id;
+    }
     let mut new_records: Vec<core::models::Subject> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(

@@ -8,6 +8,8 @@ diesel::table! {
         subject_id -> Text,
         subject_name -> Text,
         class_name -> Integer,
+        created_at -> Integer,
+        updated_at -> Integer,
     }
 }
 
@@ -15,6 +17,8 @@ diesel::table! {
     classes (id) {
         id -> Text,
         name -> Integer,
+        created_at -> Integer,
+        updated_at -> Integer,
     }
 }
 
@@ -26,6 +30,8 @@ diesel::table! {
         subject_name -> Text,
         class_name -> Integer,
         chapter_id -> Text,
+        created_at -> Integer,
+        updated_at -> Integer,
     }
 }
 
@@ -36,6 +42,8 @@ diesel::table! {
         display_name -> Text,
         class_id -> Text,
         class_name -> Integer,
+        created_at -> Integer,
+        updated_at -> Integer,
     }
 }
 

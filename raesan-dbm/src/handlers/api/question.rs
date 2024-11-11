@@ -148,9 +148,26 @@ pub async fn json_to_question_route(
         }
     };
 
-    input_data
-        .iter_mut()
-        .for_each(|element| element.id = uuid::Uuid::new_v4().to_string());
+    for element in input_data.iter_mut() {
+        let curr_chapter: core::models::Chapter = match schema::chapters::dsl::chapters
+            .filter(schema::chapters::class_name.eq(element.class_name))
+            .filter(schema::chapters::subject_name.eq(element.subject_name.clone()))
+            .filter(schema::chapters::name.eq(element.chapter_name.clone()))
+            .select(core::models::Chapter::as_select())
+            .first(&mut conn)
+        {
+            Ok(safe_results) => safe_results,
+            Err(e) => {
+                println!("Failed to validate records from JSON data, Error {:#?}", e);
+                return Err((
+                    axum::http::StatusCode::BAD_REQUEST,
+                    String::from("Failed to validate records from JSON data"),
+                ));
+            }
+        };
+        element.id = uuid::Uuid::new_v4().to_string();
+        element.chapter_id = curr_chapter.id;
+    }
     let mut new_records: Vec<core::models::Question> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(

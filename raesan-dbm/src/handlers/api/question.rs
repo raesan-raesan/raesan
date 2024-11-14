@@ -102,6 +102,8 @@ pub async fn create_question_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
+    input_data.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     let results: core::models::Question = diesel::insert_into(schema::questions::dsl::questions)
         .values(input_data)
         .get_result(&mut conn)
@@ -167,6 +169,8 @@ pub async fn json_to_question_route(
         };
         element.id = uuid::Uuid::new_v4().to_string();
         element.chapter_id = curr_chapter.id;
+        element.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+        element.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     }
     let mut new_records: Vec<core::models::Question> = Vec::new();
     input_data.iter().for_each(|element| {
@@ -264,7 +268,9 @@ pub async fn update_question_route(
         }
     };
 
-    let result: core::models::Question = json.save_changes(&mut conn).unwrap();
+    let mut input_data = json.clone();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    let result: core::models::Question = input_data.save_changes(&mut conn).unwrap();
 
     return Ok((
         [(

@@ -13,7 +13,7 @@ tasks:
       - "raesan/**/*.html"
       - "raesan/**/*.js"
     cmds:
-      - cargo run -p raesan {{.CLI_ARGS}}
+      - cargo run -p raesan serve --database $DATABASE_URL {{.CLI_ARGS}} {{.CLI_ARGS}}
     status:
       - "exit 1"
     cleanup:

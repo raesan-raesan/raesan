@@ -1,8 +1,8 @@
 CREATE TABLE classes(
 	id TEXT PRIMARY KEY NOT NULL,
 	name INTEGER UNIQUE NOT NULL,
-	created_at INTEGER NOT NULL,
-	updated_at INTEGER NOT NULL
+	created_at BIGINT NOT NULL,
+	updated_at BIGINT NOT NULL
 );
 
 CREATE TABLE subjects(
@@ -11,8 +11,8 @@ CREATE TABLE subjects(
 	display_name TEXT NOT NULL UNIQUE,
 	class_id TEXT NOT NULL,
 	class_name INTEGER NOT NULL,
-	created_at INTEGER NOT NULL,
-	updated_at INTEGER NOT NULL,
+	created_at BIGINT NOT NULL,
+	updated_at BIGINT NOT NULL,
 	FOREIGN KEY  (class_id) REFERENCES classes(id) ON DELETE CASCADE
 );
 
@@ -23,8 +23,8 @@ CREATE TABLE chapters(
 	subject_id TEXT NOT NULL,
 	subject_name TEXT NOT NULL,
 	class_name INTEGER NOT NULL,
-	created_at INTEGER NOT NULL,
-	updated_at INTEGER NOT NULL,
+	created_at BIGINT NOT NULL,
+	updated_at BIGINT NOT NULL,
 	FOREIGN KEY  (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
 
@@ -35,7 +35,7 @@ CREATE TABLE questions(
 	subject_name TEXT NOT NULL,
 	class_name INTEGER NOT NULL,
 	chapter_id TEXT NOT NULL,
-	created_at INTEGER NOT NULL,
-	updated_at INTEGER NOT NULL,
+	created_at BIGINT NOT NULL,
+	updated_at BIGINT NOT NULL,
 	FOREIGN KEY  (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
 );

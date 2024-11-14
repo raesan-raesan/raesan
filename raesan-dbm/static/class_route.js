@@ -1,3 +1,19 @@
+// convert unix to readable
+const unix_to_readable = (unix_time) => {
+  const date = new Date(unix_time * 1000);
+  return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+};
+window.unix_to_readable = unix_to_readable;
+// update unix time stamps of the whole web page
+const updateUnixTimeStamps = () => {
+  document.querySelectorAll("td[data-timestamp]").forEach((element) => {
+    const unix_time = element.getAttribute("data-timestamp");
+    element.textContent = window.unix_to_readable(unix_time);
+  });
+};
+updateUnixTimeStamps(); // run at the beginning
+window.updateUnixTimeStamps = updateUnixTimeStamps;
+
 // handle create_class_form submition
 const handleCreateClassFormSubmit = () => {
   let create_class_form = document.getElementById("create_class_form");
@@ -15,6 +31,8 @@ const handleCreateClassFormSubmit = () => {
       body: JSON.stringify({
         id: "",
         name: parseInt(create_class_form.elements["name"].value),
+        created_at: 0,
+        updated_at: 0,
       }),
     })
       .then((res) => {
@@ -30,6 +48,8 @@ const handleCreateClassFormSubmit = () => {
 				<tr id="${data.id}">
 					<td>${data.id}</td>
 					<td>${data.name}</td>
+					<td data-timestamp="${data.created_at}"></td>
+					<td data-timestamp="${data.updated_at}"></td>
 					<th>
 						<div class="join">
 						  <button
@@ -48,6 +68,7 @@ const handleCreateClassFormSubmit = () => {
 					</th>
 				</tr>
 				`;
+          updateUnixTimeStamps();
         }
       });
   }
@@ -89,6 +110,8 @@ const handleCreateClassFromJsonFormSubmit = () => {
 					<tr id="${element.id}">
 						<td>${element.id}</td>
 						<td>${element.name}</td>
+						<td data-timestamp="${element.created_at}"></td>
+						<td data-timestamp="${element.updated_at}"></td>
 						<th>
 							<div class="join">
 							  <button
@@ -107,6 +130,7 @@ const handleCreateClassFromJsonFormSubmit = () => {
 						</th>
 					</tr>
 					`;
+            updateUnixTimeStamps();
           });
         }
       });
@@ -174,6 +198,8 @@ const handleUpdateClass = (_class) => {
   let new_class = {
     id: _class.id,
     name: parseInt(class_row.querySelector("#name input").value),
+    created_at: _class.created_at,
+    updated_at: _class.updated_at,
   };
   // use `loadash` to compare structs
   if (_.isEqual(new_class, _class)) {
@@ -214,8 +240,10 @@ window.handleUpdateClass = handleUpdateClass;
 // reset class handler
 const handleResetClass = (_class) => {
   document.getElementById(_class.id).innerHTML = `
-	<td class="whitespace-nowrap">${_class.id}</td>
-	<td class="whitespace-nowrap">${_class.name}</td>
+	<td>${_class.id}</td>
+	<td>${_class.name}</td>
+	<td data-timestamp="${_class.created_at}"></td>
+	<td data-timestamp="${_class.updated_at}"></td>
 	<th>
 		<div class="join">
 		  <button
@@ -233,5 +261,6 @@ const handleResetClass = (_class) => {
 		</div>
 	</th>
 	`;
+  updateUnixTimeStamps();
 };
 window.handleResetClass = handleResetClass;

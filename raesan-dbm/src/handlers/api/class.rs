@@ -4,6 +4,7 @@ use axum::{self, response::IntoResponse};
 use diesel::prelude::*;
 use raesan_common::schema;
 use std::sync::{Arc, RwLock};
+use time;
 use uuid;
 
 // POST (/api/class) route handler
@@ -38,6 +39,8 @@ pub async fn create_class_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
+    input_data.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     let results: core::models::Class = diesel::insert_into(schema::classes::dsl::classes)
         .values(input_data)
         .get_result(&mut conn)
@@ -84,9 +87,11 @@ pub async fn json_to_class_route(
         }
     };
 
-    input_data
-        .iter_mut()
-        .for_each(|element| element.id = uuid::Uuid::new_v4().to_string());
+    input_data.iter_mut().for_each(|element| {
+        element.id = uuid::Uuid::new_v4().to_string();
+        element.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+        element.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    });
     let mut new_records: Vec<core::models::Class> = Vec::new();
     input_data.iter().for_each(|element| {
         new_records.push(
@@ -181,7 +186,10 @@ pub async fn update_class_route(
         }
     };
 
-    let result: core::models::Class = json.save_changes(&mut conn).unwrap();
+    let mut input_data = json.clone();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
+
+    let result: core::models::Class = input_data.save_changes(&mut conn).unwrap();
 
     return Ok((
         [(

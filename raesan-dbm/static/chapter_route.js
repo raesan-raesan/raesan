@@ -1,3 +1,19 @@
+// convert unix to readable
+const unix_to_readable = (unix_time) => {
+  const date = new Date(unix_time * 1000);
+  return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+};
+window.unix_to_readable = unix_to_readable;
+// update unix time stamps of the whole web page
+const updateUnixTimeStamps = () => {
+  document.querySelectorAll("td[data-timestamp]").forEach((element) => {
+    const unix_time = element.getAttribute("data-timestamp");
+    element.textContent = window.unix_to_readable(unix_time);
+  });
+};
+updateUnixTimeStamps(); // run at the beginning
+window.updateUnixTimeStamps = updateUnixTimeStamps;
+
 window.subject_list.forEach((element) => {
   document.getElementById("create_chapter_form").elements[
     "subject_display_name"
@@ -34,6 +50,8 @@ const handleCreateChapterFormSubmit = () => {
         subject_id: curr_subject.id,
         subject_name: curr_subject.name,
         class_name: curr_subject.class_name,
+        created_at: 0,
+        updated_at: 0,
       }),
     })
       .then((res) => {
@@ -161,8 +179,9 @@ const handleUpdateChapter = (chapter) => {
     subject_id: curr_subject.id,
     subject_name: curr_subject.name,
     class_name: curr_subject.class_name,
+    created_at: chapter.created_at,
+    updated_at: chapter.updated_at,
   };
-  chapter.subject_id = "";
   // use `loadash` to compare structs
   if (_.isEqual(new_chapter, chapter)) {
     handleResetChapter(chapter);
@@ -206,6 +225,8 @@ const handleResetChapter = (chapter) => {
 		<td class="max-w-[250px]">${chapter.name}</td>
 		<td>${chapter.subject_name}</td>
 		<td>${chapter.class_name}</td>
+		<td data-timestamp="${chapter.created_at}"></td>
+		<td data-timestamp="${chapter.updated_at}"></td>
 		<th>
 			<div class="join">
 			  <button
@@ -223,6 +244,7 @@ const handleResetChapter = (chapter) => {
 			</div>
 		</th>
 		`;
+  updateUnixTimeStamps();
 };
 window.handleResetChapter = handleResetChapter;
 
@@ -255,6 +277,8 @@ function fetchAndAppendData() {
 						<td class="max-w-[250px]">${element.name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
+						<td data-timestamp="${element.created_at}"></td>
+						<td data-timestamp="${element.updated_at}"></td>
 						<th>
 							<div class="join">
 							  <button
@@ -274,6 +298,7 @@ function fetchAndAppendData() {
 					</tr>
 					`;
       });
+      updateUnixTimeStamps();
 
       // Update the observer to observe the new last element
       const newLastElement = chapter_table_body.lastElementChild;

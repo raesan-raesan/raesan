@@ -7,6 +7,7 @@ use std::{
     collections::HashMap,
     sync::{Arc, RwLock},
 };
+use time;
 
 // GET (/api/chapter) route handler
 pub async fn get_chapter_route(
@@ -102,6 +103,8 @@ pub async fn create_chapter_route(
     };
 
     input_data.id = uuid::Uuid::new_v4().to_string();
+    input_data.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     let results: core::models::Chapter = diesel::insert_into(schema::chapters::dsl::chapters)
         .values(input_data)
         .get_result(&mut conn)
@@ -166,6 +169,8 @@ pub async fn json_to_chapter_route(
         };
         element.id = uuid::Uuid::new_v4().to_string();
         element.subject_id = curr_subject.id;
+        element.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
+        element.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     }
     let mut new_records: Vec<core::models::Chapter> = Vec::new();
     input_data.iter().for_each(|element| {
@@ -263,7 +268,9 @@ pub async fn update_chapter_route(
         }
     };
 
-    let result: core::models::Chapter = json.save_changes(&mut conn).unwrap();
+    let mut input_data = json.clone();
+    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
+    let result: core::models::Chapter = input_data.save_changes(&mut conn).unwrap();
 
     return Ok((
         [(

@@ -36,17 +36,21 @@
 		\"id\": \"--this-should-be-empty\",
 		\"name\": \"some-name\",
 		\"display_name\": \"class_name - subject_name - name\",
-		\"subject_id\": \"some-subject-id\",
+		\"subject_id\": \"--this-should-be-empty\",
 		\"subject_name\": \"some-subject-name\",
-		\"class_name\": 11
+		\"class_name\": 11,
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	},
 	{
 		\"id\": \"--this-should-be-empty\",
-		\"name\": \"some-name-2\",
+		\"name\": \"some-name\",
 		\"display_name\": \"class_name - subject_name - name\",
-		\"subject_id\": \"some-subject-id-2\",
-		\"subject_name\": \"some-subject-name-2\",
-		\"class_name\": 11
+		\"subject_id\": \"--this-should-be-empty\",
+		\"subject_name\": \"some-subject-name\",
+		\"class_name\": 12,
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	}
 ]") %}
 
@@ -62,6 +66,8 @@
 			<th>Name</th>
 			<th>Subject</th>
 			<th>Class</th>
+			<th>Created</th>
+			<th>Updated</th>
 			<th></th>
 		  </tr>
 		</thead>
@@ -72,6 +78,8 @@
 			<td class="max-w-[250px]">{{ chapter.name }}</td>
 			<td>{{ chapter.subject_name }}</td>
 			<td>{{ chapter.class_name }}</td>
+			<td data-timestamp="{{ chapter.created_at }}"></td>
+			<td data-timestamp="{{ chapter.updated_at }}"></td>
 			<th>
 				<div class="join">
 				  <button

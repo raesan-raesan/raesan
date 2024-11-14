@@ -1,3 +1,19 @@
+// convert unix to readable
+const unix_to_readable = (unix_time) => {
+  const date = new Date(unix_time * 1000);
+  return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+};
+window.unix_to_readable = unix_to_readable;
+// update unix time stamps of the whole web page
+const updateUnixTimeStamps = () => {
+  document.querySelectorAll("td[data-timestamp]").forEach((element) => {
+    const unix_time = element.getAttribute("data-timestamp");
+    element.textContent = window.unix_to_readable(unix_time);
+  });
+};
+updateUnixTimeStamps(); // run at the beginning
+window.updateUnixTimeStamps = updateUnixTimeStamps;
+
 window.chapter_list.forEach((element) => {
   document.getElementById("create_question_form").elements[
     "chapter_display_name"
@@ -34,6 +50,8 @@ const handleCreateQuestionFormSubmit = () => {
         subject_name: curr_chapter.subject_name,
         class_name: curr_chapter.class_name,
         chapter_id: curr_chapter.id,
+        created_at: 0,
+        updated_at: 0,
       }),
     })
       .then((res) => {
@@ -161,6 +179,8 @@ const handleUpdateQuestion = (question) => {
     chapter_name: curr_chapter.name,
     subject_name: curr_chapter.subject_name,
     class_name: curr_chapter.class_name,
+    created_at: question.created_at,
+    updated_at: question.updated_at,
   };
   // use `loadash` to compare structs
   if (_.isEqual(new_question, question)) {
@@ -207,6 +227,8 @@ const handleResetQuestion = (question) => {
 		<td>${question.chapter_name}</td>
 		<td>${question.subject_name}</td>
 		<td>${question.class_name}</td>
+		<td data-timestamp="${question.created_at}"></td>
+		<td data-timestamp="${question.updated_at}"></td>
 		<th>
 			<div class="join">
 			  <button
@@ -224,6 +246,7 @@ const handleResetQuestion = (question) => {
 			</div>
 		</th>
 	`;
+  updateUnixTimeStamps();
 
   // append rendered latex
   let output = document
@@ -274,6 +297,8 @@ function fetchAndAppendData() {
 						<td>${element.chapter_name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
+						<td data-timestamp="${element.created_at}"></td>
+						<td data-timestamp="${element.updated_at}"></td>
 						<th>
 							<div class="join">
 							  <button
@@ -304,6 +329,7 @@ function fetchAndAppendData() {
         MathJax.startup.document.clear();
         MathJax.startup.document.updateDocument();
       });
+      updateUnixTimeStamps();
 
       // Update the observer to observe the new last element
       const newLastElement = question_table_body.lastElementChild;

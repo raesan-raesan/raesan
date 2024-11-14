@@ -32,14 +32,18 @@
 		\"name\": \"some-name\",
 		\"display_name\": \"class_name - name\",
 		\"class_name\": 11,
-		\"class_id\": \"some-id\"
+		\"class_id\": \"--this-should-be-empty--\",
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	},
 	{
 		\"id\": \"--this-should-be-empty--\",
-		\"name\": \"some-name-2\",
+		\"name\": \"some-name\",
 		\"display_name\": \"class_name - name\",
 		\"class_name\": 12,
-		\"class_id\": \"some-id-2\"
+		\"class_id\": \"--this-should-be-empty--\",
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	}
 ]") %}
 
@@ -53,6 +57,8 @@
 					<th>ID</th>
 					<th>Name</th>
 					<th>Class Name</th>
+					<th>Created</th>
+					<th>Updated</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -62,6 +68,8 @@
 					<td>{{ subject.id }}</td>
 					<td class="max-w-[250px]">{{ subject.name }}</td>
 					<td>{{ subject.class_name }}</td>
+					<td data-timestamp="{{ subject.created_at }}"></td>
+					<td data-timestamp="{{ subject.updated_at }}"></td>
 					<th>
 						<div class="join">
 						  <button

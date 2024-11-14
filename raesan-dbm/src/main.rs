@@ -30,7 +30,6 @@ async fn main() {
                 },
             ));
             // main application router
-            println!("CLI Args: {:#?}", data);
             let app_router: axum::Router = axum::Router::new()
                 .route(
                     // static files route

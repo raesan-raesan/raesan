@@ -32,17 +32,21 @@
 		\"body\": \"some body\",
 		\"chapter_name\": \"some name\",
 		\"subject_name\": \"some name\",
-		\"class_name\": \"some name\",
-		\"chapter_id\": \"some id\"
+		\"class_name\": 11,
+		\"chapter_id\": \"--this-should-be-empty--\",
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	},
 	{
 		\"id\": \"--this-should-be-empty--\",
-		\"body\": \"some body 2\",
+		\"body\": \"some body\",
 		\"chapter_name\": \"some name\",
 		\"subject_name\": \"some name\",
-		\"class_name\": \"some name\",
-		\"chapter_id\": \"some id 2\"
-	}
+		\"class_name\": 12,
+		\"chapter_id\": \"--this-should-be-empty--\",
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
+	},
 ]") %}
 
 <!-- main page body -->
@@ -57,6 +61,8 @@
 					<th class="max-w-[250px]">Chapter</th>
 					<th>Subject</th>
 					<th>Class</th>
+					<th>Created</th>
+					<th>Updated</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -68,6 +74,8 @@
 					<td>{{ question.chapter_name }}</td>
 					<td>{{ question.subject_name }}</td>
 					<td>{{ question.class_name }}</td>
+					<td data-timestamp="{{ question.created_at }}"></td>
+					<td data-timestamp="{{ question.updated_at }}"></td>
 					<th>
 						<div class="join">
 						  <button

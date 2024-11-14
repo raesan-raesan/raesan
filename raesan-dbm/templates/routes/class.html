@@ -25,11 +25,15 @@
 {% call create_from_json_modal::component("Class","handleCreateClassFromJsonFormSubmit()","[
 	{
 		\"id\": \"--this-should-be-empty--\",
-		\"name\": 0
+		\"name\": 0,
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	},
 	{
 		\"id\": \"--this-should-be-empty--\",
-		\"name\": 1
+		\"name\": 0,
+		\"created_at\": \"--this-should-be-empty--\",
+		\"updated_at\": \"--this-should-be-empty--\"
 	}
 ]") %}
 
@@ -42,6 +46,8 @@
 				<tr class="bg-base-300">
 					<th>ID</th>
 					<th>Name</th>
+					<th>Created</th>
+					<th>Updated</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -50,6 +56,8 @@
 				<tr id="{{ class.id }}">
 					<td>{{ class.id }}</td>
 					<td>{{ class.name }}</td>
+					<td data-timestamp="{{ class.created_at }}"></td>
+					<td data-timestamp="{{ class.updated_at }}"></td>
 					<th>
 						<div class="join">
 						  <button

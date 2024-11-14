@@ -1,3 +1,19 @@
+// convert unix to readable
+const unix_to_readable = (unix_time) => {
+  const date = new Date(unix_time * 1000);
+  return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+};
+window.unix_to_readable = unix_to_readable;
+// update unix time stamps of the whole web page
+const updateUnixTimeStamps = () => {
+  document.querySelectorAll("td[data-timestamp]").forEach((element) => {
+    const unix_time = element.getAttribute("data-timestamp");
+    element.textContent = window.unix_to_readable(unix_time);
+  });
+};
+updateUnixTimeStamps(); // run at the beginning
+window.updateUnixTimeStamps = updateUnixTimeStamps;
+
 window.class_list.forEach((element) => {
   document.getElementById("create_subject_form").elements[
     "class_name"
@@ -30,6 +46,8 @@ const handleCreateSubjectFormSubmit = () => {
             parseInt(create_subject_form.elements["class_name"].value),
         ).id,
         class_name: parseInt(create_subject_form.elements["class_name"].value),
+        created_at: 0,
+        updated_at: 0,
       }),
     })
       .then((res) => {
@@ -46,6 +64,8 @@ const handleCreateSubjectFormSubmit = () => {
 					<td>${data.id}</td>
 					<td class="max-w-[250px]">${data.name}</td>
 					<td>${data.class_name}</td>
+					<td data-timestamp="${data.created_at}"></td>
+					<td data-timestamp="${data.updated_at}"></td>
 					<th>
 						<div class="join">
 						  <button
@@ -64,6 +84,7 @@ const handleCreateSubjectFormSubmit = () => {
 					</th>
 				</tr>
 				`;
+          updateUnixTimeStamps();
         }
       });
   }
@@ -106,6 +127,8 @@ const handleCreateSubjectFromJsonFormSubmit = () => {
 						<td>${element.id}</td>
 						<td class="max-w-[250px]">${element.name}</td>
 						<td>${element.class_name}</td>
+						<td data-timestamp="${element.created_at}"></td>
+						<td data-timestamp="${element.updated_at}"></td>
 						<th>
 							<div class="join">
 							  <button
@@ -124,6 +147,7 @@ const handleCreateSubjectFromJsonFormSubmit = () => {
 						</th>
 					</tr>
 					`;
+            updateUnixTimeStamps();
           });
         }
       });
@@ -203,6 +227,8 @@ const handleUpdateSubject = (subject) => {
         parseInt(subject_row.querySelector("#class_name select").value),
     ).id,
     class_name: parseInt(subject_row.querySelector("#class_name select").value),
+    created_at: subject.created_at,
+    updated_at: subject.updated_at,
   };
   // use `loadash` to compare structs
   if (_.isEqual(new_subject, subject)) {
@@ -246,6 +272,8 @@ const handleResetSubject = (subject) => {
 	<td>${subject.id}</td>
 	<td class="max-w-[250px]">${subject.name}</td>
 	<td>${subject.class_name}</td>
+	<td data-timestamp="${subject.created_at}"></td>
+	<td data-timestamp="${subject.updated_at}"></td>
 	<th>
 		<div class="join">
 		  <button
@@ -263,5 +291,6 @@ const handleResetSubject = (subject) => {
 		</div>
 	</th>
 	`;
+  updateUnixTimeStamps();
 };
 window.handleResetSubject = handleResetSubject;

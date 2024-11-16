@@ -18,6 +18,7 @@ pub enum SubCommands {
     Serve(Serve),
     GenerateDatabaseRecords(GenerateDatabaseRecords),
     ExportDataset(ExportDataset),
+    SyncDataset(SyncDataset),
 }
 
 // ----- `Serve` subcommand
@@ -30,7 +31,7 @@ pub struct Serve {
 
 // ----- `GenerateDatabaseRecords` subcommand
 #[derive(Args, Debug, Clone)]
-#[command(about = "Generate SQLite database records from json dataset")]
+#[command(about = "Generate SQLite database records from JSON dataset")]
 pub struct GenerateDatabaseRecords {
     #[arg(long, help = "path location of database")]
     pub database: String,
@@ -41,6 +42,15 @@ pub struct GenerateDatabaseRecords {
 #[derive(Args, Debug, Clone)]
 #[command(about = "Export JSON dataset from SQLite database")]
 pub struct ExportDataset {
+    #[arg(long, help = "path location of database")]
+    pub database: String,
+    #[arg(long, help = "path location of dataset")]
+    pub dataset: String,
+}
+// ----- `SyncDataset` subcommand
+#[derive(Args, Debug, Clone)]
+#[command(about = "Sync JSON dataset with SQLite database")]
+pub struct SyncDataset {
     #[arg(long, help = "path location of database")]
     pub database: String,
     #[arg(long, help = "path location of dataset")]

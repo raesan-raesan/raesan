@@ -1,6 +1,7 @@
 // modules
 pub mod export_dataset;
 pub mod generate_database_records;
+pub mod sync_dataset;
 
 // imports
 use rust_embed;

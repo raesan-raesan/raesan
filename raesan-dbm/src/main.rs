@@ -143,7 +143,7 @@ async fn main() {
                 }
             };
         }
-        // Generate database records from dataset
+        // Generate SQLite database records from JSON dataset
         core::app::SubCommands::GenerateDatabaseRecords(data) => {
             match utils::generate_database_records::generate_database_records(data.clone()) {
                 Ok(_) => {}
@@ -163,6 +163,19 @@ async fn main() {
                 Err(e) => {
                     eprint!(
                         "Failed to export database records to JSON dataset, Error: {:#?}",
+                        e.to_string()
+                    );
+                    std::process::exit(1);
+                }
+            };
+        }
+        // Sync JSON dataset with SQLite database
+        core::app::SubCommands::SyncDataset(data) => {
+            match utils::sync_dataset::sync_dataset(data.clone()) {
+                Ok(_) => {}
+                Err(e) => {
+                    eprint!(
+                        "Failed to sync JSON dataset with SQLite database, Error: {:#?}",
                         e.to_string()
                     );
                     std::process::exit(1);

@@ -10,6 +10,7 @@ clap = { version = "4.5.19", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 axum = "0.7.5"
 axum-extra = { version = "0.9.4", features = ["cookie"] }
+axum-macros = "0.4.2"
 diesel = { version = "2.2.4", features = ["r2d2", "sqlite", "returning_clauses_for_sqlite_3_35"] }
 r2d2 = "0.8.10"
 askama = { version = "0.12.1", features = ["serde-json"] }

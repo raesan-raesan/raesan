@@ -20,5 +20,5 @@ pub struct CreateTestPage {
 #[derive(Template)]
 #[template(path = "routes/test.html")]
 pub struct TestPage {
-    pub latex_content: String,
+    pub test_id: String,
 }

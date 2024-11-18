@@ -109,3 +109,10 @@ pub struct CreateTestInput {
 pub struct TestFormatInput {
     pub total_questions: u32,
 }
+
+// ----- `TestQuestion` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct TestQuestion {
+    pub id: String,
+    pub body: String,
+}

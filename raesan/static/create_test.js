@@ -132,10 +132,18 @@ document.addEventListener("updateStepEvent", function (event) {
         body: JSON.stringify(create_test_input),
       })
         .then((response) => {
-          if (response.redirected) {
-            window.location.href = response.url;
+          return response.json();
+        })
+        .then((data) => {
+          if (data.length == 0) {
+            alert("Something went wrong, Your test has no questions!");
           } else {
-            console.log(response);
+            let test = {
+              name: crypto.randomUUID().toString(),
+              questions: data,
+            };
+            localStorage.setItem(test.name, JSON.stringify(test));
+            window.location.href = "/";
           }
         })
         .catch((error) => {

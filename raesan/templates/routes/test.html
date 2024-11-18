@@ -1,5 +1,22 @@
-{% extends "../base.html" %} {% block page_content %}
+{% extends "../base.html" %} 
 
-<div class="text-4xl">{{latex_content|safe}}</div>
+{% block page_scripts %}
+<script>
+	window.onload = () => {
+		const test = localStorage.getItem("{{test_id}}");
+		const questions_list = document.getElementById("questions_list");
+		JSON.parse(test).questions.forEach((question) => {
+			questions_list.innerHTML += `
+			<div>${question.body}</div>
+			`;
+		});
+	}
+</script>
+{% endblock %}
+
+{% block page_content %}
+
+<div id="questions_list" class="flex flex-col w-full gap-[20px] mt-[30px] px-[15px]">
+</div>
 
 {% endblock %}

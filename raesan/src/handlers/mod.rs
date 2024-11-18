@@ -6,7 +6,6 @@ pub mod test_route;
 use crate::{core, templates, utils};
 use askama::Template;
 use axum::{self, response::IntoResponse};
-use axum_extra;
 use diesel::{self, prelude::*};
 use mime_guess;
 use raesan_common;
@@ -51,9 +50,7 @@ pub async fn static_route(
 }
 
 // GET (/) home page route handler
-pub async fn home_page(
-    _cookie_jar: axum_extra::extract::cookie::CookieJar,
-) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+pub async fn home_page() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // render HTML struct
     let html = match (templates::routes::HomePage {}.render()) {
         Ok(safe_html) => safe_html,
@@ -65,14 +62,6 @@ pub async fn home_page(
             ));
         }
     };
-
-    // println!(
-    //     "{:#?}",
-    //     serde_json::from_str::<core::models::CreateTestInput>(
-    //         cookie_jar.get("create_test_input").unwrap().value()
-    //     )
-    //     .unwrap()
-    // );
 
     return Ok((
         [(

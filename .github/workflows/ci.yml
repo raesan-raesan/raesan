@@ -44,6 +44,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.registry }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

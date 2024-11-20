@@ -21,10 +21,13 @@ RUN bash -c "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/diesel-rs/
 
 WORKDIR /usr/src/app
 
-COPY . .
-
-RUN /root/.asdf/shims/cargo build --workspace
+COPY ./raesan/package.json ./raesan/bun.lockb ./raesan/yarn.lock /usr/src/app/raesan/
+COPY ./raesan-dbm/package.json ./raesan-dbm/bun.lockb ./raesan-dbm/yarn.lock /usr/src/app/raesan-dbm/
 
 RUN cd ./raesan && /root/.asdf/shims/bun install --yarn && cd ../raesan-dbm && /root/.asdf/shims/bun install --yarn
+
+COPY . . 
+
+RUN /root/.asdf/shims/cargo build --workspace
 
 CMD ["tail", "-f", "/dev/null"]

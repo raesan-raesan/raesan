@@ -5,6 +5,11 @@ interval: 500ms
 dotenv: [".env"]
 
 tasks:
+  # build the main application for production
+  build:
+    cmds:
+      - docker build -t raesan:0.0.1 .
+
   # main raesan application
   raesan:
     watch: true
@@ -13,7 +18,7 @@ tasks:
       - "raesan/**/*.html"
       - "raesan/**/*.js"
     cmds:
-      - cargo run -p raesan serve --database $DATABASE_URL {{.CLI_ARGS}} {{.CLI_ARGS}}
+      - cargo run -p raesan serve --database $DATABASE_URL {{.CLI_ARGS}}
     status:
       - "exit 1"
     cleanup:

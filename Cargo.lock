@@ -1032,7 +1032,7 @@ dependencies = [
 
 [[package]]
 name = "raesan"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "askama",
  "askama_axum",
@@ -1057,14 +1057,15 @@ dependencies = [
 
 [[package]]
 name = "raesan-common"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "diesel",
+ "serde",
 ]
 
 [[package]]
 name = "raesan-dbm"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "askama",
  "askama_axum",

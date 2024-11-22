@@ -1,6 +1,5 @@
 [package]
 name = "raesan-dbm"
-version = "0.1.0"
 description = "Used to manage Raesan database"
 edition = "2021"
 

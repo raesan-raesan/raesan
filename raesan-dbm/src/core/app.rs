@@ -4,8 +4,7 @@ use clap::{Args, Parser, Subcommand};
 
 // ----- `CLIArgs` struct
 #[derive(Parser, Debug, Clone)]
-#[command(version,about,long_about=None)]
-#[command(propagate_version = true)]
+#[command(about,long_about=None)]
 #[command(next_line_help = true)]
 pub struct CLIArgs {
     #[command(subcommand)]

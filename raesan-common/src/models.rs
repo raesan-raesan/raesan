@@ -1,9 +1,8 @@
-// imports
+use crate::schema;
 use diesel;
-use raesan_common;
 use serde;
 
-// ----- `Class` model struct
+// ----- `ClassTable` model struct
 #[derive(
     Debug,
     Clone,
@@ -15,15 +14,15 @@ use serde;
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::classes)]
-pub struct Class {
+#[diesel(table_name=schema::classes)]
+pub struct ClassTable {
     pub id: String,
     pub name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `Subject` model struct
+// ----- `SubjectTable` model struct
 #[derive(
     Debug,
     Clone,
@@ -34,19 +33,19 @@ pub struct Class {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::subjects)]
-pub struct Subject {
+#[diesel(belongs_to(ClassTable))]
+#[diesel(table_name=schema::subjects)]
+pub struct SubjectTable {
     pub id: String,
     pub name: String,
-    pub display_name: String,
     pub class_id: String,
-    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `Chapter` model struct
+// ----- `ChapterTable` model struct
 #[derive(
     Debug,
     Clone,
@@ -57,20 +56,19 @@ pub struct Subject {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::chapters)]
-pub struct Chapter {
+#[diesel(belongs_to(SubjectTable))]
+#[diesel(table_name=schema::chapters)]
+pub struct ChapterTable {
     pub id: String,
     pub name: String,
-    pub display_name: String,
     pub subject_id: String,
-    pub subject_name: String,
-    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `Question` model struct
+// ----- `QuestionTable` model struct
 #[derive(
     Debug,
     Clone,
@@ -81,20 +79,19 @@ pub struct Chapter {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::questions)]
-pub struct Question {
+#[diesel(belongs_to(ChapterTable))]
+#[diesel(table_name=schema::questions)]
+pub struct QuestionTable {
     pub id: String,
     pub body: String,
-    pub chapter_name: String,
-    pub subject_name: String,
-    pub class_name: i32,
     pub chapter_id: String,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `CreateTestInput` struct
+// ----- `CreateTestInppt` struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CreateTestInput {
     pub curr_step: u32,

@@ -1,5 +1,4 @@
 // imports
-use crate::core::models;
 use askama_axum::Template;
 
 // ----- `HomePage` template object

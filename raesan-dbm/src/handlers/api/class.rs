@@ -2,7 +2,7 @@
 use crate::core;
 use axum::{self, response::IntoResponse};
 use diesel::prelude::*;
-use raesan_common::schema;
+use raesan_common::{models, schema, tables};
 use std::sync::{Arc, RwLock};
 use time;
 use uuid;
@@ -10,9 +10,8 @@ use uuid;
 // POST (/api/class) route handler
 pub async fn create_class_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<core::models::Class>,
+    axum::extract::Json(json): axum::extract::Json<models::Class>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    let mut input_data = json.clone();
     // database connection
     let mut conn = match match app_state.write() {
         Ok(safe_app_state) => safe_app_state,
@@ -38,11 +37,13 @@ pub async fn create_class_route(
         }
     };
 
-    input_data.id = uuid::Uuid::new_v4().to_string();
-    input_data.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    let results: core::models::Class = diesel::insert_into(schema::classes::dsl::classes)
-        .values(input_data)
+    let results: tables::Class = diesel::insert_into(schema::classes::dsl::classes)
+        .values(tables::Class {
+            id: uuid::Uuid::new_v4().to_string(),
+            name: json.name,
+            created_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+            updated_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+        })
         .get_result(&mut conn)
         .unwrap();
 
@@ -51,7 +52,12 @@ pub async fn create_class_route(
             axum::http::header::CONTENT_TYPE,
             String::from("text/html; charset=utf-8"),
         )],
-        axum::Json(results),
+        axum::Json(models::Class {
+            id: results.id,
+            name: results.name,
+            created_at: results.created_at,
+            updated_at: results.updated_at,
+        }),
     )
         .into_response());
 }
@@ -59,9 +65,8 @@ pub async fn create_class_route(
 // POST (/api/class/json) route handler
 pub async fn json_to_class_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<Vec<core::models::Class>>,
+    axum::extract::Json(json): axum::extract::Json<Vec<models::Class>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    let mut input_data = json.clone();
     // database connection
     let mut conn = match match app_state.write() {
         Ok(safe_app_state) => safe_app_state,
@@ -87,19 +92,23 @@ pub async fn json_to_class_route(
         }
     };
 
-    input_data.iter_mut().for_each(|element| {
-        element.id = uuid::Uuid::new_v4().to_string();
-        element.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
-        element.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    });
-    let mut new_records: Vec<core::models::Class> = Vec::new();
-    input_data.iter().for_each(|element| {
-        new_records.push(
-            diesel::insert_into(schema::classes::dsl::classes)
-                .values(element)
-                .get_result(&mut conn)
-                .unwrap(),
-        );
+    let mut new_records: Vec<models::Class> = Vec::new();
+    json.iter().for_each(|element| {
+        let data: tables::Class = diesel::insert_into(schema::classes::dsl::classes)
+            .values(tables::Class {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: element.name,
+                created_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+                updated_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+            })
+            .get_result(&mut conn)
+            .unwrap();
+        new_records.push(models::Class {
+            id: data.id,
+            name: data.name,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+        });
     });
     return Ok((
         [(
@@ -159,7 +168,7 @@ pub async fn delete_class_route(
 // PATCH (/api/class) route handler
 pub async fn update_class_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<core::models::Class>,
+    axum::extract::Json(json): axum::extract::Json<models::Class>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // database connection
     let mut conn = match match app_state.write() {
@@ -186,17 +195,26 @@ pub async fn update_class_route(
         }
     };
 
-    let mut input_data = json.clone();
-    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
-
-    let result: core::models::Class = input_data.save_changes(&mut conn).unwrap();
+    let result: tables::Class = tables::Class {
+        id: json.id,
+        name: json.name,
+        created_at: json.created_at,
+        updated_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+    }
+    .save_changes(&mut conn)
+    .unwrap();
 
     return Ok((
         [(
             axum::http::header::CONTENT_TYPE,
             String::from("text/html; charset=utf-8"),
         )],
-        axum::Json(result),
+        axum::Json(models::Class {
+            id: result.id,
+            name: result.name,
+            created_at: result.created_at,
+            updated_at: result.updated_at,
+        }),
     )
         .into_response());
 }

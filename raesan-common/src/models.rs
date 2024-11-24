@@ -1,97 +1,52 @@
-use crate::schema;
-use diesel;
 use serde;
 
-// ----- `ClassTable` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-)]
-#[diesel(table_name=schema::classes)]
-pub struct ClassTable {
+// ----- `Class` model struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Class {
     pub id: String,
     pub name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `SubjectTable` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-    diesel::Associations,
-)]
-#[diesel(belongs_to(ClassTable))]
-#[diesel(table_name=schema::subjects)]
-pub struct SubjectTable {
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Subject {
     pub id: String,
     pub name: String,
+    pub display_name: String,
     pub class_id: String,
+    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `ChapterTable` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-    diesel::Associations,
-)]
-#[diesel(belongs_to(SubjectTable))]
-#[diesel(table_name=schema::chapters)]
-pub struct ChapterTable {
+// ----- `Chapter` model struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Chapter {
     pub id: String,
     pub name: String,
+    pub display_name: String,
     pub subject_id: String,
+    pub subject_name: String,
+    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `QuestionTable` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-    diesel::Associations,
-)]
-#[diesel(belongs_to(ChapterTable))]
-#[diesel(table_name=schema::questions)]
-pub struct QuestionTable {
+// ----- `Question` model struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Question {
     pub id: String,
     pub body: String,
+    pub chapter_name: String,
+    pub subject_name: String,
+    pub class_name: i32,
     pub chapter_id: String,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `CreateTestInppt` struct
+// ----- `CreateTestInput` struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CreateTestInput {
     pub curr_step: u32,

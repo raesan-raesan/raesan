@@ -9,6 +9,7 @@ pub struct Class {
     pub updated_at: i64,
 }
 
+// ----- `Subject` model struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Subject {
     pub id: String,

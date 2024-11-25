@@ -1,5 +1,6 @@
 // imports
 use askama_axum::Template;
+use raesan_common::models;
 
 // ----- `HomePage` template object
 #[derive(Template)]

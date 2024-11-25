@@ -6,7 +6,6 @@ use axum::{self, response::IntoResponse};
 pub async fn route(
     axum::extract::Path(test_id): axum::extract::Path<String>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    println!("Test ID: {:#?}", test_id);
     // render HTML struct (PS: this whole thing upto the return, is a single let statement)
     let html = match (templates::routes::TestPage { test_id }.render()) {
         Ok(safe_html) => safe_html,

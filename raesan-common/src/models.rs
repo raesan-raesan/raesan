@@ -1,21 +1,7 @@
-// imports
-use diesel;
-use raesan_common;
 use serde;
 
 // ----- `Class` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-)]
-#[diesel(table_name=raesan_common::schema::classes)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Class {
     pub id: String,
     pub name: i32,
@@ -24,18 +10,7 @@ pub struct Class {
 }
 
 // ----- `Subject` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-)]
-#[diesel(table_name=raesan_common::schema::subjects)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Subject {
     pub id: String,
     pub name: String,
@@ -47,18 +22,7 @@ pub struct Subject {
 }
 
 // ----- `Chapter` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-)]
-#[diesel(table_name=raesan_common::schema::chapters)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Chapter {
     pub id: String,
     pub name: String,
@@ -71,18 +35,7 @@ pub struct Chapter {
 }
 
 // ----- `Question` model struct
-#[derive(
-    Debug,
-    Clone,
-    serde::Serialize,
-    serde::Deserialize,
-    diesel::Queryable,
-    diesel::Selectable,
-    diesel::Insertable,
-    diesel::AsChangeset,
-    diesel::Identifiable,
-)]
-#[diesel(table_name=raesan_common::schema::questions)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Question {
     pub id: String,
     pub body: String,

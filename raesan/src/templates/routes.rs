@@ -1,6 +1,6 @@
 // imports
-use crate::core::models;
 use askama_axum::Template;
+use raesan_common::models;
 
 // ----- `HomePage` template object
 #[derive(Template)]

@@ -28,6 +28,6 @@ RUN cd ./raesan && /root/.asdf/shims/bun install --yarn && cd ../raesan-dbm && /
 
 COPY . . 
 
-RUN /root/.asdf/shims/cargo build --workspace
+# RUN /root/.asdf/shims/cargo build --workspace
 
 CMD ["tail", "-f", "/dev/null"]

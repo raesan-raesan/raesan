@@ -1,8 +1,8 @@
-use crate::core::{self, models};
+use crate::core;
 use axum::{self, response::IntoResponse};
 use axum_macros;
 use diesel::{self, prelude::*};
-use raesan_common;
+use raesan_common::{models, schema, tables};
 use rand::{self, prelude::*};
 use std::sync::{Arc, RwLock};
 // use axum_extra;
@@ -41,9 +41,9 @@ pub async fn create_test_route(
     };
 
     // get the questions
-    let mut questions = raesan_common::schema::questions::dsl::questions
-        .filter(raesan_common::schema::questions::chapter_id.eq_any(create_test_input.chapters))
-        .select(models::Question::as_select())
+    let mut questions = schema::questions::dsl::questions
+        .filter(schema::questions::chapter_id.eq_any(create_test_input.chapters))
+        .select(tables::Question::as_select())
         .load(&mut conn)
         .expect("Failed to fetch questions");
 

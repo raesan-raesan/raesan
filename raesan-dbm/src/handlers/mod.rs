@@ -7,7 +7,7 @@ use askama::Template;
 use axum::{self, response::IntoResponse};
 use diesel::{self, prelude::*};
 use mime_guess;
-use raesan_common;
+use raesan_common::{self, models, schema, tables};
 use std::sync::{Arc, RwLock};
 
 // GET (/static) route handler
@@ -83,9 +83,17 @@ pub async fn class_page(
 
     let results = raesan_common::schema::classes::dsl::classes
         .limit(core::PAGE_SIZE.into())
-        .select(core::models::Class::as_select())
+        .select(tables::Class::as_select())
         .load(&mut conn)
-        .expect("Error loading classes");
+        .expect("Error loading classes")
+        .iter()
+        .map(|element| models::Class {
+            id: element.id.clone(),
+            name: element.name,
+            created_at: element.created_at,
+            updated_at: element.updated_at,
+        })
+        .collect::<Vec<_>>();
 
     // render HTML struct
     let html = match (templates::routes::ClassPage { classes: results }.render()) {
@@ -139,13 +147,38 @@ pub async fn subject_page(
     };
 
     let classes = raesan_common::schema::classes::dsl::classes
-        .select(core::models::Class::as_select())
+        .select(tables::Class::as_select())
         .load(&mut conn)
-        .expect("Error loading classes");
+        .expect("Error loading classes")
+        .iter()
+        .map(|element| models::Class {
+            id: element.id.clone(),
+            name: element.name,
+            created_at: element.created_at,
+            updated_at: element.updated_at,
+        })
+        .collect::<Vec<_>>();
     let subjects = raesan_common::schema::subjects::dsl::subjects
-        .select(core::models::Subject::as_select())
+        .select(tables::Subject::as_select())
         .load(&mut conn)
-        .expect("Error loading subjects");
+        .expect("Error loading subjects")
+        .iter()
+        .map(|element| {
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == element.class_id)
+                .unwrap();
+            models::Subject {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!("{} - {}", curr_class.name, element.name.clone()),
+                class_id: element.class_id.clone(),
+                class_name: curr_class.name,
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<_>>();
 
     // render HTML struct
     let html = match (templates::routes::SubjectPage { classes, subjects }.render()) {
@@ -198,15 +231,71 @@ pub async fn chapter_page(
         }
     };
 
-    let subjects = raesan_common::schema::subjects::dsl::subjects
-        .select(core::models::Subject::as_select())
+    let classes = raesan_common::schema::classes::dsl::classes
+        .select(tables::Class::as_select())
         .load(&mut conn)
-        .unwrap();
+        .expect("Error loading classes")
+        .iter()
+        .map(|element| models::Class {
+            id: element.id.clone(),
+            name: element.name,
+            created_at: element.created_at,
+            updated_at: element.updated_at,
+        })
+        .collect::<Vec<_>>();
+    let subjects = raesan_common::schema::subjects::dsl::subjects
+        .select(tables::Subject::as_select())
+        .load(&mut conn)
+        .expect("Error loading subjects")
+        .iter()
+        .map(|element| {
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == element.class_id)
+                .unwrap();
+            models::Subject {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!("{} - {}", curr_class.name, element.name.clone()),
+                class_id: element.class_id.clone(),
+                class_name: curr_class.name,
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<_>>();
     let chapters = raesan_common::schema::chapters::dsl::chapters
         .limit(core::PAGE_SIZE.into())
-        .select(core::models::Chapter::as_select())
+        .select(tables::Chapter::as_select())
         .load(&mut conn)
-        .unwrap();
+        .unwrap()
+        .iter()
+        .map(|element| {
+            let curr_subject = subjects
+                .iter()
+                .find(|subject| subject.id == element.subject_id)
+                .unwrap();
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == curr_subject.class_id)
+                .unwrap();
+            models::Chapter {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!(
+                    "{} - {} - {}",
+                    curr_class.name,
+                    curr_subject.name.clone(),
+                    element.name.clone()
+                ),
+                subject_id: element.subject_id.clone(),
+                subject_name: curr_subject.name.clone(),
+                class_name: curr_class.name,
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<_>>();
 
     // render HTML struct
     let html = match (templates::routes::ChapterPage { subjects, chapters }.render()) {
@@ -259,15 +348,68 @@ pub async fn question_page(
         }
     };
 
-    let chapters = raesan_common::schema::chapters::dsl::chapters
-        .select(core::models::Chapter::as_select())
-        .load(&mut conn)
-        .expect("Error loading chapters");
-    let questions = raesan_common::schema::questions::dsl::questions
+    let chapters = schema::chapters::table
+        .inner_join(
+            schema::subjects::table.on(schema::chapters::subject_id.eq(schema::subjects::id)),
+        )
+        .inner_join(schema::classes::table.on(schema::subjects::class_id.eq(schema::classes::id)))
+        .select((
+            schema::chapters::all_columns,
+            schema::subjects::all_columns,
+            schema::classes::all_columns,
+        ))
+        .load::<(tables::Chapter, tables::Subject, tables::Class)>(&mut conn)
+        .unwrap()
+        .iter()
+        .map(|element| models::Chapter {
+            id: element.0.id.clone(),
+            name: element.0.name.clone(),
+            display_name: format!(
+                "{} - {} - {}",
+                element.2.name, element.1.name, element.0.name
+            ),
+            subject_id: element.0.subject_id.clone(),
+            subject_name: element.1.name.clone(),
+            class_name: element.2.name,
+            created_at: element.0.created_at,
+            updated_at: element.0.updated_at,
+        })
+        .collect::<Vec<models::Chapter>>();
+
+    let questions = schema::questions::table
+        .inner_join(
+            schema::chapters::table.on(schema::questions::chapter_id.eq(schema::chapters::id)),
+        )
+        .inner_join(
+            schema::subjects::table.on(schema::chapters::subject_id.eq(schema::subjects::id)),
+        )
+        .inner_join(schema::classes::table.on(schema::subjects::class_id.eq(schema::classes::id)))
+        .select((
+            schema::questions::all_columns,
+            schema::chapters::all_columns,
+            schema::subjects::all_columns,
+            schema::classes::all_columns,
+        ))
         .limit(core::PAGE_SIZE.into())
-        .select(core::models::Question::as_select())
-        .load(&mut conn)
-        .expect("Error loading questions");
+        .load::<(
+            tables::Question,
+            tables::Chapter,
+            tables::Subject,
+            tables::Class,
+        )>(&mut conn)
+        .unwrap()
+        .iter()
+        .map(|element| models::Question {
+            id: element.0.id.clone(),
+            body: element.0.body.clone(),
+            chapter_id: element.0.chapter_id.clone(),
+            chapter_name: element.1.name.clone(),
+            subject_name: element.2.name.clone(),
+            class_name: element.3.name,
+            created_at: element.0.created_at,
+            updated_at: element.0.updated_at,
+        })
+        .collect::<Vec<models::Question>>();
 
     // render HTML struct
     let html = match (templates::routes::QuestionPage {

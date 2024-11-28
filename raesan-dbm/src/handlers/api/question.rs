@@ -2,7 +2,7 @@
 use crate::core;
 use axum::{self, response::IntoResponse};
 use diesel::prelude::*;
-use raesan_common::schema;
+use raesan_common::{models, schema, tables};
 use std::{
     collections::HashMap,
     sync::{Arc, RwLock},
@@ -61,11 +61,41 @@ pub async fn get_question_handler(
         }
     };
 
-    let results: Vec<core::models::Question> = raesan_common::schema::questions::dsl::questions
+    let results = schema::questions::table
+        .inner_join(
+            schema::chapters::table.on(schema::questions::chapter_id.eq(schema::chapters::id)),
+        )
+        .inner_join(
+            schema::subjects::table.on(schema::chapters::subject_id.eq(schema::subjects::id)),
+        )
+        .inner_join(schema::classes::table.on(schema::subjects::class_id.eq(schema::classes::id)))
+        .select((
+            schema::questions::all_columns,
+            schema::chapters::all_columns,
+            schema::subjects::all_columns,
+            schema::classes::all_columns,
+        ))
         .limit(core::PAGE_SIZE.into())
         .offset(offset as i64)
-        .load(&mut conn)
-        .unwrap();
+        .load::<(
+            tables::Question,
+            tables::Chapter,
+            tables::Subject,
+            tables::Class,
+        )>(&mut conn)
+        .unwrap()
+        .iter()
+        .map(|element| models::Question {
+            id: element.0.id.clone(),
+            body: element.0.body.clone(),
+            chapter_id: element.0.chapter_id.clone(),
+            chapter_name: element.1.name.clone(),
+            subject_name: element.2.name.clone(),
+            class_name: element.3.name,
+            created_at: element.0.created_at,
+            updated_at: element.0.updated_at,
+        })
+        .collect::<Vec<models::Question>>();
 
     return Ok(axum::Json(results).into_response());
 }
@@ -73,9 +103,8 @@ pub async fn get_question_handler(
 // POST (/api/question) route handler
 pub async fn create_question_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<core::models::Question>,
+    axum::extract::Json(json): axum::extract::Json<models::Question>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
-    let mut input_data = json.clone();
     // database connection
     let mut conn = match match app_state.write() {
         Ok(safe_app_state) => safe_app_state,
@@ -101,11 +130,14 @@ pub async fn create_question_route(
         }
     };
 
-    input_data.id = uuid::Uuid::new_v4().to_string();
-    input_data.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    let results: core::models::Question = diesel::insert_into(schema::questions::dsl::questions)
-        .values(input_data)
+    let results: tables::Question = diesel::insert_into(schema::questions::dsl::questions)
+        .values(tables::Question {
+            id: uuid::Uuid::new_v4().to_string(),
+            body: json.body.clone(),
+            chapter_id: json.chapter_id.clone(),
+            created_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+            updated_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+        })
         .get_result(&mut conn)
         .unwrap();
 
@@ -114,7 +146,16 @@ pub async fn create_question_route(
             axum::http::header::CONTENT_TYPE,
             String::from("text/html; charset=utf-8"),
         )],
-        axum::Json(results),
+        axum::Json(models::Question {
+            id: results.id,
+            body: results.body,
+            chapter_id: results.chapter_id,
+            chapter_name: json.chapter_name,
+            subject_name: json.subject_name,
+            class_name: json.class_name,
+            created_at: results.created_at,
+            updated_at: results.updated_at,
+        }),
     )
         .into_response());
 }
@@ -122,7 +163,7 @@ pub async fn create_question_route(
 // POST (/api/question/json) route handler
 pub async fn json_to_question_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<Vec<core::models::Question>>,
+    axum::extract::Json(json): axum::extract::Json<Vec<models::Question>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     let mut input_data = json.clone();
     // database connection
@@ -151,11 +192,21 @@ pub async fn json_to_question_route(
     };
 
     for element in input_data.iter_mut() {
-        let curr_chapter: core::models::Chapter = match schema::chapters::dsl::chapters
-            .filter(schema::chapters::class_name.eq(element.class_name))
-            .filter(schema::chapters::subject_name.eq(element.subject_name.clone()))
+        let curr_class = raesan_common::schema::classes::dsl::classes
+            .filter(schema::classes::name.eq(element.class_name))
+            .select(tables::Class::as_select())
+            .first(&mut conn)
+            .unwrap();
+        let curr_subject = raesan_common::schema::subjects::dsl::subjects
+            .filter(schema::subjects::name.eq(element.subject_name.clone()))
+            .filter(schema::subjects::class_id.eq(curr_class.id))
+            .select(tables::Subject::as_select())
+            .first(&mut conn)
+            .unwrap();
+        let curr_chapter = match raesan_common::schema::chapters::dsl::chapters
             .filter(schema::chapters::name.eq(element.chapter_name.clone()))
-            .select(core::models::Chapter::as_select())
+            .filter(schema::chapters::subject_id.eq(curr_subject.id))
+            .select(tables::Chapter::as_select())
             .first(&mut conn)
         {
             Ok(safe_results) => safe_results,
@@ -172,21 +223,25 @@ pub async fn json_to_question_route(
         element.created_at = time::OffsetDateTime::now_utc().unix_timestamp();
         element.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
     }
-    let mut new_records: Vec<core::models::Question> = Vec::new();
     input_data.iter().for_each(|element| {
-        new_records.push(
-            diesel::insert_into(schema::questions::dsl::questions)
-                .values(element)
-                .get_result(&mut conn)
-                .unwrap(),
-        );
+        diesel::insert_into(schema::questions::dsl::questions)
+            .values(tables::Question {
+                id: element.id.clone(),
+                body: element.body.clone(),
+                chapter_id: element.chapter_id.clone(),
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            })
+            .get_result::<tables::Question>(&mut conn)
+            .unwrap();
     });
+    // UNWRAP: just sent back `input_data` as result
     return Ok((
         [(
             axum::http::header::CONTENT_TYPE,
             String::from("text/html; charset=utf-8"),
         )],
-        axum::Json(new_records),
+        axum::Json(input_data),
     )
         .into_response());
 }
@@ -241,7 +296,7 @@ pub async fn delete_question_route(
 // PATCH (/api/question) route handler
 pub async fn update_question_route(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
-    axum::extract::Json(json): axum::extract::Json<core::models::Question>,
+    axum::extract::Json(json): axum::extract::Json<models::Question>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     // database connection
     let mut conn = match match app_state.write() {
@@ -268,16 +323,23 @@ pub async fn update_question_route(
         }
     };
 
-    let mut input_data = json.clone();
-    input_data.updated_at = time::OffsetDateTime::now_utc().unix_timestamp();
-    let result: core::models::Question = input_data.save_changes(&mut conn).unwrap();
+    let _result: tables::Question = tables::Question {
+        id: json.id.clone(),
+        body: json.body.clone(),
+        chapter_id: json.chapter_id.clone(),
+        created_at: json.created_at,
+        updated_at: time::OffsetDateTime::now_utc().unix_timestamp(),
+    }
+    .save_changes(&mut conn)
+    .unwrap();
 
+    // UNWRAP: just sent back `input_data` as result
     return Ok((
         [(
             axum::http::header::CONTENT_TYPE,
             String::from("text/html; charset=utf-8"),
         )],
-        axum::Json(result),
+        axum::Json(json),
     )
         .into_response());
 }

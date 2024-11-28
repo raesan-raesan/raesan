@@ -2,7 +2,7 @@
 use crate::core;
 use diesel::{self, prelude::*};
 use r2d2;
-use raesan_common::schema;
+use raesan_common::{schema, tables};
 use serde_json;
 use std::{fs, io, path::Path};
 
@@ -37,16 +37,10 @@ pub fn generate_database_records(data: core::app::GenerateDatabaseRecords) -> Re
     };
     match diesel::insert_into(schema::classes::dsl::classes)
         .values(
-            match serde_json::from_str::<Vec<core::models::Class>>(classes_json_string.as_str()) {
+            match serde_json::from_str::<Vec<tables::Class>>(classes_json_string.as_str()) {
                 Ok(safe_class_vec) => safe_class_vec,
                 Err(e) => return Err(e.to_string()),
-            }
-            .into_iter()
-            .map(|mut element| {
-                element.id = uuid::Uuid::new_v4().to_string();
-                element
-            })
-            .collect::<Vec<core::models::Class>>(),
+            },
         )
         .execute(&mut conn)
     {
@@ -74,34 +68,12 @@ pub fn generate_database_records(data: core::app::GenerateDatabaseRecords) -> Re
         }
         Err(e) => return Err(e.to_string()),
     };
-    let classes = match schema::classes::dsl::classes
-        .select(core::models::Class::as_select())
-        .load(&mut conn)
-    {
-        Ok(safe_results) => safe_results,
-        Err(e) => {
-            return Err(e.to_string());
-        }
-    };
     match diesel::insert_into(schema::subjects::dsl::subjects)
         .values(
-            match serde_json::from_str::<Vec<core::models::Subject>>(subjects_json_string.as_str())
-            {
+            match serde_json::from_str::<Vec<tables::Subject>>(subjects_json_string.as_str()) {
                 Ok(safe_subject_vec) => safe_subject_vec,
                 Err(e) => return Err(e.to_string()),
-            }
-            .into_iter()
-            .map(|mut element| {
-                element.id = uuid::Uuid::new_v4().to_string();
-                element.class_id = classes
-                    .iter()
-                    .find(|class_element| class_element.name == element.class_name)
-                    .unwrap()
-                    .clone()
-                    .id;
-                element
-            })
-            .collect::<Vec<core::models::Subject>>(),
+            },
         )
         .execute(&mut conn)
     {
@@ -181,22 +153,22 @@ pub fn generate_database_records(data: core::app::GenerateDatabaseRecords) -> Re
 
     // print the final database state
     let results = raesan_common::schema::classes::dsl::classes
-        .select(core::models::Class::as_select())
+        .select(tables::Class::as_select())
         .load(&mut conn)
         .expect("Error loading classes");
     println!("Classes: {:#?}", results);
     let results = raesan_common::schema::subjects::dsl::subjects
-        .select(core::models::Subject::as_select())
+        .select(tables::Subject::as_select())
         .load(&mut conn)
         .expect("Error loading subjects");
     println!("Subjects: {:#?}", results);
     let results = raesan_common::schema::chapters::dsl::chapters
-        .select(core::models::Chapter::as_select())
+        .select(tables::Chapter::as_select())
         .load(&mut conn)
         .expect("Error loading chapters");
     println!("Chapters: {:#?}", results);
     let results = raesan_common::schema::questions::dsl::questions
-        .select(core::models::Question::as_select())
+        .select(tables::Question::as_select())
         .load(&mut conn)
         .expect("Error loading questions");
     println!("Chapters: {:#?}", results);
@@ -224,33 +196,12 @@ pub fn insert_chapters(
         Err(e) => return Err(e.to_string()),
     };
     let chapters_json_vec =
-        match serde_json::from_str::<Vec<core::models::Chapter>>(chapters_json_string.as_str()) {
+        match serde_json::from_str::<Vec<tables::Chapter>>(chapters_json_string.as_str()) {
             Ok(safe_chapter_vec) => safe_chapter_vec,
             Err(e) => return Err(e.to_string()),
         };
-    let curr_subject: core::models::Subject = match schema::subjects::dsl::subjects
-        .filter(schema::subjects::class_name.eq(chapters_json_vec[0].class_name))
-        .filter(schema::subjects::name.eq(chapters_json_vec[0].subject_name.clone()))
-        .select(core::models::Subject::as_select())
-        .first(&mut conn)
-    {
-        Ok(safe_results) => safe_results,
-        Err(e) => {
-            return Err(e.to_string());
-        }
-    };
     match diesel::insert_into(schema::chapters::dsl::chapters)
-        .values(
-            chapters_json_vec
-                .clone()
-                .into_iter()
-                .map(|mut element| {
-                    element.id = uuid::Uuid::new_v4().to_string();
-                    element.subject_id = curr_subject.id.clone();
-                    element
-                })
-                .collect::<Vec<core::models::Chapter>>(),
-        )
+        .values(chapters_json_vec.clone())
         .execute(&mut conn)
     {
         Ok(_) => return Ok(()),
@@ -292,36 +243,14 @@ pub fn insert_questions(
         return Ok(());
     }
     let questions_json_vec =
-        match serde_json::from_str::<Vec<core::models::Question>>(questions_json_string.as_str()) {
+        match serde_json::from_str::<Vec<tables::Question>>(questions_json_string.as_str()) {
             Ok(safe_questions_vec) => safe_questions_vec,
             Err(e) => {
                 return Err(e.to_string());
             }
         };
-    let curr_chapter: core::models::Chapter = match schema::chapters::dsl::chapters
-        .filter(schema::chapters::class_name.eq(questions_json_vec[0].class_name))
-        .filter(schema::chapters::subject_name.eq(questions_json_vec[0].subject_name.clone()))
-        .filter(schema::chapters::name.eq(questions_json_vec[0].chapter_name.clone()))
-        .select(core::models::Chapter::as_select())
-        .first(&mut conn)
-    {
-        Ok(safe_results) => safe_results,
-        Err(e) => {
-            return Err(e.to_string());
-        }
-    };
     match diesel::insert_into(schema::questions::dsl::questions)
-        .values(
-            questions_json_vec
-                .clone()
-                .into_iter()
-                .map(|mut element| {
-                    element.id = uuid::Uuid::new_v4().to_string();
-                    element.chapter_id = curr_chapter.id.clone();
-                    element
-                })
-                .collect::<Vec<core::models::Question>>(),
-        )
+        .values(questions_json_vec.clone())
         .execute(&mut conn)
     {
         Ok(_) => return Ok(()),

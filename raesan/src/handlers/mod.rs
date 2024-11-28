@@ -8,7 +8,7 @@ use askama::Template;
 use axum::{self, response::IntoResponse};
 use diesel::{self, prelude::*};
 use mime_guess;
-use raesan_common;
+use raesan_common::{models, schema, tables};
 // use serde_json;
 use std::sync::{Arc, RwLock};
 
@@ -102,18 +102,70 @@ pub async fn create_test_page(
         }
     };
 
-    let classes = raesan_common::schema::classes::dsl::classes
-        .select(core::models::Class::as_select())
+    let classes = schema::classes::dsl::classes
+        .select(tables::Class::as_select())
         .load(&mut conn)
-        .expect("Error loading classes");
-    let subjects = raesan_common::schema::subjects::dsl::subjects
-        .select(core::models::Subject::as_select())
+        .expect("Error loading classes")
+        .iter()
+        .map(|element| models::Class {
+            id: element.id.clone(),
+            name: element.name,
+            created_at: element.created_at,
+            updated_at: element.updated_at,
+        })
+        .collect::<Vec<models::Class>>();
+    let subjects = schema::subjects::dsl::subjects
+        .select(tables::Subject::as_select())
         .load(&mut conn)
-        .expect("Error loading subjects");
-    let chapters = raesan_common::schema::chapters::dsl::chapters
-        .select(core::models::Chapter::as_select())
+        .expect("Error loading subjects")
+        .iter()
+        .map(|element| {
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == element.class_id)
+                .unwrap();
+            models::Subject {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!("{} - {}", curr_class.name.clone(), element.name),
+                class_id: element.class_id.clone(),
+                class_name: curr_class.name.clone(),
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<models::Subject>>();
+    let chapters = schema::chapters::dsl::chapters
+        .select(tables::Chapter::as_select())
         .load(&mut conn)
-        .expect("Error loading chapters");
+        .expect("Error loading chapters")
+        .iter()
+        .map(|element| {
+            let curr_subject = subjects
+                .iter()
+                .find(|subject| subject.id == element.subject_id)
+                .unwrap();
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == curr_subject.class_id)
+                .unwrap();
+            models::Chapter {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!(
+                    "{} - {} - {}",
+                    curr_class.name.clone(),
+                    curr_subject.name.clone(),
+                    element.name
+                ),
+                subject_id: element.subject_id.clone(),
+                subject_name: curr_subject.name.clone(),
+                class_name: curr_class.name.clone(),
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<models::Chapter>>();
 
     let html = match (templates::routes::CreateTestPage {
         dataset_classes: classes,

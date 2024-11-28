@@ -1,9 +1,8 @@
-// imports
+use crate::schema;
 use diesel;
-use raesan_common;
 use serde;
 
-// ----- `Class` model struct
+// ----- `Class` table struct
 #[derive(
     Debug,
     Clone,
@@ -15,7 +14,7 @@ use serde;
     diesel::AsChangeset,
     diesel::Identifiable,
 )]
-#[diesel(table_name=raesan_common::schema::classes)]
+#[diesel(table_name=schema::classes)]
 pub struct Class {
     pub id: String,
     pub name: i32,
@@ -23,7 +22,7 @@ pub struct Class {
     pub updated_at: i64,
 }
 
-// ----- `Subject` model struct
+// ----- `Subject` table struct
 #[derive(
     Debug,
     Clone,
@@ -34,19 +33,19 @@ pub struct Class {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::subjects)]
+#[diesel(belongs_to(Class))]
+#[diesel(table_name=schema::subjects)]
 pub struct Subject {
     pub id: String,
     pub name: String,
-    pub display_name: String,
     pub class_id: String,
-    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `Chapter` model struct
+// ----- `Chapter` table struct
 #[derive(
     Debug,
     Clone,
@@ -57,20 +56,19 @@ pub struct Subject {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::chapters)]
+#[diesel(belongs_to(Subject))]
+#[diesel(table_name=schema::chapters)]
 pub struct Chapter {
     pub id: String,
     pub name: String,
-    pub display_name: String,
     pub subject_id: String,
-    pub subject_name: String,
-    pub class_name: i32,
     pub created_at: i64,
     pub updated_at: i64,
 }
 
-// ----- `Question` model struct
+// ----- `Question` table struct
 #[derive(
     Debug,
     Clone,
@@ -81,14 +79,13 @@ pub struct Chapter {
     diesel::Insertable,
     diesel::AsChangeset,
     diesel::Identifiable,
+    diesel::Associations,
 )]
-#[diesel(table_name=raesan_common::schema::questions)]
+#[diesel(belongs_to(Chapter))]
+#[diesel(table_name=schema::questions)]
 pub struct Question {
     pub id: String,
     pub body: String,
-    pub chapter_name: String,
-    pub subject_name: String,
-    pub class_name: i32,
     pub chapter_id: String,
     pub created_at: i64,
     pub updated_at: i64,

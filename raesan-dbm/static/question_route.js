@@ -220,7 +220,6 @@ window.handleUpdatQuestion = handleUpdateQuestion;
 
 // reset question handler
 const handleResetQuestion = (question) => {
-  // let body = MathJax.tex2chtml(question.body, { display: true });
   document.getElementById(question.id).innerHTML = `
 		<td>${question.id}</td>
 		<td id="latex-body"></td>
@@ -248,21 +247,13 @@ const handleResetQuestion = (question) => {
 	`;
   updateUnixTimeStamps();
 
-  // append rendered latex
-  let output = document
-    .getElementById(question.id)
-    .querySelector("#latex-body");
-  MathJax.tex2chtmlPromise(question.body, MathJax.getMetricsFor(output))
-    .then(function (node) {
-      output.appendChild(node);
-      MathJax.startup.document.clear();
-      MathJax.startup.document.updateDocument();
-    })
-    .catch(function (err) {
-      output
-        .appendChild(document.createElement("pre"))
-        .appendChild(document.createTextNode(err.message));
-    });
+  katex.render(
+    question.body,
+    document.getElementById(question.id).querySelector("#latex-body"),
+    {
+      throwOnError: false,
+    },
+  );
 };
 window.handleResetQuestion = handleResetQuestion;
 
@@ -317,17 +308,13 @@ function fetchAndAppendData() {
 						</th>
 					</tr>
 				`;
-        // append rendered latex
-        let output = document
-          .getElementById(element.id)
-          .querySelector("#latex-body");
-        let html = MathJax.tex2chtml(
+        katex.render(
           element.body,
-          MathJax.getMetricsFor(output),
+          document.getElementById(element.id).querySelector("#latex-body"),
+          {
+            throwOnError: false,
+          },
         );
-        output.appendChild(html);
-        MathJax.startup.document.clear();
-        MathJax.startup.document.updateDocument();
       });
       updateUnixTimeStamps();
 

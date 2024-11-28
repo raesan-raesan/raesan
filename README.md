@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to raesan</h1>
 <p>
-  <a href="#" target="_blank">
+  <a href="https://github.com/AxewBoTX/raesan/blob/main/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
 </p>
@@ -11,10 +11,9 @@
 
 **Lovedeep Singh**
 
-- Website: https://axewbotx.is-a.dev/
-- Github: [@AxewBoTX](https://github.com/AxewBoTX)
+- Website: <a href="https://axewbotx.is-a.dev" target="_blank">https://axewbotx.is-a.dev/</a>
+- Github: <a href="https://github.com/axewbotx" target="_blank">@AxewBoTX</a>
 
 ## Show your support
 
-Give a ⭐️ if this project helped you!
-
+Give a ⭐ if this project helped you!

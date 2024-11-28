@@ -3,20 +3,26 @@
 {% block page_scripts %}
 <script>
 	window.onload = () => {
-		const test = localStorage.getItem("{{test_id}}");
+		const questions = JSON.parse(localStorage.getItem("{{test_id}}")).questions;
+		console.log(questions);
 		const questions_list = document.getElementById("questions_list");
-		JSON.parse(test).questions.forEach((question) => {
+		let i = 0;
+		while (i < questions.length){
 			questions_list.innerHTML += `
-			<div>${question.body}</div>
+				<div class="flex items-top gap-[20px]" id="${questions[i].id}"><p class="text-xl">(${i+1})</p> <div id="latex-body"></div></div>
 			`;
-		});
-	}
+			katex.render(questions[i].body,document.getElementById(questions[i].id).querySelector("#latex-body"),{
+				throwOnError: false,
+			});
+			i++;
+		}
+	};
 </script>
 {% endblock %}
 
 {% block page_content %}
 
-<div id="questions_list" class="flex flex-col w-full gap-[20px] mt-[30px] px-[15px]">
+<div id="questions_list" class="flex flex-col w-full gap-[20px] px-[15px] mt-[30px] mb-[100px] overflow-x-auto">
 </div>
 
 {% endblock %}

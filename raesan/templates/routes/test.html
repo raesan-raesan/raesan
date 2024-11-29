@@ -3,8 +3,8 @@
 {% block page_scripts %}
 <script>
 	window.onload = () => {
-		const questions = JSON.parse(localStorage.getItem("{{test_id}}")).questions;
-		console.log(questions);
+		const test = JSON.parse(localStorage.getItem("{{test_id}}"));
+		const questions = test.questions;
 		const questions_list = document.getElementById("questions_list");
 		let i = 0;
 		while (i < questions.length){
@@ -22,7 +22,10 @@
 
 {% block page_content %}
 
-<div id="questions_list" class="flex flex-col w-full gap-[20px] px-[15px] mt-[30px] mb-[100px] overflow-x-auto">
+<div class="w-full flex p-[15px]">
+	<a href="/" class="btn btn-sm btn-secondary rounded-[6px]">Home</a>
+</div>
+<div id="questions_list" class="flex flex-col w-full gap-[20px] px-[15px] mt-[15px] mb-[100px] overflow-x-auto">
 </div>
 
 {% endblock %}

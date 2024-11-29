@@ -63,6 +63,15 @@ pub struct TestFormatInput {
     pub total_questions: u32,
 }
 
+// ----- `Test` struct
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Test {
+    pub id: String,
+    pub name: String,
+    pub date: i64,
+    pub questions: Vec<TestQuestion>,
+}
+
 // ----- `TestQuestion` struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct TestQuestion {

@@ -5,9 +5,7 @@ use diesel::{self, prelude::*};
 use raesan_common::{models, schema, tables};
 use rand::{self, prelude::*};
 use std::sync::{Arc, RwLock};
-// use axum_extra;
-// use serde_json;
-// use time;
+use uuid;
 
 // POST (/api/create-test) route handler
 #[axum_macros::debug_handler]
@@ -62,5 +60,14 @@ pub async fn create_test_route(
         })
         .collect::<Vec<models::TestQuestion>>();
 
-    return Ok((axum::http::StatusCode::OK, axum::response::Json(questions)).into_response());
+    return Ok((
+        axum::http::StatusCode::OK,
+        axum::response::Json(raesan_common::models::Test {
+            id: uuid::Uuid::new_v4().to_string(),
+            date: time::OffsetDateTime::now_utc().unix_timestamp(),
+            name: String::from(""),
+            questions,
+        }),
+    )
+        .into_response());
 }

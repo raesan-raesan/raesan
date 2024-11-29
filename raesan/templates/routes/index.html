@@ -12,11 +12,22 @@
 		const test_list = document.getElementById("test_list");
 		tests.forEach((test) => {
 			test_list.innerHTML += `
-				<a href="/test/${test.name}" class="link">
+			<div class="join" id="${test.id}">
+				<a class="btn join-item btn-active" 
+					href="/test/${test.id}" class="link">
 				${test.name}
 				</a>
+				<button class="btn btn-accent join-item" onclick='handleDeleteTest("${test.id}")'>
+					<span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+				</button>
+			</div>
 			`;
 		})
+	}
+	// handle delete tests from localstorage
+	const handleDeleteTest = (test_id) => {
+		localStorage.removeItem(test_id);
+		document.getElementById(test_id).remove();
 	}
 </script>
 {% endblock %}

@@ -40,10 +40,53 @@ pub async fn create_test_route(
 
     // get the questions
     let mut questions = schema::questions::dsl::questions
-        .filter(schema::questions::chapter_id.eq_any(create_test_input.chapters))
+        .filter(schema::questions::chapter_id.eq_any(create_test_input.chapters.clone()))
         .select(tables::Question::as_select())
         .load(&mut conn)
         .expect("Failed to fetch questions");
+
+    let subjects = schema::subjects::dsl::subjects
+        .filter(schema::subjects::id.eq_any(create_test_input.subjects.clone()))
+        .select(tables::Subject::as_select())
+        .load(&mut conn)
+        .expect("Failed to fetch subjects");
+    let classes = schema::classes::dsl::classes
+        .filter(schema::classes::id.eq_any(create_test_input.classes.clone()))
+        .select(tables::Class::as_select())
+        .load(&mut conn)
+        .expect("Failed to fetch classes");
+
+    // make the name of the test
+    let mut test_name = String::new();
+    // name by classes
+    if classes.len() > 1 && test_name.trim().len() == 0 {
+        test_name += "Classes: ";
+        let mut i = 0;
+        classes.iter().for_each(|element| {
+            if i == 0 {
+                test_name += format!("{}", element.name).as_str();
+            } else {
+                test_name += format!(", {}", element.name).as_str();
+            }
+            i += 1;
+        });
+    } else {
+        // name by subjects
+        let curr_class = classes
+            .iter()
+            .find(|element| element.id == subjects[0].class_id)
+            .unwrap();
+        test_name += format!("Class {} ", curr_class.name).as_str();
+        let mut i = 0;
+        subjects.iter().for_each(|element| {
+            if i == 0 {
+                test_name += format!("{}", element.name).as_str();
+            } else {
+                test_name += format!(", {}", element.name).as_str();
+            }
+            i += 1;
+        });
+    }
 
     // make the test
     let mut rng = rand::thread_rng();
@@ -65,7 +108,7 @@ pub async fn create_test_route(
         axum::response::Json(raesan_common::models::Test {
             id: uuid::Uuid::new_v4().to_string(),
             date: time::OffsetDateTime::now_utc().unix_timestamp(),
-            name: String::from(""),
+            name: test_name,
             questions,
         }),
     )

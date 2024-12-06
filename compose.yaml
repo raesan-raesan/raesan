@@ -10,7 +10,7 @@ services:
       - .:/usr/src/app
       - /usr/src/app/raesan/node_modules
       - /usr/src/app/raesan-dbm/node_modules
-      - /usr/src/app/target
+      - ./target:/usr/src/app/target
     ports:
       - "8080:8080"
       - "9090:9090"

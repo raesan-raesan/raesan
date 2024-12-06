@@ -1,26 +1,12 @@
 {% extends "../base.html" %} 
 
 {% block page_scripts %}
+<script src="/static/test_route.js"></script>
 <script>
 	window.onload = () => {
 		const test = JSON.parse(localStorage.getItem("{{test_id}}"));
 		const questions = test.questions;
-		const questions_list = document.getElementById("questions_list");
-		let i = 0;
-		while (i < questions.length){
-			questions_list.innerHTML += `
-				<div class="flex items-top justify-start gap-[20px] w-full" id="${questions[i].id}">
-					<p class="text-xl">(${i+1})</p> 
-					<div class="w-full flex items-center justify-start" id="latex-body">
-					</div>
-				</div>
-			`;
-			katex.render(questions[i].body,document.getElementById(questions[i].id).querySelector("#latex-body"),{
-				throwOnError: false,
-				displayMode: true,
-			});
-			i++;
-		}
+		window.renderQuestions(questions);
 	};
 </script>
 {% endblock %}
@@ -30,7 +16,7 @@
 <div class="w-full flex p-[15px]">
 	<a href="/" class="btn btn-sm btn-secondary rounded-[6px]">Home</a>
 </div>
-<div id="questions_list" class="flex flex-col items-start w-full gap-[20px] px-[15px] mt-[15px] mb-[100px] overflow-x-auto">
+<div id="questions_list" class="flex flex-col items-start w-full gap-[20px] px-[15px] mt-[15px] mb-[100px]">
 </div>
 
 {% endblock %}

@@ -1,6 +1,5 @@
 {
   "name": "raesan-dbm",
-  "module": "index.js",
   "type": "module",
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.0",

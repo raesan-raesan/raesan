@@ -2,7 +2,7 @@ const { addIconSelectors } = require("@iconify/tailwind");
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./templates/**/*.{html,js}", "./static/create_test.js"],
+  content: ["./templates/**/*.{html,js}", "./static/**/*.{html,js}"],
   theme: {
     extend: {},
   },

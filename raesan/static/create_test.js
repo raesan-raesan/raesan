@@ -35,9 +35,9 @@ window.dispatchUpdateStepEvent = dispatchUpdateStepEvent;
 // updating the form control buttons i.e `Next`, `Previous` buttons
 function updateControlButtons() {
   if (create_test_input.curr_step != 1) {
-    document.getElementById("prev_button").classList.remove("hidden");
+    document.getElementById("prev_button").innerHTML = "Previous";
   } else {
-    document.getElementById("prev_button").classList.add("hidden");
+    document.getElementById("prev_button").innerHTML = "Home";
   }
 
   if (create_test_input.curr_step === 5) {
@@ -135,14 +135,10 @@ document.addEventListener("updateStepEvent", function (event) {
           return response.json();
         })
         .then((data) => {
-          if (data.length == 0) {
+          if (data.questions.length == 0) {
             alert("Something went wrong, Your test has no questions!");
           } else {
-            let test = {
-              name: crypto.randomUUID().toString(),
-              questions: data,
-            };
-            localStorage.setItem(test.name, JSON.stringify(test));
+            localStorage.setItem(data.id, JSON.stringify(data));
             window.location.href = "/";
           }
         })
@@ -159,8 +155,8 @@ document.addEventListener("updateStepEvent", function (event) {
   }
   if (event.detail.next === false) {
     if (create_test_input.curr_step === 1) {
-      alert("No Can Do!");
-      return;
+      window.location.href = "/";
+      return; // just go back to the home page
     } else {
       create_test_input.curr_step -= 1;
     }

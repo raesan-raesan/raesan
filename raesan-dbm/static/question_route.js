@@ -1,9 +1,79 @@
+// convert integer to roman number
+function integerToRoman(num) {
+  const values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  const symbols = [
+    "m",
+    "cm",
+    "d",
+    "cd",
+    "c",
+    "xc",
+    "l",
+    "xl",
+    "x",
+    "ix",
+    "v",
+    "iv",
+    "i",
+  ];
+  let roman = "";
+  for (let i = 0; i < values.length; i++) {
+    while (num >= values[i]) {
+      roman += symbols[i];
+      num -= values[i];
+    }
+  }
+  return roman;
+}
+window.integerToRoman = integerToRoman;
+
+// split the latex string for easy rendering
+function splitLatexBodyString(input) {
+  const result = [];
+  let current = "";
+  let inDelimiters = false;
+  let i = 0;
+
+  while (i < input.length) {
+    if (!inDelimiters) {
+      // Look for the opening $$
+      if (input[i] === "$" && input[i + 1] === "$") {
+        if (current) result.push(current); // Push the text outside $$ to result
+        current = "";
+        inDelimiters = true; // Entering $$ block
+        i += 2; // Skip the $$
+      } else {
+        current += input[i];
+        i++;
+      }
+    } else {
+      // Look for the closing $$
+      if (input[i] === "$" && input[i + 1] === "$") {
+        result.push(current); // Push the text inside $$ to result
+        current = "";
+        inDelimiters = false; // Exiting $$ block
+        i += 2; // Skip the $$
+      } else {
+        current += input[i];
+        i++;
+      }
+    }
+  }
+
+  // Push any remaining text outside $$ after the loop
+  if (current) result.push(current);
+
+  return result;
+}
+window.splitLatexBodyString = splitLatexBodyString;
+
 // convert unix to readable
 const unix_to_readable = (unix_time) => {
   const date = new Date(unix_time * 1000);
   return date.toLocaleDateString() + " " + date.toLocaleTimeString();
 };
 window.unix_to_readable = unix_to_readable;
+
 // update unix time stamps of the whole web page
 const updateUnixTimeStamps = () => {
   document.querySelectorAll("td[data-timestamp]").forEach((element) => {
@@ -11,8 +81,54 @@ const updateUnixTimeStamps = () => {
     element.textContent = window.unix_to_readable(unix_time);
   });
 };
-updateUnixTimeStamps(); // run at the beginning
 window.updateUnixTimeStamps = updateUnixTimeStamps;
+updateUnixTimeStamps(); // run at the beginning
+
+// render questions body
+const renderQuestionBody = (question_body, question_element) => {
+  question_element.innerHTML = `
+		<div class="w-full flex flex-col gap-[20px]" id="body">
+			<div id="text-body"></div>
+			<div class="overflow-auto w-full max-w-[260px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[1000px] flex items-center justify-left" id="latex-body"></div>
+		</div>
+		`;
+
+  const parts = window.splitLatexBodyString(question_body);
+  let text_body = "";
+  let latex_body = "";
+  let latex_count = 0;
+
+  for (let j = 0; j < parts.length; j++) {
+    if (j % 2 === 1) {
+      latex_count += 1;
+      let curr_num = window.integerToRoman(latex_count);
+      latex_body += `(${curr_num})\\space\\space ${parts[j]} \\quad`;
+      text_body += `<b>(${curr_num})</b>`;
+    } else {
+      text_body += parts[j];
+    }
+  }
+  question_element
+    .querySelector("#body")
+    .querySelector("#text-body").innerHTML = text_body;
+
+  if (latex_body.trim().length == 0) {
+    question_element
+      .querySelector("#body")
+      .querySelector("#latex-body")
+      .remove();
+  } else {
+    katex.render(
+      latex_body,
+      question_element.querySelector("#body").querySelector("#latex-body"),
+      {
+        throwOnError: false,
+        displayMode: true,
+      },
+    );
+  }
+};
+window.renderQuestionBody = renderQuestionBody;
 
 window.chapter_list.forEach((element) => {
   document.getElementById("create_question_form").elements[
@@ -222,7 +338,7 @@ window.handleUpdatQuestion = handleUpdateQuestion;
 const handleResetQuestion = (question) => {
   document.getElementById(question.id).innerHTML = `
 		<td>${question.id}</td>
-		<td id="latex-body"></td>
+		<td id="question-body"></td>
 		<td>${question.chapter_name}</td>
 		<td>${question.subject_name}</td>
 		<td>${question.class_name}</td>
@@ -247,12 +363,9 @@ const handleResetQuestion = (question) => {
 	`;
   updateUnixTimeStamps();
 
-  katex.render(
+  window.renderQuestionBody(
     question.body,
-    document.getElementById(question.id).querySelector("#latex-body"),
-    {
-      throwOnError: false,
-    },
+    document.getElementById(question.id).querySelector("#question-body"),
   );
 };
 window.handleResetQuestion = handleResetQuestion;
@@ -284,7 +397,7 @@ function fetchAndAppendData() {
         question_table_body.innerHTML += `
 					<tr id="${element.id}">
 						<td>${element.id}</td>
-						<td id="latex-body"></td>
+						<td id="question-body"></td>
 						<td>${element.chapter_name}</td>
 						<td>${element.subject_name}</td>
 						<td>${element.class_name}</td>
@@ -308,12 +421,9 @@ function fetchAndAppendData() {
 						</th>
 					</tr>
 				`;
-        katex.render(
+        window.renderQuestionBody(
           element.body,
-          document.getElementById(element.id).querySelector("#latex-body"),
-          {
-            throwOnError: false,
-          },
+          document.getElementById(element.id).querySelector("#question-body"),
         );
       });
       updateUnixTimeStamps();

@@ -9,16 +9,12 @@
 	window.question_list = {{questions|json|safe}};
 	window.chapter_list = {{chapters|json|safe}};
 	window.onload = () => {
-	let children = Array.from(document.getElementById("question_table_body").children);
-	children.forEach((element) => {
-		katex.render(
-			element.querySelector("#latex-body").innerHTML,
-			element.querySelector("#latex-body"),
-			{
-				throwOnError: false,
-			},
-		);
-	});
+		let children = Array.from(document.getElementById("question_table_body").children);
+		children.forEach((element) => {
+			let question_element = element.querySelector("#question-body");
+			let question_body = question_element.innerHTML;
+			window.renderQuestionBody(question_body,question_element);
+		});
 	}
 </script>
 <script src="/static/question_route.js"></script>
@@ -82,7 +78,7 @@
 				{% for question in questions %}
 				<tr id="{{ question.id }}">
 					<td>{{ question.id }}</td>
-					<td id="latex-body">{{ question.body }}</td>
+					<td id="question-body">{{ question.body }}</td>
 					<td>{{ question.chapter_name }}</td>
 					<td>{{ question.subject_name }}</td>
 					<td>{{ question.class_name }}</td>

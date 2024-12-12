@@ -2,8 +2,8 @@
 
 {% block page_scripts %}
 <script>
+	let tests = [];
 	window.onload = () => {
-		const tests = [];
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 			const value = localStorage.getItem(key);
@@ -12,11 +12,30 @@
 		const test_list = document.getElementById("test_list");
 		tests.forEach((test) => {
 			test_list.innerHTML += `
-				<a href="/test/${test.name}" class="link">
-				${test.name}
-				</a>
+			<div class="join w-full flex items-center justify-center" id="${test.id}">
+				<div class="tooltip join-item w-full max-w-[180px]" data-tip="${test.name}">
+					<a class="btn btn-active w-full p-2" 
+					href="/test/${test.id}" class="link">
+						<p class="truncate">
+							${test.name}
+						</p>
+					</a>
+				</div>
+				<button class="btn btn-accent join-item" onclick='handleDeleteTest("${test.id}")'>
+					<span class="iconify mdi--bin-outline w-[22px] h-[22px]"></span>
+				</button>
+			</div>
 			`;
 		})
+	}
+	// handle delete tests from localstorage
+	const handleDeleteTest = (test_id) => {
+		let curr_test = tests.find((element) => element.id == test_id);
+		let choice = confirm(`WARNING! Do you want to delete '${curr_test.name}'`);
+		if (choice == true){
+			localStorage.removeItem(test_id);
+			document.getElementById(test_id).remove();
+		}
 	}
 </script>
 {% endblock %}

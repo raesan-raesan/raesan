@@ -138,7 +138,10 @@ document.addEventListener("updateStepEvent", function (event) {
           if (data.questions.length == 0) {
             alert("Something went wrong, Your test has no questions!");
           } else {
-            localStorage.setItem(data.id, JSON.stringify(data));
+            localStorage.setItem(
+              `raesan_test_id:${data.id}`,
+              JSON.stringify(data),
+            );
             window.location.href = "/";
           }
         })

@@ -4,7 +4,7 @@
 <script src="/static/test_route.js"></script>
 <script>
 	window.onload = () => {
-		const test = JSON.parse(localStorage.getItem("{{test_id}}"));
+		const test = JSON.parse(localStorage.getItem("raesan_test_id:{{test_id}}"));
 		const questions = test.questions;
 		window.renderQuestions(questions);
 	};

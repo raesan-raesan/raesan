@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: axewbotx/raesan
+  IMAGE_NAME: raesan-o4arKgHNMXaoYnl/raesan
 
 jobs:
   build-and-push-image:

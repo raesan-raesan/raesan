@@ -3,11 +3,20 @@
 {% block page_scripts %}
 <script>
 	let tests = [];
+	window.isValidUuid = (uuid) => {
+		const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+		return regex.test(uuid);
+	}
 	window.onload = () => {
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
-			const value = localStorage.getItem(key);
-			tests.push(JSON.parse(value));
+			if (key.startsWith("raesan_test_id")){
+				let key_parts = key.split(":");
+				if (window.isValidUuid(key_parts[1]) == true){
+					const value = localStorage.getItem(key);
+					tests.push(JSON.parse(value));
+				}
+			}
 		}
 		const test_list = document.getElementById("test_list");
 		tests.forEach((test) => {
@@ -33,7 +42,7 @@
 		let curr_test = tests.find((element) => element.id == test_id);
 		let choice = confirm(`WARNING! Do you want to delete '${curr_test.name}'`);
 		if (choice == true){
-			localStorage.removeItem(test_id);
+			localStorage.removeItem(`raesan_test_id:${test_id}`);
 			document.getElementById(test_id).remove();
 		}
 	}

@@ -177,3 +177,6 @@ target
 
 # taskfile cache
 .task
+
+# direnv
+.direnv

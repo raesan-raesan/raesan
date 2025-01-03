@@ -4,8 +4,120 @@ use axum_macros;
 use diesel::{self, prelude::*};
 use raesan_common::{models, schema, tables};
 use rand::{self, prelude::*};
-use std::sync::{Arc, RwLock};
+use serde;
 use uuid;
+// use serde_json;
+use std::sync::{Arc, RwLock};
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+struct CreateTestPageMeta {
+    classes: Vec<models::Class>,
+    subjects: Vec<models::Subject>,
+    chapters: Vec<models::Chapter>,
+}
+
+// GET (/api/create-test-page-meta) route handler
+#[axum_macros::debug_handler]
+pub async fn create_test_page_meta(
+    axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
+) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    // database connection
+    let mut conn = match match app_state.write() {
+        Ok(safe_app_state) => safe_app_state,
+        Err(e) => {
+            println!("Failed to get application state, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get application state"),
+            ));
+        }
+    }
+    .database
+    .pool
+    .get()
+    {
+        Ok(safe_conn) => safe_conn,
+        Err(e) => {
+            println!("Failed to get database connection, Error {:#?}", e);
+            return Err((
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                String::from("Failed to get database connection"),
+            ));
+        }
+    };
+
+    let classes = schema::classes::dsl::classes
+        .select(tables::Class::as_select())
+        .load(&mut conn)
+        .expect("Error loading classes")
+        .iter()
+        .map(|element| models::Class {
+            id: element.id.clone(),
+            name: element.name,
+            created_at: element.created_at,
+            updated_at: element.updated_at,
+        })
+        .collect::<Vec<models::Class>>();
+    let subjects = schema::subjects::dsl::subjects
+        .select(tables::Subject::as_select())
+        .load(&mut conn)
+        .expect("Error loading subjects")
+        .iter()
+        .map(|element| {
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == element.class_id)
+                .unwrap();
+            models::Subject {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!("{} - {}", curr_class.name.clone(), element.name),
+                class_id: element.class_id.clone(),
+                class_name: curr_class.name.clone(),
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<models::Subject>>();
+    let chapters = schema::chapters::dsl::chapters
+        .select(tables::Chapter::as_select())
+        .load(&mut conn)
+        .expect("Error loading chapters")
+        .iter()
+        .map(|element| {
+            let curr_subject = subjects
+                .iter()
+                .find(|subject| subject.id == element.subject_id)
+                .unwrap();
+            let curr_class = classes
+                .iter()
+                .find(|_class| _class.id == curr_subject.class_id)
+                .unwrap();
+            models::Chapter {
+                id: element.id.clone(),
+                name: element.name.clone(),
+                display_name: format!(
+                    "{} - {} - {}",
+                    curr_class.name.clone(),
+                    curr_subject.name.clone(),
+                    element.name
+                ),
+                subject_id: element.subject_id.clone(),
+                subject_name: curr_subject.name.clone(),
+                class_name: curr_class.name.clone(),
+                created_at: element.created_at,
+                updated_at: element.updated_at,
+            }
+        })
+        .collect::<Vec<models::Chapter>>();
+
+    return Ok(axum::Json(CreateTestPageMeta {
+        classes,
+        subjects,
+        chapters,
+    })
+    .into_response());
+}
 
 // POST (/api/create-test) route handler
 #[axum_macros::debug_handler]

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <title>Raesan Database Manager</title>
@@ -10,6 +10,14 @@
     />
     <script src="/static/loadash.min.js"></script>
     <link rel="stylesheet" href="/static/style.css" />
+    <script
+      src="https://unpkg.com/franken-ui@2.0.0-internal.27/dist/js/core.iife.js"
+      type="module"
+    ></script>
+    <script
+      src="https://unpkg.com/franken-ui@2.0.0-internal.27/dist/js/icon.iife.js"
+      type="module"
+    ></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
@@ -23,7 +31,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body class="bg-background text-foreground">
     <div class="drawer lg:drawer-open">
       <input id="sidebar" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content">

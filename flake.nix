@@ -15,7 +15,7 @@
         formatter =
           pkgs.nixfmt-classic; # formatter for .nix files, just run `nix fmt .` to format the entire directory
         devShell = pkgs.mkShell {
-          packages = with pkgs; [
+          packages = [
             inputs.deno_2_1_4-pkgs.legacyPackages.${system}.deno
 			inputs.rust_1_78_0-pkgs.legacyPackages.${system}.rustc
 			inputs.rust_1_78_0-pkgs.legacyPackages.${system}.cargo

@@ -36,6 +36,7 @@ async fn main() {
                     "/static/:filepath",
                     axum::routing::get(handlers::static_route),
                 )
+                .route("/health", axum::routing::get(handlers::health))
                 .route("/", axum::routing::get(handlers::home_page))
                 .route(
                     "/create-test",
@@ -48,6 +49,10 @@ async fn main() {
                 .route(
                     "/test/:test_id",
                     axum::routing::get(handlers::test_route::route),
+                )
+                .route(
+                    "/api/create-test-page-meta",
+                    axum::routing::get(handlers::api::create_test_page_meta),
                 )
                 .with_state(app_state);
 

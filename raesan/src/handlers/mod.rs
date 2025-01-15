@@ -13,7 +13,7 @@ use raesan_common::{models, schema, tables};
 use std::{
     env,
     sync::{Arc, RwLock},
-    thread, time,
+    thread,
 };
 
 // GET (/static) route handler
@@ -81,11 +81,11 @@ pub async fn home_page() -> Result<axum::response::Response, (axum::http::Status
 pub async fn health() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
     let app_env = env::var("APP_ENV").unwrap_or_else(|_| "development".to_string());
     if app_env == "production" {
-        return Ok("I_AM_ALIVE".into_response());
+        return Ok(axum::Json(serde_json::json!({"status":"HEALTHY"})).into_response());
     } else {
         // wait 5 seconds
-        thread::sleep(time::Duration::from_secs(5));
-        return Ok("I_AM_ALIVE".into_response());
+        thread::sleep(std::time::Duration::from_secs(5));
+        return Ok(axum::Json(serde_json::json!({"status":"HEALTHY"})).into_response());
     }
 }
 

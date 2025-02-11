@@ -134,7 +134,7 @@ pub async fn create_test_route(
             println!("Failed to get application state, Error {:#?}", e);
             return Err((
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("Failed to get application state"),
+                String::from("App to get application state"),
             ));
         }
     }
@@ -147,28 +147,57 @@ pub async fn create_test_route(
             println!("Failed to get database connection, Error {:#?}", e);
             return Err((
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("Failed to get database connection"),
+                String::from("DB to get database connection"),
             ));
         }
     };
 
+    println!("{:#?}", create_test_input.clone());
+
     // get the questions
     let mut questions = schema::questions::dsl::questions
-        .filter(schema::questions::chapter_id.eq_any(create_test_input.chapters.clone()))
+        .filter(
+            schema::questions::chapter_id.eq_any(
+                create_test_input
+                    .chapters
+                    .clone()
+                    .into_iter()
+                    .map(|chapter| chapter.id)
+                    .collect::<Vec<_>>(),
+            ),
+        )
         .select(tables::Question::as_select())
         .load(&mut conn)
-        .expect("Failed to fetch questions");
+        .expect("other to fetch questions");
 
     let subjects = schema::subjects::dsl::subjects
-        .filter(schema::subjects::id.eq_any(create_test_input.subjects.clone()))
+        .filter(
+            schema::subjects::id.eq_any(
+                create_test_input
+                    .subjects
+                    .clone()
+                    .into_iter()
+                    .map(|subject| subject.id)
+                    .collect::<Vec<_>>(),
+            ),
+        )
         .select(tables::Subject::as_select())
         .load(&mut conn)
-        .expect("Failed to fetch subjects");
+        .expect("other to fetch subjects");
     let classes = schema::classes::dsl::classes
-        .filter(schema::classes::id.eq_any(create_test_input.classes.clone()))
+        .filter(
+            schema::classes::id.eq_any(
+                create_test_input
+                    .classes
+                    .clone()
+                    .into_iter()
+                    .map(|_class| _class.id)
+                    .collect::<Vec<_>>(),
+            ),
+        )
         .select(tables::Class::as_select())
         .load(&mut conn)
-        .expect("Failed to fetch classes");
+        .expect("other to fetch classes");
 
     // make the name of the test
     let mut test_name = String::new();
@@ -204,13 +233,17 @@ pub async fn create_test_route(
 
     // make the test
     let mut rng = rand::thread_rng();
-    for i in 0..create_test_input.format.total_questions {
+    for i in 0..questions.len() {
         let random_index = rng.gen_range(i..questions.len().try_into().unwrap());
         questions.swap(i.try_into().unwrap(), random_index.try_into().unwrap());
     }
     let questions = questions
         .into_iter()
-        .take(create_test_input.format.total_questions.try_into().unwrap())
+        .take(
+            create_test_input.format.total_questions[0]
+                .try_into()
+                .unwrap(),
+        )
         .map(|question| models::TestQuestion {
             id: question.id,
             body: question.body,
@@ -219,7 +252,7 @@ pub async fn create_test_route(
 
     return Ok((
         axum::http::StatusCode::OK,
-        axum::response::Json(raesan_common::models::Test {
+        axum::response::Json(models::Test {
             id: uuid::Uuid::new_v4().to_string(),
             date: time::OffsetDateTime::now_utc().unix_timestamp(),
             name: test_name,

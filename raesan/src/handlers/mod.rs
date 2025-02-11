@@ -10,7 +10,11 @@ use diesel::{self, prelude::*};
 use mime_guess;
 use raesan_common::{models, schema, tables};
 // use serde_json;
-use std::sync::{Arc, RwLock};
+use std::{
+    env,
+    sync::{Arc, RwLock},
+    thread,
+};
 
 // GET (/static) route handler
 pub async fn static_route(
@@ -73,7 +77,19 @@ pub async fn home_page() -> Result<axum::response::Response, (axum::http::Status
         .into_response());
 }
 
-// GET (/create-test) route handlers
+// GET (/health) route handler
+pub async fn health() -> Result<axum::response::Response, (axum::http::StatusCode, String)> {
+    let app_env = env::var("APP_ENV").unwrap_or_else(|_| "development".to_string());
+    if app_env == "production" {
+        return Ok(axum::Json(serde_json::json!({"status":"HEALTHY"})).into_response());
+    } else {
+        // wait 5 seconds
+        thread::sleep(std::time::Duration::from_secs(5));
+        return Ok(axum::Json(serde_json::json!({"status":"HEALTHY"})).into_response());
+    }
+}
+
+// GET (/create-test) route handler
 pub async fn create_test_page(
     axum::extract::State(app_state): axum::extract::State<Arc<RwLock<core::app::Application>>>,
 ) -> Result<axum::response::Response, (axum::http::StatusCode, String)> {

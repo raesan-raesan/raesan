@@ -51,16 +51,16 @@ pub struct Question {
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CreateTestInput {
     pub curr_step: u32,
-    pub classes: Vec<String>,
-    pub subjects: Vec<String>,
-    pub chapters: Vec<String>,
+    pub classes: Vec<Class>,
+    pub subjects: Vec<Subject>,
+    pub chapters: Vec<Chapter>,
     pub format: TestFormatInput,
 }
 
 // ----- `TestFormatInput` struct
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct TestFormatInput {
-    pub total_questions: u32,
+    pub total_questions: Vec<u32>,
 }
 
 // ----- `Test` struct

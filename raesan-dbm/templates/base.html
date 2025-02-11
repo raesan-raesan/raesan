@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark uk-theme-raesan">
   <head>
     <meta charset="UTF-8" />
     <title>Raesan Database Manager</title>
@@ -10,6 +10,14 @@
     />
     <script src="/static/loadash.min.js"></script>
     <link rel="stylesheet" href="/static/style.css" />
+    <script
+      src="https://unpkg.com/franken-ui@2.0.0-internal.27/dist/js/core.iife.js"
+      type="module"
+    ></script>
+    <script
+      src="https://unpkg.com/franken-ui@2.0.0-internal.27/dist/js/icon.iife.js"
+      type="module"
+    ></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
@@ -23,35 +31,38 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
-    <div class="drawer lg:drawer-open">
-      <input id="sidebar" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content">
-        {% block page_content %}{% endblock %} {% block page_scripts %}{%
-        endblock %}
-        <label
-          for="sidebar"
-          class="drawer-button lg:hidden fixed top-[20px] left-[20px]"
-        >
-          <span class="iconify mdi--hamburger-menu w-[30px] h-[30px]"></span>
-        </label>
-      </div>
-      <div class="drawer-side">
-        <label
-          for="sidebar"
-          aria-label="close sidebar"
-          class="drawer-overlay"
-        ></label>
-        <ul
-          class="menu bg-base-200 text-base-content min-h-full w-64 p-4 text-lg"
-        >
-          <li><a class="link" href="/class">Classes</a></li>
-          <li><a class="link" href="/subject">Subjects</a></li>
-          <li><a class="link" href="/chapter">Chapters</a></li>
-          <li>
-            <a class="link" href="/question">Questions</a>
-          </li>
-        </ul>
+  <body class="bg-background text-foreground">
+    {% block page_content %}{% endblock %} {% block page_scripts %}{% endblock
+    %}
+    <button
+      class="uk-btn uk-btn-default uk-btn-icon fixed top-[20px] left-[20px]"
+      type="button"
+      data-uk-toggle="target: #side-drawer"
+    >
+      <span class="iconify mdi--hamburger-menu w-[22px] h-[22px]"></span>
+    </button>
+
+    <div id="side-drawer" data-uk-offcanvas="overlay: true">
+      <div class="uk-offcanvas-bar p-4">
+        <button
+          class="uk-offcanvas-close absolute right-4 top-4"
+          type="button"
+          data-uk-close
+        ></button>
+        <div class="flex flex-col gap-[12px] text-lg mt-[50px]">
+          <a class="uk-btn uk-btn-default uk-link-text" href="/class"
+            >Classes</a
+          >
+          <a class="uk-btn uk-btn-default uk-link-text" href="/subject"
+            >Subjects</a
+          >
+          <a class="uk-btn uk-btn-default uk-link-text" href="/chapter"
+            >Chapters</a
+          >
+          <a class="uk-btn uk-btn-default uk-link-text" href="/question"
+            >Questions</a
+          >
+        </div>
       </div>
     </div>
   </body>
